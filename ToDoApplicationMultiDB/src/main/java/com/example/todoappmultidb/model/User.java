@@ -34,7 +34,7 @@ public class User {
 			this.id = id;
 			this.name = name;
 			this.email = email;
-			this.todo=new ArrayList<ToDo>();
+			this.todo=new ArrayList<>();
 		}
 
 		public Long getId() {
