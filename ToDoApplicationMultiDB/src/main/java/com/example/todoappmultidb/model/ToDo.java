@@ -31,7 +31,7 @@ public class ToDo {
 			@JoinColumn(name = "todo_map_id", referencedColumnName = "id") })
 	@MapKeyColumn(name = "todo_action") /* where keys are stored */
 	@Column(name = "doit") // where value are stored
-	private Map<String, Boolean> toDo;
+	private Map<String, Boolean> actions;
 	@Column(name = "local_date_time", columnDefinition = "TIMESTAMP")
 	private LocalDateTime date;
 	@ManyToOne
@@ -41,24 +41,24 @@ public class ToDo {
 	public ToDo(Long id, User idOfUser, Map<String, Boolean> toDo, LocalDateTime date) {
 		super();
 		this.id = id;
-		this.toDo = toDo;
+		this.actions = toDo;
 		this.date = date;
 		this.idOfUser = idOfUser;
 	}
 
 	public Map<String, Boolean> getToDo() {
-		return toDo;
+		return actions;
 	}
 
 	void setToDo(Map<String, Boolean> toDo) {
-		this.toDo = toDo;
+		this.actions = toDo;
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	void setId(Long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -71,7 +71,7 @@ public class ToDo {
 	}
 
 	public void addToDoAction(String action, Boolean doIt) {
-		this.toDo.put(action, doIt);
+		this.actions.put(action, doIt);
 	}
 
 	public User getIdOfUser() {
@@ -84,7 +84,7 @@ public class ToDo {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(date, id, idOfUser, toDo);
+		return Objects.hash(date, id, idOfUser, actions);
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class ToDo {
 			return false;
 		ToDo other = (ToDo) obj;
 		return Objects.equals(date, other.date) && Objects.equals(id, other.id)
-				&& Objects.equals(idOfUser, other.idOfUser) && Objects.equals(toDo, other.toDo);
+				&& Objects.equals(idOfUser, other.idOfUser) && Objects.equals(actions, other.actions);
 	}
 
 }

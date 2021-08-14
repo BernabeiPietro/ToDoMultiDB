@@ -1,0 +1,32 @@
+package com.example.todoappmultidb.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.example.todoappmultidb.model.ToDo;
+import com.example.todoappmultidb.repository.ToDoRepository;
+
+@Service
+public class ToDoService {
+
+	ToDoRepository toDoRepository;
+
+	public List<ToDo> findAll() {
+		return toDoRepository.findAll();
+	}
+
+	public ToDo findById(Long id) {
+		return toDoRepository.findById(id).orElse(null);
+	}
+
+	public ToDo save(ToDo toSave) {
+		return toDoRepository.save(toSave);
+	}
+
+	public ToDo updateById(long id, ToDo toUpdate) {
+		toUpdate.setId(id);
+		return toDoRepository.update(toUpdate);
+	}
+
+}
