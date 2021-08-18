@@ -13,6 +13,11 @@ import javax.persistence.OneToMany;
 @Entity
 public class User {
 
+		@Override
+	public String toString() {
+		return "User [id=" + id + ", todo=" + todo + ", name=" + name + ", email=" + email + "]";
+	}
+
 		@Id
 		@GeneratedValue(strategy = GenerationType.AUTO)
 		private Long id;

@@ -46,6 +46,11 @@ public class ToDo {
 		this.idOfUser = idOfUser;
 	}
 
+	@Override
+	public String toString() {
+		return "ToDo [id=" + id + ", toDo=" + toDo + ", date=" + date + ", idOfUser=" + idOfUser + "]";
+	}
+
 	public Map<String, Boolean> getToDo() {
 		return toDo;
 	}
