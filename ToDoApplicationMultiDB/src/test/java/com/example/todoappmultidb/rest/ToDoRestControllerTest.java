@@ -24,6 +24,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.service.ToDoService;
 
+import javassist.NotFoundException;
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = ToDoRestController.class)
 public class ToDoRestControllerTest {
@@ -36,7 +38,8 @@ public class ToDoRestControllerTest {
 
 	@Test
 	public void testGetAllToDoEmpty() throws Exception {
-		this.mvc.perform(get("/api/todo")).andExpect(status().isNoContent()).andExpect(content().json("[]"));
+		when(todoService.getAllToDo()).thenThrow(new NotFoundException("Not found any todo"));
+		this.mvc.perform(get("/api/todo")).andExpect(status().isNoContent()).andExpect(status().reason("Not found any todo"));
 	}
 
 	@Test
