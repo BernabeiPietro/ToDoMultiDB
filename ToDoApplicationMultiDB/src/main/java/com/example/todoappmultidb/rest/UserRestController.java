@@ -31,16 +31,23 @@ public class UserRestController {
 
 	@GetMapping
 	public List<User> getUsers() {
-		return userService.getAllUser();
+		try {
+			return userService.getAllUser();
+
+		} catch (NotFoundException e) {
+
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
+		}
 	}
 
 	@GetMapping("/{id}")
 	public User getUserById(@PathVariable long id, HttpServletResponse response) {
-		User result = userService.getUserById(id);
-		if (result != null) {
-			return result;
-		} else {
-			throw new ResponseStatusException(HttpStatus.NO_CONTENT, "User with id " + id + " not found");
+		try {
+		return userService.getUserById(id);
+
+		} catch (NotFoundException e) {
+
+		throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
 		}
 	}
 

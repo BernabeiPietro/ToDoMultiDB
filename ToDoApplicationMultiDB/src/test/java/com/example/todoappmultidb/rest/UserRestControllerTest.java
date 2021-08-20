@@ -1,24 +1,18 @@
 
 package com.example.todoappmultidb.rest;
 
-import static org.hamcrest.CoreMatchers.any;
+import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Matchers.anyLong;
-
-import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import static java.util.Arrays.asList;
+
 import java.util.Collections;
-import java.util.List;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.assertj.core.error.ErrorMessageFactory;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +21,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.example.todoappmultidb.model.User;
-import com.example.todoappmultidb.rest.UserRestController;
 import com.example.todoappmultidb.service.UserService;
 import com.google.gson.Gson;
 
@@ -48,14 +40,14 @@ public class UserRestControllerTest {
 	private MockMvc mvc;
 
 	@Test
-	public void testAllUsersEmpty() throws Exception {
-		when(userService.getAllUser()).thenReturn(Collections.emptyList());
+	public void testGetAllUsersEmpty() throws Exception {
+		when(userService.getAllUser()).thenThrow(new NotFoundException("Not found any user"));
 		this.mvc.perform(get("/api/users").accept(MediaType.APPLICATION_JSON)).andDo(MockMvcResultHandlers.print())
-				.andExpect(status().isOk()).andExpect(content().json("[]"));
+				.andExpect(status().isNoContent()).andExpect(status().reason("Not found any user"));
 	}
 
 	@Test
-	public void testAllUsers() throws Exception {
+	public void testGetAllUsers() throws Exception {
 		when(userService.getAllUser())
 				.thenReturn(asList(new User(1l, "nome1", "email1"), new User(2l, "nome2", "email2")));
 		this.mvc.perform(get("/api/users").accept(MediaType.APPLICATION_JSON)).andDo(MockMvcResultHandlers.print())
@@ -67,14 +59,14 @@ public class UserRestControllerTest {
 	}
 
 	@Test
-	public void testFindOneUserByIdWithNoExistingUser() throws Exception {
-		when(userService.getUserById(anyLong())).thenReturn(null);
+	public void testGetOneUserByIdWithNoExistingUser() throws Exception {
+		when(userService.getUserById(1l)).thenThrow(new NotFoundException("Not found user with id 1"));
 		this.mvc.perform(get("/api/users/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent())
-				.andExpect(content().string(""));
+				.andExpect(status().reason("Not found user with id 1"));
 	}
 
 	@Test
-	public void testFindOneUserByIdWithExistingUser() throws Exception {
+	public void testGetOneUserByIdWithExistingUser() throws Exception {
 		when(userService.getUserById(anyLong())).thenReturn(new User(1l, "nome1", "email1"));
 		this.mvc.perform(get("/api/users/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.id", is(1))).andExpect(jsonPath("$.name", is("nome1")))
@@ -83,7 +75,7 @@ public class UserRestControllerTest {
 	}
 
 	@Test
-	public void testInsertNewUser() throws Exception {
+	public void testPostInsertNewUser() throws Exception {
 		Gson json = new Gson();
 		User u = new User(null, "nome1", "email1");
 		when(userService.insertNewUser(u)).thenReturn(new User(1l, "nome1", "email1"));
@@ -94,7 +86,7 @@ public class UserRestControllerTest {
 	}
 
 	@Test
-	public void testInsertNewUserNull() throws Exception {
+	public void testPostInsertNewUserNull() throws Exception {
 		Gson json = new Gson();
 		User u = new User(null, null, null);
 		when(userService.insertNewUser(u)).thenThrow(new IllegalArgumentException("User with null property"));
@@ -102,32 +94,34 @@ public class UserRestControllerTest {
 				.accept(MediaType.APPLICATION_JSON)).andDo(MockMvcResultHandlers.print())
 				.andExpect(status().isNoContent()).andExpect(status().reason("User with null property"));
 	}
+
 	@Test
-	public void testUpdateUser() throws Exception{
+	public void testPutUpdateUser() throws Exception {
 		Gson json = new Gson();
-		
-		when(userService.updateUser(1,new User(null, "nome1", "email1"))).thenReturn(new User(1l, "nome1", "email1"));
-		this.mvc.perform(put("/api/users/update/1").content(json.toJson(new User(null, "nome1", "email1"))).contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(jsonPath("$.id", is(1)))
-				.andExpect(jsonPath("$.name", is("nome1"))).andExpect(jsonPath("$.email", is("email1")))
+
+		when(userService.updateUser(1, new User(null, "nome1", "email1"))).thenReturn(new User(1l, "nome1", "email1"));
+		this.mvc.perform(put("/api/users/update/1").content(json.toJson(new User(null, "nome1", "email1")))
+				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(1))).andExpect(jsonPath("$.name", is("nome1")))
+				.andExpect(jsonPath("$.email", is("email1")))
 				.andExpect(jsonPath("$.toDo", is(Collections.emptyList())));
 	}
 
 	@Test
-	public void testUpdateUserNullProperties() throws Exception {
+	public void testPutUpdateUserNullProperties() throws Exception {
 		Gson json = new Gson();
 		User u = new User(null, null, null);
-		when(userService.updateUser(1,u)).thenThrow(new IllegalArgumentException("User with null property"));
+		when(userService.updateUser(1, u)).thenThrow(new IllegalArgumentException("User with null property"));
 		this.mvc.perform(put("/api/users/update/1").content(json.toJson(u)).contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON)).andDo(MockMvcResultHandlers.print())
 				.andExpect(status().isNoContent()).andExpect(status().reason("User with null property"));
 	}
 
 	@Test
-	public void testUpdateUserNotExistingUser() throws Exception {
+	public void testPutUpdateUserNotExistingUser() throws Exception {
 		Gson json = new Gson();
 		User u = new User(null, "nome1", "email1");
-		when(userService.updateUser(1,u)).thenThrow(new NotFoundException("Try to update not existing user"));
+		when(userService.updateUser(1, u)).thenThrow(new NotFoundException("Try to update not existing user"));
 		this.mvc.perform(put("/api/users/update/1").content(json.toJson(u)).contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON)).andDo(MockMvcResultHandlers.print())
 				.andExpect(status().isNotFound()).andExpect(status().reason("Try to update not existing user"));

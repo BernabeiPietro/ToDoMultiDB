@@ -12,11 +12,11 @@ public class UserService {
 
 	private static final String TEMPORARY_IMPLEMENTATION = "Temporary implementation";
 
-	public List<User> getAllUser() {
+	public List<User> getAllUser() throws NotFoundException{
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 
-	public User getUserById(long anyLong) {
+	public User getUserById(long anyLong)throws NotFoundException {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
