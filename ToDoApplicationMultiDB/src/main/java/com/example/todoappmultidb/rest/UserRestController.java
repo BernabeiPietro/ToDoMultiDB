@@ -41,7 +41,7 @@ public class UserRestController {
 	}
 
 	@GetMapping("/{id}")
-	public User getUserById(@PathVariable long id, HttpServletResponse response) {
+	public User getUserById(@PathVariable long id) {
 		try {
 		return userService.getUserById(id);
 
@@ -58,7 +58,7 @@ public class UserRestController {
 			return userService.insertNewUser(newUser);
 		} catch (Exception e) {
 			// TODO: handle exception
-			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
+			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 	}
 
@@ -69,7 +69,7 @@ public class UserRestController {
 			return userService.updateUser(id, newUser);
 		} catch (IllegalArgumentException e) {
 
-			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
+			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		} catch (NotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}

@@ -92,7 +92,7 @@ public class UserRestControllerTest {
 		when(userService.insertNewUser(u)).thenThrow(new IllegalArgumentException("User with null property"));
 		this.mvc.perform(post("/api/users/new").content(json.toJson(u)).contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON)).andDo(MockMvcResultHandlers.print())
-				.andExpect(status().isNoContent()).andExpect(status().reason("User with null property"));
+				.andExpect(status().isConflict()).andExpect(status().reason("User with null property"));
 	}
 
 	@Test
@@ -114,7 +114,7 @@ public class UserRestControllerTest {
 		when(userService.updateUser(1, u)).thenThrow(new IllegalArgumentException("User with null property"));
 		this.mvc.perform(put("/api/users/update/1").content(json.toJson(u)).contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON)).andDo(MockMvcResultHandlers.print())
-				.andExpect(status().isNoContent()).andExpect(status().reason("User with null property"));
+				.andExpect(status().isConflict()).andExpect(status().reason("User with null property"));
 	}
 
 	@Test

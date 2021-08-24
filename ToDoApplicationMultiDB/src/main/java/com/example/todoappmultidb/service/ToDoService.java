@@ -13,4 +13,9 @@ public class ToDoService {
 	public List<ToDoDTO> getAllToDo() throws NotFoundException {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
+
+	public ToDoDTO getToDoById(long l) throws NotFoundException {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
+	}
 }
