@@ -1,40 +1,31 @@
-package com.example.todoappmultidb.model;
+package com.example.todoappmultidb.model.dto;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-@Entity
-public class User {
+import com.example.todoappmultidb.model.ToDo;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+public class UserDTO {
 	private Long id;
-
-	@OneToMany(mappedBy = "idOfUser")
-	private List<ToDo> todo;
-
-	public User() {
-		super();
-	}
-
+	private List<ToDoDTO> todo;
 	private String name;
-
 	private String email;
 
-	public User(Long id, String name, String email) {
+
+	public UserDTO(Long id, String name,List<ToDoDTO> todo, String email) {
 		// TODO Auto-generated constructor stub
 
 		this.id = id;
 		this.name = name;
 		this.email = email;
-		this.todo = new ArrayList<ToDo>();
+		this.todo=todo;
+	}
+
+	public UserDTO() {
+		super();
 	}
 
 	public Long getId() {
@@ -43,6 +34,14 @@ public class User {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public List<ToDoDTO> getTodo() {
+		return todo;
+	}
+
+	public void setTodo(List<ToDoDTO> todo) {
+		this.todo = todo;
 	}
 
 	public String getName() {
@@ -55,18 +54,6 @@ public class User {
 
 	public String getEmail() {
 		return email;
-	}
-
-	public List<ToDo> getToDo() {
-		return todo;
-	}
-
-	public void addToDo(ToDo td) {
-		todo.add(td);
-	}
-
-	public void setTodo(List<ToDo> todo) {
-		this.todo = todo;
 	}
 
 	public void setEmail(String email) {
@@ -86,13 +73,14 @@ public class User {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		User other = (User) obj;
+		UserDTO other = (UserDTO) obj;
 		return Objects.equals(email, other.email) && Objects.equals(id, other.id) && Objects.equals(name, other.name)
 				&& Objects.equals(todo, other.todo);
 	}
 
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", todo=" + todo + ", name=" + name + ", email=" + email + "]";
+		return "UserDTO [id=" + id + ", todo=" + todo + ", name=" + name + ", email=" + email + "]";
 	}
+
 }

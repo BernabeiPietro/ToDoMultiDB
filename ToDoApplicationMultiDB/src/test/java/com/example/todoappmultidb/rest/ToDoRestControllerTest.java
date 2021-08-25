@@ -2,6 +2,7 @@ package com.example.todoappmultidb.rest;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -9,9 +10,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
+import org.hamcrest.core.IsNull;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +30,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.service.ToDoService;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.gson.Gson;
 
 import javassist.NotFoundException;
@@ -37,6 +47,16 @@ public class ToDoRestControllerTest {
 
 	@Autowired
 	private MockMvc mvc;
+	private ObjectMapper objMapper;
+
+	@Before
+	public void setup() {
+		objMapper = new ObjectMapper();
+		objMapper.setSerializationInclusion(Include.NON_EMPTY);
+		objMapper.registerModule(new JavaTimeModule());
+		objMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+	}
 
 	@Test
 	public void testGetAllToDoEmpty() throws Exception {
@@ -53,10 +73,12 @@ public class ToDoRestControllerTest {
 		this.mvc.perform(get("/api/todo").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isOk()).andExpect(jsonPath("$[0].id", is(1)))
 				.andExpect(jsonPath("$[0].date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
-				.andExpect(jsonPath("$[0].idOfUser", is(1))).andExpect(jsonPath("$[0].toDo", is(new HashMap<String, Boolean>())))
+				.andExpect(jsonPath("$[0].idOfUser", is(1)))
+				.andExpect(jsonPath("$[0].toDo", is(new HashMap<String, Boolean>())))
 				.andExpect(jsonPath("$[1].id", is(2)))
 				.andExpect(jsonPath("$[1].date", is(LocalDateTime.of(2001, 6, 3, 5, 0, 8).toString())))
-				.andExpect(jsonPath("$[1].idOfUser", is(2))).andExpect(jsonPath("$[1].toDo", is(new HashMap<String, Boolean>())));
+				.andExpect(jsonPath("$[1].idOfUser", is(2)))
+				.andExpect(jsonPath("$[1].toDo", is(new HashMap<String, Boolean>())));
 	}
 
 	@Test
@@ -66,7 +88,8 @@ public class ToDoRestControllerTest {
 		this.mvc.perform(get("/api/todo/1").contentType(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isOk()).andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
-				.andExpect(jsonPath("$.idOfUser", is(1))).andExpect(jsonPath("$.toDo", is(new HashMap<String, Boolean>())));
+				.andExpect(jsonPath("$.idOfUser", is(1)))
+				.andExpect(jsonPath("$.toDo", is(new HashMap<String, Boolean>())));
 	}
 
 	@Test
@@ -79,21 +102,19 @@ public class ToDoRestControllerTest {
 
 	@Test
 	public void testPostNewToDo() throws Exception {
-		Gson json = new Gson();
-		ToDoDTO td = new ToDoDTO(null, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1));
-		String toSend=json.toJson(td);
-		this.mvc.perform(post("/api/todo/new").content(toSend).accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated())
-				.andExpect(jsonPath("$.id", is(1)))
+
+		this.mvc.perform(post("/api/todo/new")
+				.content(objMapper.writeValueAsString(
+						new ToDoDTO(null, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1))))
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isCreated()).andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
-				.andExpect(jsonPath("$.idOfUser", is(1))).andExpect(jsonPath("$.toDo", is(new HashMap())));
+				.andExpect(jsonPath("$.idOfUser", is(1))).andExpect(jsonPath("$.toDo",is(nullValue())));
 	}
 
 	@Test
 	public void testPostNewToDoNullValue() throws Exception {
-		Gson json = new Gson();
-		ToDoDTO td = new ToDoDTO(null, null, null, null);
-		this.mvc.perform(post("/api/todo/new").content(json.toJson(td)).accept(MediaType.APPLICATION_JSON)
+		this.mvc.perform(post("/api/todo/new").content(objMapper.writeValueAsString(new ToDoDTO(null, null, null, null))).accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isConflict());
 	}
 }

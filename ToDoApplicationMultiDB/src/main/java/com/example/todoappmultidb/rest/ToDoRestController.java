@@ -52,7 +52,7 @@ public class ToDoRestController {
 
 	@PostMapping("/new")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ToDoDTO postNewToDoDTO(@RequestBody ToDoDTO todo) {
+	public ToDoDTO save(@RequestBody ToDoDTO todo) {
 		if (todo.getIdOfUser()!=null) {
 			todo.setId(1l);
 			return todo;

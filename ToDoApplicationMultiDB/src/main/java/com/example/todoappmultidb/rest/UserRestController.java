@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.todoappmultidb.model.User;
+import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.service.UserService;
 
 import javassist.NotFoundException;
@@ -30,7 +31,7 @@ public class UserRestController {
 	private UserService userService;
 
 	@GetMapping
-	public List<User> getUsers() {
+	public List<UserDTO> getUsers() {
 		try {
 			return userService.getAllUser();
 
@@ -41,7 +42,7 @@ public class UserRestController {
 	}
 
 	@GetMapping("/{id}")
-	public User getUserById(@PathVariable long id) {
+	public UserDTO getUserById(@PathVariable long id) {
 		try {
 		return userService.getUserById(id);
 
@@ -53,7 +54,7 @@ public class UserRestController {
 
 	@PostMapping("/new")
 	@ResponseStatus(HttpStatus.CREATED)
-	public User saveUser(@RequestBody User newUser) {
+	public UserDTO saveUser(@RequestBody UserDTO newUser) {
 		try {
 			return userService.insertNewUser(newUser);
 		} catch (Exception e) {
@@ -63,7 +64,7 @@ public class UserRestController {
 	}
 
 	@PutMapping("/update//{id}")
-	public User updateUser(@PathVariable long id, @RequestBody User newUser) {
+	public UserDTO updateUser(@PathVariable long id, @RequestBody UserDTO newUser) {
 
 		try {
 			return userService.updateUser(id, newUser);
