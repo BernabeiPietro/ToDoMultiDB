@@ -63,7 +63,7 @@ public class UserRestController {
 		}
 	}
 
-	@PutMapping("/update//{id}")
+	@PutMapping("/update/{id}")
 	public UserDTO updateUser(@PathVariable long id, @RequestBody UserDTO newUser) {
 
 		try {

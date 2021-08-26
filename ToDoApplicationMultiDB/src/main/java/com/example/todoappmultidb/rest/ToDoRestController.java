@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -20,6 +21,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.service.ToDoService;
+
+import javassist.NotFoundException;
 
 @RestController
 @RequestMapping("/api/todo")
@@ -53,12 +56,22 @@ public class ToDoRestController {
 	@PostMapping("/new")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ToDoDTO save(@RequestBody ToDoDTO todo) {
-		if (todo.getIdOfUser()!=null) {
-			todo.setId(1l);
-			return todo;
-		} else {
-			throw new ResponseStatusException(HttpStatus.CONFLICT);
+		try {
+			return todoService.saveToDo(todo);
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 	}
 
+	@PutMapping("/update/{id}")
+	public ToDoDTO updateToDo(@RequestBody ToDoDTO todo, @PathVariable Long id) {
+		try {
+			return todoService.updateToDo(id, todo);
+		} catch (IllegalArgumentException e) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+		}
+		catch (NotFoundException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+		}
+	}
 }

@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,7 +53,6 @@ public class ToDoRestControllerTest {
 	@Before
 	public void setup() {
 		objMapper = new ObjectMapper();
-		objMapper.setSerializationInclusion(Include.NON_EMPTY);
 		objMapper.registerModule(new JavaTimeModule());
 		objMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
@@ -103,18 +103,54 @@ public class ToDoRestControllerTest {
 	@Test
 	public void testPostNewToDo() throws Exception {
 
-		this.mvc.perform(post("/api/todo/new")
-				.content(objMapper.writeValueAsString(
-						new ToDoDTO(null, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1))))
+		ToDoDTO todo = new ToDoDTO(null, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1));
+		when(todoService.saveToDo(todo)).thenReturn(
+				new ToDoDTO(1l, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1)));
+		this.mvc.perform(post("/api/todo/new").content(objMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated()).andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
-				.andExpect(jsonPath("$.idOfUser", is(1))).andExpect(jsonPath("$.toDo",is(nullValue())));
+				.andExpect(jsonPath("$.idOfUser", is(1)))
+				.andExpect(jsonPath("$.toDo", is(new HashMap<String, Boolean>())));
 	}
 
 	@Test
 	public void testPostNewToDoNullValue() throws Exception {
-		this.mvc.perform(post("/api/todo/new").content(objMapper.writeValueAsString(new ToDoDTO(null, null, null, null))).accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)).andExpect(status().isConflict());
+		ToDoDTO todo = new ToDoDTO(null, null, null, null);
+		when(todoService.saveToDo(todo)).thenThrow(new IllegalArgumentException("Insert ToDo with null value"));
+		this.mvc.perform(post("/api/todo/new").content(objMapper.writeValueAsString(todo))
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isConflict()).andExpect(status().reason("Insert ToDo with null value"));
+	}
+
+	@Test
+	public void testPutUpdateToDo() throws Exception {
+		ToDoDTO todo = new ToDoDTO(null, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1));
+		when(todoService.updateToDo(1l, todo)).thenReturn(
+				new ToDoDTO(1l, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1)));
+		this.mvc.perform(put("/api/todo/update/1").content(objMapper.writeValueAsString(todo))
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(1)))
+				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
+				.andExpect(jsonPath("$.idOfUser", is(1)))
+				.andExpect(jsonPath("$.toDo", is(new HashMap<String, Boolean>())));
+	}
+
+	@Test
+	public void testPutUpdateToDoWithNullValue() throws Exception {
+		ToDoDTO todo = new ToDoDTO(null, null, null, null);
+		when(todoService.updateToDo(1l, todo)).thenThrow(new IllegalArgumentException("Update ToDo with null value"));
+		this.mvc.perform(put("/api/todo/update/1").content(objMapper.writeValueAsString(todo))
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isConflict()).andExpect(status().reason("Update ToDo with null value"));
+	}
+
+	@Test
+	public void testPutUpdateToDoNotFound() throws Exception {
+		ToDoDTO todo = new ToDoDTO(null, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1));
+		when(todoService.updateToDo(1l, todo)).thenThrow(new NotFoundException("Not Found any ToDo with id 1"));
+		this.mvc.perform(put("/api/todo/update/1").content(objMapper.writeValueAsString(todo))
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNotFound()).andExpect(status().reason("Not Found any ToDo with id 1"));
 	}
 }

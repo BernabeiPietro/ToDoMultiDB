@@ -18,4 +18,14 @@ public class ToDoService {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
+
+	public ToDoDTO saveToDo(ToDoDTO todo) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
+	}
+
+	public ToDoDTO updateToDo(long l, ToDoDTO todo)throws IllegalArgumentException,NotFoundException {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
+	}
 }
