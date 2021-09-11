@@ -2,6 +2,8 @@ package com.example.todoappmultidb.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,27 +66,29 @@ public class UserRepositoryTest {
 	public void test_update()
 	{
 		User u1=new User(null, "u1", "test");
-		u1.addToDo(new ToDo());
-		entityManager.persistFlushFind(u1);
-		u1.setEmail("change");
-		u1.setName("changed");
-		u1.addToDo(new ToDo());
-		User changed=userRepository.save(u1);
+		u1.addToDo(new ToDo(null, u1, new HashMap<>(), LocalDateTime.of(2003, 1, 1, 0, 0)));
+		User result = entityManager.persistFlushFind(u1);
+		result.setEmail("changed");
+		result.setName("changed");
+		result.addToDo(new ToDo(null, result, new HashMap<>(), LocalDateTime.of(2005, 2, 1, 0, 0)));
+		User changed=userRepository.save(result);
 		assertThat(changed).hasNoNullFieldsOrProperties();
-		assertThat(changed).hasFieldOrPropertyWithValue("name", u1.getName());
-		assertThat(changed).hasFieldOrPropertyWithValue("email", u1.getEmail());
-		assertThat(changed.getToDo()).containsAll(u1.getToDo());
+		assertThat(changed).hasFieldOrPropertyWithValue("name", "changed");
+		assertThat(changed).hasFieldOrPropertyWithValue("email", "changed");
+		assertThat(changed.getToDo()).containsAll(result.getToDo());
 	}
 	@Test
 	public  void test_findById() {
 		User u1=new User(null, "u1", "test");
 		User u2=new User(null, "u2", "test");
-		entityManager.persistFlushFind(u1);
+		
+		User persisted = entityManager.persistFlushFind(u1);
+		persisted.addToDo(entityManager.persistFlushFind(new ToDo(null, u1, new HashMap<>(), LocalDateTime.of(2003, 1, 1, 0, 0))));
 		entityManager.persistFlushFind(u2);
-		User result=userRepository.findById(u1.getId()).get();
+		User result=userRepository.findById(persisted.getId()).get();
 		assertThat(result).hasNoNullFieldsOrProperties();
-		assertThat(result).hasFieldOrPropertyWithValue("name", u1.getName());
-		assertThat(result).hasFieldOrPropertyWithValue("email", u1.getEmail());
-		assertThat(result.getToDo()).containsAll(u1.getToDo());
+		assertThat(result).hasFieldOrPropertyWithValue("name", persisted.getName());
+		assertThat(result).hasFieldOrPropertyWithValue("email", persisted.getEmail());
+		assertThat(result.getToDo()).containsAll(persisted.getToDo());
 	}
 }

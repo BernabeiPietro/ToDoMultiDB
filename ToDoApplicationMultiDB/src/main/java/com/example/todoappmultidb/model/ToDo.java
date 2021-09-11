@@ -35,7 +35,7 @@ public class ToDo {
 	@Column(name = "local_date_time", columnDefinition = "TIMESTAMP")
 	private LocalDateTime date;
 	@ManyToOne
-	@JoinColumn(name = "Id_of_user")
+	@JoinColumn(name = "Id_of_user", nullable=false)
 	private User idOfUser;
 
 	public ToDo(Long id, User idOfUser, Map<String, Boolean> toDo, LocalDateTime date) {
