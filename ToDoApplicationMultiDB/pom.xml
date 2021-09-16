@@ -51,6 +51,17 @@
 			**/*Application.*,
 			**/model/*
 		</sonar.coverage.exclusions>
+		<db.docker.dns>localhost</db.docker.dns>
+		<db.docker.port>3306</db.docker.port>
+		<db.docker.db1>db_example_1</db.docker.db1>
+		<db.docker.db2>db_example_2</db.docker.db2>
+		<db.docker.user>root</db.docker.user>
+		<db.docker.rootpsw>rootpassword</db.docker.rootpsw>
+		<db.docker.psw>password</db.docker.psw>
+		<JDBC-URL1>jdbc:mysql://${db.docker.dns}:${db.docker.port}/${db.docker.db}?createDatabaseIfNotExist=true</JDBC-URL1>
+		<JDBC-URL2>jdbc:mysql://${db.docker.dns}:${db.docker.port}/${db.docker.db}?createDatabaseIfNotExist=true</JDBC-URL2>
+
+
 	</properties>
 
 	<dependencies>
@@ -76,7 +87,11 @@
 			<scope>runtime</scope>
 			<optional>true</optional>
 		</dependency>
-
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -96,10 +111,22 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -107,7 +134,7 @@
 					<artifactId>sonar-maven-plugin</artifactId>
 					<version>3.8.0.2131</version>
 				</plugin>
-		
+
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
@@ -242,6 +269,79 @@
 								<include>**/*E2E.java</include>
 							</includes>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.34.1</version>
+				<configuration>
+					<showLogs>true</showLogs>
+					<verbose>build</verbose>
+					<images>
+						<image>
+							<alias>db_1</alias>
+							<name>mysql:5.6</name>
+							<run>
+								<wait>
+									<tcp>
+										<ports>
+											<port>${db.docker.port}</port>
+										</ports>
+									</tcp>
+									<time>100000</time>
+								</wait>
+								<env>
+									<MYSQL_ROOT_PASSWORD>${db.docker.rootpsw}</MYSQL_ROOT_PASSWORD>
+									<MYSQL_DATABASE>${db.docker.db1}</MYSQL_DATABASE>
+									<MYSQL_USER>${db.docker.user}</MYSQL_USER>
+									<MYSQL_PASSWORD>${db.docker.psw}</MYSQL_PASSWORD>
+								</env>
+								<ports>
+									<port>${db.docker.port}:${db.docker.port}</port>
+								</ports>
+							</run>
+						</image>
+						<!-- <image> -->
+						<!-- <alias>db_2</alias> -->
+						<!-- <name>mysql:5.6</name> -->
+						<!-- <run> -->
+						<!-- <wait> -->
+						<!-- <tcp> -->
+						<!-- <ports> -->
+						<!-- <port>${db.docker.port}</port> -->
+						<!-- </ports> -->
+						<!-- </tcp> -->
+						<!-- <time>100000</time> -->
+						<!-- </wait> -->
+						<!-- <env> -->
+						<!-- <MYSQL_ROOT_PASSWORD>${db.docker.rootpsw}</MYSQL_ROOT_PASSWORD> -->
+						<!-- <MYSQL_DATABASE>${db.docker.db2}</MYSQL_DATABASE> -->
+						<!-- <MYSQL_USER>${db.docker.user}</MYSQL_USER> -->
+						<!-- <MYSQL_PASSWORD>${db.docker.psw}</MYSQL_PASSWORD> -->
+						<!-- </env> -->
+						<!-- <ports> -->
+						<!-- <port>${db.docker.port}:${db.docker.port}</port> -->
+						<!-- </ports> -->
+						<!-- </run> -->
+						<!-- </image> -->
+					</images>
+				</configuration>
+				<executions>
+					<execution>
+						<id>docker-start</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>docker-stop</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
