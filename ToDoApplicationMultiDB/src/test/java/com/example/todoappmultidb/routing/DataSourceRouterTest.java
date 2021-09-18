@@ -1,11 +1,8 @@
 package com.example.todoappmultidb.routing;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
 
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Spy;
 
 import com.example.todoappmultidb.routing.config.DataSourceEnum;
 

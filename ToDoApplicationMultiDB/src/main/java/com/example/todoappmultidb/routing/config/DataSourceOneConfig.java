@@ -7,6 +7,9 @@ import org.springframework.stereotype.Component;
  // configuration for FirstDataSource
 
 @Component
-@ConfigurationProperties(prefix="datasourceone.datasource")
+@ConfigurationProperties("datasourceone.datasource")
 public class DataSourceOneConfig extends DataSourceConfig {
+	public DataSourceOneConfig() {
+		super();
+	}
 }

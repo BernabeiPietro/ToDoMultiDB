@@ -4,7 +4,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "datasourcetwo.datasource")
+@ConfigurationProperties("datasourcetwo.datasource")
 public class DataSourceTwoConfig extends DataSourceConfig{
 	
+	public DataSourceTwoConfig() {
+		super();
+	}
 }

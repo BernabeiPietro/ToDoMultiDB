@@ -52,14 +52,16 @@
 			**/model/*
 		</sonar.coverage.exclusions>
 		<db.docker.dns>localhost</db.docker.dns>
+		<db.docker.port1>28011</db.docker.port1>
+		<db.docker.port2>28012</db.docker.port2>
 		<db.docker.port>3306</db.docker.port>
 		<db.docker.db1>db_example_1</db.docker.db1>
 		<db.docker.db2>db_example_2</db.docker.db2>
-		<db.docker.user>root</db.docker.user>
+		<db.docker.user>administrator</db.docker.user>
 		<db.docker.rootpsw>rootpassword</db.docker.rootpsw>
 		<db.docker.psw>password</db.docker.psw>
-		<JDBC-URL1>jdbc:mysql://${db.docker.dns}:${db.docker.port}/${db.docker.db}?createDatabaseIfNotExist=true</JDBC-URL1>
-		<JDBC-URL2>jdbc:mysql://${db.docker.dns}:${db.docker.port}/${db.docker.db}?createDatabaseIfNotExist=true</JDBC-URL2>
+		<JDBC-URL1>jdbc:mysql://${db.docker.dns}:${db.docker.port1}/${db.docker.db1}?createDatabaseIfNotExist=true</JDBC-URL1>
+		<JDBC-URL2>jdbc:mysql://${db.docker.dns}:${db.docker.port2}/${db.docker.db2}?createDatabaseIfNotExist=true</JDBC-URL2>
 
 
 	</properties>
@@ -275,14 +277,36 @@
 			<plugin>
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.34.1</version>
 				<configuration>
 					<showLogs>true</showLogs>
 					<verbose>build</verbose>
 					<images>
 						<image>
-							<alias>db_1</alias>
 							<name>mysql:5.6</name>
+							<alias>db1</alias>
+							<run>
+								<!-- <wait>
+									<tcp>
+										<ports>
+											<port>${db.docker.port}</port>
+										</ports>
+									</tcp>
+									<time>100000</time>
+								</wait> -->
+								<env>
+									<MYSQL_ROOT_PASSWORD>${db.docker.rootpsw}</MYSQL_ROOT_PASSWORD>
+									<MYSQL_DATABASE>${db.docker.db1}</MYSQL_DATABASE>
+									<MYSQL_USER>${db.docker.user}</MYSQL_USER>
+									<MYSQL_PASSWORD>${db.docker.psw}</MYSQL_PASSWORD>
+								</env>
+								<ports>
+									<port>${db.docker.port1}:${db.docker.port}</port>
+								</ports>
+							</run>
+						</image>
+						<image>
+							<name>mysql:5.6</name>
+							<alias>db2</alias>
 							<run>
 								<wait>
 									<tcp>
@@ -294,38 +318,15 @@
 								</wait>
 								<env>
 									<MYSQL_ROOT_PASSWORD>${db.docker.rootpsw}</MYSQL_ROOT_PASSWORD>
-									<MYSQL_DATABASE>${db.docker.db1}</MYSQL_DATABASE>
+									<MYSQL_DATABASE>${db.docker.db2}</MYSQL_DATABASE>
 									<MYSQL_USER>${db.docker.user}</MYSQL_USER>
 									<MYSQL_PASSWORD>${db.docker.psw}</MYSQL_PASSWORD>
 								</env>
 								<ports>
-									<port>${db.docker.port}:${db.docker.port}</port>
+									<port>${db.docker.port2}:${db.docker.port}</port>
 								</ports>
 							</run>
 						</image>
-						<!-- <image> -->
-						<!-- <alias>db_2</alias> -->
-						<!-- <name>mysql:5.6</name> -->
-						<!-- <run> -->
-						<!-- <wait> -->
-						<!-- <tcp> -->
-						<!-- <ports> -->
-						<!-- <port>${db.docker.port}</port> -->
-						<!-- </ports> -->
-						<!-- </tcp> -->
-						<!-- <time>100000</time> -->
-						<!-- </wait> -->
-						<!-- <env> -->
-						<!-- <MYSQL_ROOT_PASSWORD>${db.docker.rootpsw}</MYSQL_ROOT_PASSWORD> -->
-						<!-- <MYSQL_DATABASE>${db.docker.db2}</MYSQL_DATABASE> -->
-						<!-- <MYSQL_USER>${db.docker.user}</MYSQL_USER> -->
-						<!-- <MYSQL_PASSWORD>${db.docker.psw}</MYSQL_PASSWORD> -->
-						<!-- </env> -->
-						<!-- <ports> -->
-						<!-- <port>${db.docker.port}:${db.docker.port}</port> -->
-						<!-- </ports> -->
-						<!-- </run> -->
-						<!-- </image> -->
 					</images>
 				</configuration>
 				<executions>
