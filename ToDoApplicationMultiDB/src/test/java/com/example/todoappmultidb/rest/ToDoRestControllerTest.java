@@ -30,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.example.todoappmultidb.model.dto.ToDoDTO;
+import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.service.ToDoService;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -81,6 +82,7 @@ public class ToDoRestControllerTest {
 				.andExpect(jsonPath("$[1].toDo", is(new HashMap<String, Boolean>())));
 	}
 
+
 	@Test
 	public void testGetOneToDoById() throws Exception {
 		when(todoService.getToDoById(1l)).thenReturn(
@@ -99,7 +101,20 @@ public class ToDoRestControllerTest {
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isNoContent())
 				.andExpect(status().reason("Not found any todo with id 2"));
 	}
-
+	@Test
+	public void testGetToDoByUserId() throws Exception{
+		when(todoService.findByUserId(new UserDTO(1L, null, null))).thenReturn(asList(new ToDoDTO(1l, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1)),
+						new ToDoDTO(2l, 2l, new HashMap<String, Boolean>(), LocalDateTime.of(2001, 6, 3, 5, 0, 8))));
+		
+		this.mvc.perform(get("/api/todo/ofuser/1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk()).andExpect(jsonPath("$[0].id", is(1)))
+		.andExpect(jsonPath("$[0].date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
+		.andExpect(jsonPath("$[0].idOfUser", is(1)))
+		.andExpect(jsonPath("$[0].toDo", is(new HashMap<String, Boolean>())))
+		.andExpect(jsonPath("$[1].id", is(2)))
+		.andExpect(jsonPath("$[1].date", is(LocalDateTime.of(2001, 6, 3, 5, 0, 8).toString())))
+		.andExpect(jsonPath("$[1].idOfUser", is(2)))
+		.andExpect(jsonPath("$[1].toDo", is(new HashMap<String, Boolean>())));
+	}
 	@Test
 	public void testPostNewToDo() throws Exception {
 
@@ -153,6 +168,5 @@ public class ToDoRestControllerTest {
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound()).andExpect(status().reason("Not Found any ToDo with id 1"));
 	}
-	
 	
 }

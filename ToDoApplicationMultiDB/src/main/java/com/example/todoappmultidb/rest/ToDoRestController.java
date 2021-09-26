@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.todoappmultidb.model.dto.ToDoDTO;
+import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.service.ToDoService;
 
 import javassist.NotFoundException;
@@ -51,6 +52,10 @@ public class ToDoRestController {
 			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
 		}
 
+	}
+	@GetMapping("/ofuser/{id}")
+	public List<ToDoDTO> getToDoByUserId(@PathVariable long id) {
+		return todoService.findByUserId(new UserDTO(id,null,null));
 	}
 
 	@PostMapping("/new")
