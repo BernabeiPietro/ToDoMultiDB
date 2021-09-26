@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.Before;
@@ -130,6 +131,21 @@ public class ToDoRepositoryTest {
 		assertThat(saved.getLocalDateTime()).isEqualTo(LocalDateTime.of(2012, Month.DECEMBER, 12, 0, 0));
 		assertThat(saved.getToDo()).isEqualTo(result.getToDo());
 	}
-
-
+	@Test
+	public void test_retrieveUserListOfTodoWithALimitedUserId() {
+		User user=entityManager.persistAndFlush(u);
+		ToDo result1 = entityManager.persistAndFlush(todo1);
+		ToDo result2 = entityManager.persistAndFlush(todo2);
+		assertThat(toDoRepository.findToDoByUserId(new User(user.getId(), null, null))).isEqualTo(asList(result1,result2));
+	}
+	@Test
+	public void test_retrieveUserListOfToDo_UserNotExist() {
+		User user=entityManager.persistAndFlush(u);
+		ToDo result1 = entityManager.persistAndFlush(todo1);
+		ToDo result2 = entityManager.persistAndFlush(todo2);
+		User u2 = new User(user.getId()+1, null, null);
+		assertThat(entityManager.find(User.class, u2.getId())).isEqualTo(null);
+		assertThat(toDoRepository.findToDoByUserId(u2)).isEqualTo(Collections.emptyList());
+	}
+	
 }
