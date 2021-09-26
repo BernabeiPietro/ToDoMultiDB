@@ -62,20 +62,17 @@ public class ToDoRepositoryTest {
 	}
 
 	@Test
-	public void test_findAllToDoWithExactlyDate() {
-		entityManager.persistAndFlush(u);
+	public void test_findToDoWithUserId() {
+		User user=entityManager.persistAndFlush(u);
 		ToDo result1 = entityManager.persistAndFlush(todo1);
-		entityManager.persistAndFlush(todo2);
-		assertThat(toDoRepository.findAllToDoWithDate(LocalDateTime.of(2012, Month.DECEMBER, 12, 0, 0)))
-				.containsExactly(result1);
+		ToDo result2 = entityManager.persistAndFlush(todo2);
+		assertThat(toDoRepository.findToDoByUserId(u)).isEqualTo(asList(result1,result2));
 	}
 
 	@Test
-	public void test_findAllToDoWithDate_nothing() {
-		entityManager.persistAndFlush(u);
-		entityManager.persistAndFlush(todo1);
-		entityManager.persistAndFlush(todo2);
-		assertThat(toDoRepository.findAllToDoWithDate(LocalDateTime.of(2012, Month.DECEMBER, 13, 0, 0))).isEmpty();
+	public void test_findToDoWithUserId_nothing() {
+		User user=entityManager.persistAndFlush(new User(null, "name1", "name2"));
+		assertThat(toDoRepository.findToDoByUserId(user)).isEmpty();
 	}
 
 	@Test

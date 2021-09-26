@@ -66,8 +66,9 @@ public class UserRepositoryTest {
 	public void test_update()
 	{
 		User u1=new User(null, "u1", "test");
-		u1.addToDo(new ToDo(null, u1, new HashMap<>(), LocalDateTime.of(2003, 1, 1, 0, 0)));
 		User result = entityManager.persistFlushFind(u1);
+		ToDo td =entityManager.persistFlushFind(new ToDo(null, result, new HashMap<>(), LocalDateTime.of(2003, 1, 1, 0, 0)));
+		result.addToDo(td);
 		result.setEmail("changed");
 		result.setName("changed");
 		result.addToDo(new ToDo(null, result, new HashMap<>(), LocalDateTime.of(2005, 2, 1, 0, 0)));

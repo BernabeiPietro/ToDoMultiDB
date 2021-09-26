@@ -32,10 +32,12 @@ public class ToDo {
 	@MapKeyColumn(name = "todo_action") /* where keys are stored */
 	@Column(name = "doit") // where value are stored
 	private Map<String, Boolean> actionList;
+	
 	@Column(name = "local_date_time", columnDefinition = "TIMESTAMP")
 	private LocalDateTime date;
+	
 	@ManyToOne
-	@JoinColumn(name = "Id_of_user", nullable=false)
+	@JoinColumn(name = "idUser")
 	private User idOfUser;
 
 	public ToDo(Long id, User idOfUser, Map<String, Boolean> toDo, LocalDateTime date) {
