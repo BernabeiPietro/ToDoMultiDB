@@ -53,9 +53,15 @@ public class ToDoRestController {
 		}
 
 	}
+
 	@GetMapping("/ofuser/{id}")
-	public List<ToDoDTO> getToDoByUserId(@PathVariable long id) {
-		return todoService.findByUserId(new UserDTO(id,null,null));
+	public List<ToDoDTO> getToDoByUserId(@PathVariable Long id) {
+		try {
+			return todoService.findByUserId(new UserDTO(id, null, null));
+		
+		} catch (NotFoundException e) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+		}
 	}
 
 	@PostMapping("/new")
@@ -74,8 +80,7 @@ public class ToDoRestController {
 			return todoService.updateToDo(id, todo);
 		} catch (IllegalArgumentException e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
-		}
-		catch (NotFoundException e) {
+		} catch (NotFoundException e) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
 		}
 	}

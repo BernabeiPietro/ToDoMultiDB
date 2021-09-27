@@ -26,7 +26,7 @@ public class ToDoService {
 		
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
-	public List<ToDoDTO> findByUserId(UserDTO user)throws IllegalArgumentException {
+	public List<ToDoDTO> findByUserId(UserDTO user)throws NotFoundException{
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}	
 }
