@@ -1,6 +1,5 @@
 package com.example.todoappmultidb.webcontroller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +10,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.todoappmultidb.dto.UserDTO;
-import com.example.todoappmultidb.model.User;
 import com.example.todoappmultidb.service.UserService;
 
 @Controller
-public class HomeWebController {
+public class UserWebController {
 	private final String MESSAGE = "message";
 	@Autowired
 	private UserService userService;
+	
 
 	@GetMapping("/")
 	public String index(Model model) {
@@ -28,30 +27,30 @@ public class HomeWebController {
 		return "index";
 	}
 
-	@GetMapping("/edit/{id}")
+	@GetMapping("/user/edit/{id}")
 	public String editUser(@PathVariable long id, Model model) {
 		UserDTO user = userService.getUserById(id);
 		model.addAttribute("user", user);
 		model.addAttribute(MESSAGE, user == null ? "No user found with id: " + id : "");
-		return "edit";
+		return "editUser";
 	}
 
-	@GetMapping("/new")
+	@GetMapping("/user/new")
 	public String newUser(Model model) {
 		model.addAttribute("user", new UserDTO());
 		model.addAttribute(MESSAGE, "");
-		return "edit";
+		return "editUser";
 	}
 
-	@PostMapping("/save")
+	@PostMapping("/user/save")
 	public String saveUser(UserDTO user) {
 		final Long id = user.getId();
 		if (id == null) {
-			user.setTodo(new ArrayList<>());
 			userService.insertNewUser(user);
 		} else {
 			userService.updateUserById(id, user);
 		}
 		return "redirect:/";
 	}
+
 }

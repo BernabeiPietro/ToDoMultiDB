@@ -8,7 +8,7 @@
 
 <body>
 	<div>
-		<a th:href="@{/new}">New user</a>
+		<a th:href="@{/user/new}">New user</a>
 	</div>
 	<div th:if="${users.empty}">
 		<div>No user</div>
@@ -28,7 +28,7 @@
 					<td th:text="${user.id}"></td>
 					<td th:text="${user.name}"></td>
 					<td th:text="${user.email}"></td>
-					<td><a th:href="@{'/edit/' + ${user.id}}">Edit</a></td>
+					<td><a th:href="@{'/user/edit/' + ${user.id}}">Edit</a></td>
 				</tr>
 			</tbody>
 		</table>

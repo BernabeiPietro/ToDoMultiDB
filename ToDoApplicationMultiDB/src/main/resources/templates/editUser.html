@@ -13,7 +13,7 @@
 		<span th:text="${message}"></span>
 	</div>
 	<div th:if="${message.empty}">
-		<form name="user_form" action="#" th:action="@{/save}" th:object="${user}" method="post">
+		<form name="user_form" action="#" th:action="@{/user/save}" th:object="${user}" method="post">
 			<input type="hidden" th:field="*{id}" />
 			<p>
 				Name: <input type="text" th:field="*{name}" />

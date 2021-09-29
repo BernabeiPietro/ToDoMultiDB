@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.todoappmultidb.dto.UserDTO;
-import com.example.todoappmultidb.model.User;
 
 @Service
 public class UserService {
