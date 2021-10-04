@@ -1,15 +1,23 @@
 package com.example.todoappmultidb.webcontroller;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.todoappmultidb.dto.ToDoDTO;
 import com.example.todoappmultidb.dto.UserDTO;
 import com.example.todoappmultidb.service.ToDoService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javassist.NotFoundException;
 
@@ -51,7 +59,21 @@ public class ToDoWebController {
 
 	@PostMapping("/todo/save")
 	public String saveToDo(ToDoDTO todo) {
-		todoService.saveToDo(todo);
+		if(todo.getActions()==null) {
+			todo.setActions(new HashMap<String, Boolean>());
+		
+		}
+		try {
+
+			if(todo.getId()!=-1)
+				todoService.updateToDo(todo.getId(), todo);
+			else {
+				todo.setId(null);
+				todoService.saveToDo(todo);
+			}
+		} catch (NotFoundException e) {
+			e.printStackTrace();
+		}
 		return "redirect:/";
 
 	}

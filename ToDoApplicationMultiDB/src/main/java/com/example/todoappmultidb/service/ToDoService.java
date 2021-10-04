@@ -17,12 +17,12 @@ public class ToDoService {
 	public ToDoDTO getToDoById(long l) throws NotFoundException {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
-
-	public ToDoDTO saveToDo(ToDoDTO todo) {
+	
+	public ToDoDTO saveToDo(ToDoDTO todo) throws NotFoundException{
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}
 
-	public ToDoDTO updateToDo(long l, ToDoDTO todo)throws IllegalArgumentException,NotFoundException {
+	public ToDoDTO updateToDo(long l, ToDoDTO todo)throws NotFoundException {
 		
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 	}

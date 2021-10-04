@@ -4,12 +4,15 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.lang.NonNull;
+
 public class ToDoDTO {
 
 	private Long id;
 
 	private Map<String, Boolean> actions;
 	private LocalDateTime date;
+	
 	private Long idOfUser;
 
 	public ToDoDTO() {
