@@ -68,9 +68,12 @@ public class ToDoRestControllerTest {
 
 	@Test
 	public void testGetAllToDo() throws Exception {
+		HashMap<String, Boolean> actions = new HashMap<String, Boolean>();
+		actions.put("first", false);
+		actions.put("second",true);
 		when(todoService.getAllToDo()).thenReturn(
 				asList(new ToDoDTO(1l, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1)),
-						new ToDoDTO(2l, 2l, new HashMap<String, Boolean>(), LocalDateTime.of(2001, 6, 3, 5, 0, 8))));
+						new ToDoDTO(2l, 2l, actions, LocalDateTime.of(2001, 6, 3, 5, 0, 8))));
 		this.mvc.perform(get("/api/todo").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isOk()).andExpect(jsonPath("$[0].id", is(1)))
 				.andExpect(jsonPath("$[0].date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
@@ -79,7 +82,7 @@ public class ToDoRestControllerTest {
 				.andExpect(jsonPath("$[1].id", is(2)))
 				.andExpect(jsonPath("$[1].date", is(LocalDateTime.of(2001, 6, 3, 5, 0, 8).toString())))
 				.andExpect(jsonPath("$[1].idOfUser", is(2)))
-				.andExpect(jsonPath("$[1].toDo", is(new HashMap<String, Boolean>())));
+				.andExpect(jsonPath("$[1].toDo", is(actions)));
 	}
 
 	@Test
@@ -118,17 +121,16 @@ public class ToDoRestControllerTest {
 				.andExpect(jsonPath("$[1].toDo", is(new HashMap<String, Boolean>())));
 	}
 
-	
 	@Test
 	public void testGetToDoByUserId_foundAnything() throws Exception {
-		when(todoService.findByUserId(new UserDTO(1l,null,null)))
+		when(todoService.findByUserId(new UserDTO(1l, null, null)))
 				.thenThrow(new NotFoundException("Not found todo with user id 1"));
 		this.mvc.perform(get("/api/todo/ofuser/1").contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound()).andExpect(status().reason("Not found todo with user id 1"));
 	}
 
 	@Test
-	public void testPostNewToDo() throws Exception {
+	public void testPostNewToDo_emptyMap() throws Exception {
 
 		ToDoDTO todo = new ToDoDTO(null, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1));
 		when(todoService.saveToDo(todo)).thenReturn(
@@ -142,6 +144,22 @@ public class ToDoRestControllerTest {
 	}
 
 	@Test
+	public void testPostNewToDo_FullMap() throws Exception {
+
+		HashMap<String, Boolean> actions = new HashMap<String, Boolean>();
+		actions.put("first", false);
+		actions.put("second", true);
+		ToDoDTO todo = new ToDoDTO(null, 1l, actions, LocalDateTime.of(2000, 5, 13, 1, 1, 1));
+		when(todoService.saveToDo(todo))
+				.thenReturn(new ToDoDTO(1l, 1l, actions, LocalDateTime.of(2000, 5, 13, 1, 1, 1)));
+		this.mvc.perform(post("/api/todo/new").content(objMapper.writeValueAsString(todo))
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+				.andDo(MockMvcResultHandlers.print()).andExpect(status().isCreated()).andExpect(jsonPath("$.id", is(1)))
+				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
+				.andExpect(jsonPath("$.idOfUser", is(1))).andExpect(jsonPath("$.toDo", is(actions)));
+	}
+
+	@Test
 	public void testPostNewToDoNullValue() throws Exception {
 		ToDoDTO todo = new ToDoDTO(null, null, null, null);
 		when(todoService.saveToDo(todo)).thenThrow(new IllegalArgumentException("Insert ToDo with null value"));
@@ -151,7 +169,7 @@ public class ToDoRestControllerTest {
 	}
 
 	@Test
-	public void testPutUpdateToDo() throws Exception {
+	public void testPutUpdateToDo_emptyMaps() throws Exception {
 		ToDoDTO todo = new ToDoDTO(null, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1));
 		when(todoService.updateToDo(1l, todo)).thenReturn(
 				new ToDoDTO(1l, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1)));
@@ -162,7 +180,21 @@ public class ToDoRestControllerTest {
 				.andExpect(jsonPath("$.idOfUser", is(1)))
 				.andExpect(jsonPath("$.toDo", is(new HashMap<String, Boolean>())));
 	}
-
+	@Test
+	public void testPutUpdateToDo_populatedMaps() throws Exception {
+		HashMap<String, Boolean> actions = new HashMap<String, Boolean>();
+		actions.put("first", false);
+		actions.put("second", true);
+		ToDoDTO todo = new ToDoDTO(null, 1l, actions, LocalDateTime.of(2000, 5, 13, 1, 1, 1));
+		when(todoService.updateToDo(1l, todo)).thenReturn(
+				new ToDoDTO(1l, 1l, actions, LocalDateTime.of(2000, 5, 13, 1, 1, 1)));
+		this.mvc.perform(put("/api/todo/update/1").content(objMapper.writeValueAsString(todo))
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(1)))
+				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
+				.andExpect(jsonPath("$.idOfUser", is(1)))
+				.andExpect(jsonPath("$.toDo", is(actions)));
+	}
 	@Test
 	public void testPutUpdateToDoWithNullValue() throws Exception {
 		ToDoDTO todo = new ToDoDTO(null, null, null, null);
