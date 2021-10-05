@@ -98,7 +98,7 @@ public class ToDoWebControllerTest {
 		actions.put("first", false);
 		actions.put("second", true);
 		
-		mvc.perform(post("/todo/save").param("id", "1").param("idOfUser", "1").param("actions", "first=false").param("date",
+		mvc.perform(post("/todo/save").param("id", "1").param("idOfUser", "1").param("actions", actions.toString()).param("date",
 				"2005-01-12 00:00:00")).andExpect(view().name("redirect:/"));
 		verify(todoService).updateToDo(1l, new ToDoDTO(1l, 1l, actions, LocalDateTime.of(2005, 1, 12, 0, 0)));
 	}
