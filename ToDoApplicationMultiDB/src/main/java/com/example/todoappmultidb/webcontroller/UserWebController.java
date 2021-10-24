@@ -14,7 +14,7 @@ import com.example.todoappmultidb.service.UserService;
 
 @Controller
 public class UserWebController {
-	private final String MESSAGE = "message";
+	private static final String MESSAGE = "message";
 	@Autowired
 	private UserService userService;
 	

@@ -30,7 +30,7 @@ import com.example.todoappmultidb.service.UserService;
 public class UserWebControllerTest {
 	private final String MESSAGE = "message";
 	@Autowired
-	private MockMvc mvc;
+	private MockMvc mvc; 
 	@MockBean
 	private UserService userService;
 	
@@ -40,8 +40,8 @@ public class UserWebControllerTest {
 	}
 
 	@Test
-	public void test_HomeView_ShowsUsers() throws Exception {
-		List<UserDTO> users = asList(new UserDTO(1L, "test", "test"));
+	public void test_HomeView_ShowsUsers() throws Exception { 
+		List<UserDTO> users = asList(new UserDTO(1L, "test_1", "test_1"),new UserDTO(2L, "test_2", "test_2"));
 
 		when(userService.getAllUser()).thenReturn(users);
 		mvc.perform(get("/")).andExpect(view().name("index")).andExpect(model().attribute("users", users))
@@ -51,7 +51,7 @@ public class UserWebControllerTest {
 	@Test
 	public void test_HomeView_ShowsMessageWhenThereAreNoUsers() throws Exception {
 		when(userService.getAllUser()).thenReturn(Collections.emptyList());
-		mvc.perform(get("/")).andExpect(view().name("index"))
+		mvc.perform(get("/")).andExpect(view().name("index")) 
 				.andExpect(model().attribute("users", Collections.emptyList()))
 				.andExpect(model().attribute(MESSAGE, "No user"));
 	}
@@ -83,7 +83,7 @@ public class UserWebControllerTest {
 		mvc.perform(post("/user/save").param("name", "test name").param("email", "test email"))
 				.andExpect(view().name("redirect:/"));
 		verify(userService).insertNewUser(new UserDTO(null, "test name", "test email"));
-	}
+	} 
 
 	@Test
 	public void test_PostUserWithId_ShouldUpdateExistingUser() throws Exception {

@@ -61,10 +61,16 @@ public class StringToMapConverterTest {
 		assertThat(toMap.convert("{first=Pippo}")).isEqualTo(result);
 	}
 	@Test
-	public void test_convert_OnePair_CurvyBracketBadPosition() {
+	public void test_convert_OnePair_NotStartWithCurvyBracket() {
 		toMap=new StringToMapConverter();
-		assertThat(toMap.convert("fir{st=Pip}po")).isEqualTo(Collections.EMPTY_MAP);
+		assertThat(toMap.convert("first=Pippo}")).isEqualTo(Collections.EMPTY_MAP);
 	}
+	@Test
+	public void test_convert_OnePair_NotEndWithCurvyBracket() {
+		toMap=new StringToMapConverter();
+		assertThat(toMap.convert("{first=Pippo")).isEqualTo(Collections.EMPTY_MAP);
+	}
+	
 	@Test
 	public void test_convert_TwoPair() {
 		toMap=new StringToMapConverter();

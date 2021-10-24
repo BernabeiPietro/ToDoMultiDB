@@ -65,31 +65,20 @@ public class UserWebControllerHtmlUnitTest {
 	public void testEditExistentUser() throws Exception {
 		when(userService.getUserById(1)).thenReturn(new UserDTO(1L, "original name", "original email"));
 		HtmlPage page = this.webClient.getPage("/user/edit/1");
-		// Get the form that we are dealing with
 		final HtmlForm form = page.getFormByName("user_form");
-		// make sure the fields are filled with the correct values
-		// and then change their values
 		form.getInputByValue("original name").setValueAttribute("modified name");
 		form.getInputByValue("original email").setValueAttribute("modified email");
-		// Now submit the form by clicking the button and get back the second page.
 		form.getButtonByName("btn_submit").click();
-		// verify that the modified employee has been updated through the service
-		// using the values entered in the form
 		verify(userService).updateUserById(1L, new UserDTO(1L, "modified name", "modified email"));
 	}
 
 	@Test
 	public void testEditNewUser() throws Exception {
 		HtmlPage page = this.webClient.getPage("/user/new");
-		// Get the form that we are dealing with
 		final HtmlForm form = page.getFormByName("user_form");
-		// retrieve fields by their names and change their values
 		form.getInputByName("name").setValueAttribute("new name");
 		form.getInputByName("email").setValueAttribute("new email");
-		// Now submit the form by clicking the button and get back the second page.
 		form.getButtonByName("btn_submit").click();
-		// verify that the employee has been inserted through the service
-		// using the values entered in the form (note the id must be null)
 		verify(userService).insertNewUser(new UserDTO(null, "new name", "new email"));
 	}
 
