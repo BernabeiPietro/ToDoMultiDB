@@ -285,14 +285,14 @@
 							<name>mysql:5.6</name>
 							<alias>db1</alias>
 							<run>
-								<!-- <wait>
+								<wait>
 									<tcp>
 										<ports>
 											<port>${db.docker.port}</port>
 										</ports>
 									</tcp>
 									<time>100000</time>
-								</wait> -->
+								</wait>
 								<env>
 									<MYSQL_ROOT_PASSWORD>${db.docker.rootpsw}</MYSQL_ROOT_PASSWORD>
 									<MYSQL_DATABASE>${db.docker.db1}</MYSQL_DATABASE>

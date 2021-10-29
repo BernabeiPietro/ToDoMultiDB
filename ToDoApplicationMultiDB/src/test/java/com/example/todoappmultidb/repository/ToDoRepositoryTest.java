@@ -16,12 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.example.todoappmultidb.model.ToDo;
 import com.example.todoappmultidb.model.User;
 
 
+@ActiveProfiles("repository")
 @DataJpaTest
 @RunWith(SpringRunner.class)
 public class ToDoRepositoryTest {
