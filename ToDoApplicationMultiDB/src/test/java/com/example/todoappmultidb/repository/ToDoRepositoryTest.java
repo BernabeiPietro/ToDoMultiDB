@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +45,7 @@ public class ToDoRepositoryTest {
 		m1.put("todo1", false);
 		Map<String, Boolean> m2 = new HashMap<String, Boolean>();
 		m2.put("todo2", true);
-		u = new User(null, "nome1", "email1");
+		u = new User(null,new ArrayList<>(), "nome1", "email1");
 		todo1 = new ToDo(null, u, m1, LocalDateTime.of(2012, Month.DECEMBER, 12, 0, 0));
 		todo2 = new ToDo(null, u, m2, LocalDateTime.of(2014, Month.NOVEMBER, 15, 0, 0));
 		u.getToDo().addAll(asList(todo1,todo2));
@@ -74,7 +75,7 @@ public class ToDoRepositoryTest {
 
 	@Test
 	public void test_findToDoWithUserId_nothing() {
-		User user=entityManager.persistAndFlush(new User(null, "name1", "name2"));
+		User user=entityManager.persistAndFlush(new User(null, new ArrayList<>(),"name1", "name2"));
 		assertThat(toDoRepository.findToDoByUserId(user)).isEmpty();
 	}
 
@@ -106,8 +107,8 @@ public class ToDoRepositoryTest {
 	public void test_updateUserAndTodo() {
 		Map<String, Boolean> mapToUpdate = new HashMap<String, Boolean>();
 		mapToUpdate.put("todo1", false);
-		User userToUpdate = entityManager.persistAndFlush(new User(null,"nome1","email1"));
-		User userUpdated = entityManager.persistAndFlush(new User(null,null,null));
+		User userToUpdate = entityManager.persistAndFlush(new User(null,new ArrayList<>(),"nome1","email1"));
+		User userUpdated = entityManager.persistAndFlush(new User(null,null,null,null));
 		ToDo result = entityManager.persistFlushFind(
 				new ToDo(null, userToUpdate, mapToUpdate, LocalDateTime.of(2012, Month.DECEMBER, 12, 0, 0)));
 		result.addToDoAction("todo2", false);
@@ -122,10 +123,10 @@ public class ToDoRepositoryTest {
 	public void test_updateLimitedInformationOfUser() {
 		Map<String, Boolean> mapToUpdate = new HashMap<String, Boolean>();
 		mapToUpdate.put("todo1", false);
-		User userToUpdate = entityManager.persistAndFlush(new User(null,"nome1","email1"));
+		User userToUpdate = entityManager.persistAndFlush(new User(null,new ArrayList<>(),"nome1","email1"));
 		ToDo result = entityManager.persistFlushFind(
 				new ToDo(null, userToUpdate, mapToUpdate, LocalDateTime.of(2012, Month.DECEMBER, 12, 0, 0)));
-		User userUpdated = new User(userToUpdate.getId(), null, null);
+		User userUpdated = new User(userToUpdate.getId(),null, null, null);
 		result.setIdOfUser(userUpdated);
 		ToDo saved = toDoRepository.save(result);
 		assertThat(saved.getId()).isEqualTo(result.getId());
@@ -138,14 +139,14 @@ public class ToDoRepositoryTest {
 		User user=entityManager.persistAndFlush(u);
 		ToDo result1 = entityManager.persistAndFlush(todo1);
 		ToDo result2 = entityManager.persistAndFlush(todo2);
-		assertThat(toDoRepository.findToDoByUserId(new User(user.getId(), null, null))).isEqualTo(asList(result1,result2));
+		assertThat(toDoRepository.findToDoByUserId(new User(user.getId(),null, null, null))).isEqualTo(asList(result1,result2));
 	}
 	@Test
 	public void test_retrieveUserListOfToDo_UserNotExist() {
 		User user=entityManager.persistAndFlush(u);
 		ToDo result1 = entityManager.persistAndFlush(todo1);
 		ToDo result2 = entityManager.persistAndFlush(todo2);
-		User u2 = new User(user.getId()+1, null, null);
+		User u2 = new User(user.getId()+1,null, null, null);
 		assertThat(entityManager.find(User.class, u2.getId())).isEqualTo(null);
 		assertThat(toDoRepository.findToDoByUserId(u2)).isEqualTo(Collections.emptyList());
 	}

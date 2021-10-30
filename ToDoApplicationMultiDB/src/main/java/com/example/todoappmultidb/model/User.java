@@ -17,8 +17,8 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	 //idOfUser is the name of field of ToDo class, not the mapped name of DB
-	 
+	// idOfUser is the name of field of ToDo class, not the mapped name of DB
+
 	@OneToMany(mappedBy = "idOfUser")
 	private List<ToDo> todo;
 
@@ -30,12 +30,12 @@ public class User {
 
 	private String email;
 
-	public User(Long id, String name, String email) {
+	public User(Long id, List<ToDo> todo, String name, String email) {
 
 		this.id = id;
 		this.name = name;
 		this.email = email;
-		this.todo = new ArrayList<>();
+		this.todo = todo;
 	}
 
 	public Long getId() {

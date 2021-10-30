@@ -20,7 +20,8 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<!-- For SonarQube -->
 		<sonar.coverage.jacoco.xmlReportPaths>
 			${project.reporting.outputDirectory}/jacoco/jacoco.xml
@@ -44,7 +45,7 @@
 		<sonar.tests>
 			${project.build.testSourceDirectory},
 			${basedir}/src/it/java,
-		<!-- 	${basedir}/src/e2e/java -->
+			<!-- ${basedir}/src/e2e/java -->
 		</sonar.tests>
 		<!-- Exclude non covered files -->
 		<sonar.coverage.exclusions>
