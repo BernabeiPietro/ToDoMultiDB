@@ -77,9 +77,8 @@ public class UserRepositoryTest {
 		result.setName("changed");
 		result.addToDo(new ToDo(null, result, new HashMap<>(), LocalDateTime.of(2005, 2, 1, 0, 0)));
 		User changed = userRepository.save(result);
-		assertThat(changed).hasNoNullFieldsOrProperties();
-		assertThat(changed).hasFieldOrPropertyWithValue("name", "changed");
-		assertThat(changed).hasFieldOrPropertyWithValue("email", "changed");
+		assertThat(changed).hasNoNullFieldsOrProperties().hasFieldOrPropertyWithValue("name", "changed")
+				.hasFieldOrPropertyWithValue("email", "changed");
 		assertThat(changed.getToDo()).containsAll(result.getToDo());
 	}
 
@@ -93,9 +92,8 @@ public class UserRepositoryTest {
 				.persistFlushFind(new ToDo(null, u1, new HashMap<>(), LocalDateTime.of(2003, 1, 1, 0, 0))));
 		entityManager.persistFlushFind(u2);
 		User result = userRepository.findById(persisted.getId()).get();
-		assertThat(result).hasNoNullFieldsOrProperties();
-		assertThat(result).hasFieldOrPropertyWithValue("name", persisted.getName());
-		assertThat(result).hasFieldOrPropertyWithValue("email", persisted.getEmail());
+		assertThat(result).hasNoNullFieldsOrProperties().hasFieldOrPropertyWithValue("name", persisted.getName())
+				.hasFieldOrPropertyWithValue("email", persisted.getEmail());
 		assertThat(result.getToDo()).containsAll(persisted.getToDo());
 	}
 }

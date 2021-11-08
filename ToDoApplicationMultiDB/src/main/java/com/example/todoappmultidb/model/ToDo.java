@@ -15,6 +15,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 @Entity
 public class ToDo {
 
@@ -31,6 +34,7 @@ public class ToDo {
 			@JoinColumn(name = "todo_map_id", referencedColumnName = "id") })
 	@MapKeyColumn(name = "todo_action") /* where keys are stored */
 	@Column(name = "doit") // where value are stored
+    @Fetch(value = FetchMode.JOIN)
 	private Map<String, Boolean> actionList;
 	
 	@Column(name = "local_date_time", columnDefinition = "TIMESTAMP")
@@ -86,7 +90,7 @@ public class ToDo {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(date, id, idOfUser, actionList);
+		return Objects.hash(actionList, date, id, idOfUser);
 	}
 
 	@Override
@@ -98,8 +102,10 @@ public class ToDo {
 		if (getClass() != obj.getClass())
 			return false;
 		ToDo other = (ToDo) obj;
-		return Objects.equals(date, other.date) && Objects.equals(id, other.id)
-				&& Objects.equals(idOfUser, other.idOfUser) && Objects.equals(actionList, other.actionList);
+		return Objects.equals(actionList, other.actionList) 
+				&& Objects.equals(date, other.date)
+				&& Objects.equals(id, other.id) 
+				&& Objects.equals(idOfUser.getId(), other.idOfUser.getId());
 	}
 
 }

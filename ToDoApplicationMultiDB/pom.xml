@@ -63,8 +63,6 @@
 		<db.docker.psw>password</db.docker.psw>
 		<JDBC-URL1>jdbc:mysql://${db.docker.dns}:${db.docker.port1}/${db.docker.db1}?createDatabaseIfNotExist=true</JDBC-URL1>
 		<JDBC-URL2>jdbc:mysql://${db.docker.dns}:${db.docker.port2}/${db.docker.db2}?createDatabaseIfNotExist=true</JDBC-URL2>
-
-
 	</properties>
 
 	<dependencies>
@@ -278,6 +276,7 @@
 			<plugin>
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.34.1</version>
 				<configuration>
 					<showLogs>true</showLogs>
 					<verbose>build</verbose>

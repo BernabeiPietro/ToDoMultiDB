@@ -5,10 +5,14 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 public class User {
@@ -19,7 +23,9 @@ public class User {
 
 	// idOfUser is the name of field of ToDo class, not the mapped name of DB
 
+	
 	@OneToMany(mappedBy = "idOfUser")
+    @Fetch(value = FetchMode.JOIN)
 	private List<ToDo> todo;
 
 	public User() {
