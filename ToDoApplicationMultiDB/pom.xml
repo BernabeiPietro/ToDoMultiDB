@@ -53,6 +53,8 @@
 			**/*Application.*,
 			**/model/*
 		</sonar.coverage.exclusions>
+		<sonar.projectKey>BernabeiPietro_todomultidb</sonar.projectKey>
+		
 		<db.docker.dns>localhost</db.docker.dns>
 		<db.docker.port1>28011</db.docker.port1>
 		<db.docker.port2>28012</db.docker.port2>
