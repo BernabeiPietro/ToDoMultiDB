@@ -35,6 +35,7 @@
 			pom.xml,
 			${project.build.sourceDirectory},
 			${basedir}/src/main/resources
+			${basedir}/src/test/resources
 		</sonar.sources>
 		<!-- Manually specify sonar.tests since, if we run sonar:sonar in a separate 
 			build, SonarQube can only detect the standard test source folder and not 
