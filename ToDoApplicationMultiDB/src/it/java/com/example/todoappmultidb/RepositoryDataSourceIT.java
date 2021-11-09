@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -50,14 +51,17 @@ public class RepositoryDataSourceIT {
 		toSaveUser.addToDo(toSaveTodo);
 		User savedUser = userRepository.save(toSaveUser);
 		ToDo savedTodo = todoRepository.save(toSaveTodo);
-		Optional<User> findById = userRepository.findById(savedUser.getId());
-		assertTrue(findById.isPresent());
-		assertThat(findById.get()).hasFieldOrPropertyWithValue("id", savedUser.getId())
+		Optional<User> findByIdUser = userRepository.findById(savedUser.getId());
+		 List<ToDo> findToDoByUserId = todoRepository.findToDoByUserId(savedUser);
+		assertTrue(findByIdUser.isPresent());
+		assertThat(findToDoByUserId).isNotEmpty();
+		assertThat(findByIdUser.get()).hasFieldOrPropertyWithValue("id", savedUser.getId())
 				.hasFieldOrPropertyWithValue("email", savedUser.getEmail())
 				.hasFieldOrPropertyWithValue("name", savedUser.getName());
-		assertThat(findById.get().getToDo()).contains(savedTodo);
+		assertThat(findByIdUser.get().getToDo()).containsAll(findToDoByUserId);
 		DataSourceContextHolder.set(DataSourceEnum.DATASOURCE_TWO);
 		assertThat(userRepository.findById(savedUser.getId())).isEmpty();
+		assertThat(todoRepository.findToDoByUserId(savedUser)).isEmpty();
 	}
 
 	@Test
@@ -69,14 +73,17 @@ public class RepositoryDataSourceIT {
 		toSaveUser.addToDo(toSaveTodo);
 		User savedUser = userRepository.save(toSaveUser);
 		ToDo savedTodo = todoRepository.save(toSaveTodo);
-		Optional<User> findById = userRepository.findById(savedUser.getId());
-		assertTrue(findById.isPresent());
-		assertThat(findById.get()).hasFieldOrPropertyWithValue("id", savedUser.getId())
+		Optional<User> findByIdUser = userRepository.findById(savedUser.getId());
+		Optional<ToDo> findByIdTodo = todoRepository.findById(savedTodo.getId());
+		assertTrue(findByIdUser.isPresent());
+		assertTrue(findByIdTodo.isPresent());
+		assertThat(findByIdUser.get()).hasFieldOrPropertyWithValue("id", savedUser.getId())
 				.hasFieldOrPropertyWithValue("email", savedUser.getEmail())
 				.hasFieldOrPropertyWithValue("name", savedUser.getName());
-		assertThat(findById.get().getToDo()).contains(savedTodo);
+		assertThat(findByIdUser.get().getToDo()).contains(findByIdTodo.get());
 		DataSourceContextHolder.set(DataSourceEnum.DATASOURCE_ONE);
 		assertThat(userRepository.findById(savedUser.getId())).isEmpty();
+		assertThat(todoRepository.findById(savedTodo.getId())).isEmpty();
 	}
 
 }
