@@ -34,8 +34,6 @@
 		<sonar.sources>
 			pom.xml,
 			${project.build.sourceDirectory},
-
-			${basedir}/src/test/resources,
 			${basedir}/src/main/resources
 
 		</sonar.sources>
