@@ -42,9 +42,9 @@
 			and src/e2e/java). This way, SonarQube will keep track also of integration 
 			and e2e tests. -->
 		<sonar.tests>
-			${project.build.testSourceDirectory},
+<!-- 			${project.build.testSourceDirectory}, -->
 			${basedir}/src/it/java,
-			${basedir}/src/e2e/java
+<!-- 			${basedir}/src/e2e/java -->
 		</sonar.tests>
 		<!-- Exclude non covered files -->
 		<sonar.coverage.exclusions>
