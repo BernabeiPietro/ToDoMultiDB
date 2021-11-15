@@ -33,28 +33,29 @@
 			${project.build.directory}/failsafe-reports
 		</sonar.junit.reportPaths>
 		<!-- Also scans HTML files -->
-	<!-- 	<sonar.sources>
+		<sonar.sources>
 			pom.xml,
 			${project.build.sourceDirectory},
 			${basedir}/src/main/resources
 		</sonar.sources>
-		Manually specify sonar.tests since, if we run sonar:sonar in a separate 
+		<!-- Manually specify sonar.tests since, if we run sonar:sonar in a separate 
 			build, SonarQube can only detect the standard test source folder and not 
 			the additional ones configured by build-helper-maven-plugin (src/it/java 
 			and src/e2e/java). This way, SonarQube will keep track also of integration 
-			and e2e tests.
+			and e2e tests. -->
 		<sonar.tests>
 			${project.build.testSourceDirectory},
 			${basedir}/src/it/java,
 			${basedir}/src/e2e/java
-		</sonar.tests> -->
-		<!-- Exclude non covered files -->
+		</sonar.tests>
+
+
 		<sonar.coverage.exclusions>
 			**/*Application.*,
 			**/model/*
 		</sonar.coverage.exclusions>
 		<sonar.projectKey>BernabeiPietro_todomultidb</sonar.projectKey>
-		
+
 		<db.docker.dns>localhost</db.docker.dns>
 		<db.docker.port1>28011</db.docker.port1>
 		<db.docker.port2>28012</db.docker.port2>
