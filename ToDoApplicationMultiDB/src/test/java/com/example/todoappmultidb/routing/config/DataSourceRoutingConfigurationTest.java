@@ -49,10 +49,8 @@ public class DataSourceRoutingConfigurationTest {
 		when(dataSourceTwo.getDataSource()).thenReturn(dataSource2);
 		config.dataSource();
 		verify(dataRouter).setTargetDataSources(mapCaptor.capture());
-		assertThat(mapCaptor.getValue()).containsKey(DataSourceEnum.DATASOURCE_ONE);
-		assertThat(mapCaptor.getValue()).containsKey(DataSourceEnum.DATASOURCE_TWO);
-		assertThat(mapCaptor.getValue().get(DataSourceEnum.DATASOURCE_ONE)).isEqualTo(dataSource1);
-		assertThat(mapCaptor.getValue().get(DataSourceEnum.DATASOURCE_TWO)).isEqualTo(dataSource2);
+		assertThat(mapCaptor.getValue()).containsEntry(DataSourceEnum.DATASOURCE_ONE, dataSource1);
+		assertThat(mapCaptor.getValue()).containsEntry(DataSourceEnum.DATASOURCE_TWO, dataSource2);
 	}
 
 	@Test

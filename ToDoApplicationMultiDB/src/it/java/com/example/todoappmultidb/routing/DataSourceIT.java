@@ -22,7 +22,7 @@ import com.example.todoappmultidb.routing.config.DataSourceRoutingConfiguration;
 @ContextConfiguration(classes=DataSourceRoutingConfiguration.class)
 @EnableConfigurationProperties
 @PropertySource("classpath:application.properties")
-public class DataSourceIt {
+public class DataSourceIT {
 
 	@Autowired
 	private DataSource data;

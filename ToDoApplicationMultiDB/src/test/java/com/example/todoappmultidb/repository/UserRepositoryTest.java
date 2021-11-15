@@ -50,20 +50,16 @@ public class UserRepositoryTest {
 		User u1 = new User(null, new ArrayList<>(), "u1", "test");
 		u1.addToDo(new ToDo());
 		User result = userRepository.save(u1);
-		assertThat(result).hasNoNullFieldsOrProperties();
-		assertThat(result).hasFieldOrPropertyWithValue("name", u1.getName());
-		assertThat(result).hasFieldOrPropertyWithValue("email", u1.getEmail());
-		assertThat(result).hasFieldOrPropertyWithValue("toDo", u1.getToDo());
+		assertThat(result).hasNoNullFieldsOrProperties().hasFieldOrPropertyWithValue("name", u1.getName())
+				.hasFieldOrPropertyWithValue("email", u1.getEmail()).hasFieldOrPropertyWithValue("toDo", u1.getToDo());
 	}
 
 	@Test
 	public void test_save_withoutToDo() {
 		User u1 = new User(null, new ArrayList<>(), "u1", "test");
 		User result = userRepository.save(u1);
-		assertThat(result).hasNoNullFieldsOrProperties();
-		assertThat(result).hasFieldOrPropertyWithValue("name", u1.getName());
-		assertThat(result).hasFieldOrPropertyWithValue("email", u1.getEmail());
-		assertThat(result).hasFieldOrPropertyWithValue("toDo", u1.getToDo());
+		assertThat(result).hasNoNullFieldsOrProperties().hasFieldOrPropertyWithValue("name", u1.getName())
+				.hasFieldOrPropertyWithValue("email", u1.getEmail()).hasFieldOrPropertyWithValue("toDo", u1.getToDo());
 	}
 
 	@Test
