@@ -16,3 +16,4 @@ public interface ToDoRepository extends JpaRepository<ToDo,Long> {
 	@Query("Select todo from ToDo todo where todo.idOfUser = :id")
 	List<ToDo> findToDoByUserId(@Param("id") User u);
 }
+

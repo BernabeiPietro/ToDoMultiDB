@@ -1,6 +1,10 @@
 package com.example.todoappmultidb.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Repository;
 
 import com.example.todoappmultidb.model.User;
@@ -9,3 +13,4 @@ import com.example.todoappmultidb.model.User;
 public interface UserRepository extends JpaRepository<User,Long> {
 
 }
+

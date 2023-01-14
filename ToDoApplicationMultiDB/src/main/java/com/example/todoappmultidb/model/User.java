@@ -95,3 +95,4 @@ public class User {
 				&& Objects.equals(todo, other.todo);
 	}
 }
+

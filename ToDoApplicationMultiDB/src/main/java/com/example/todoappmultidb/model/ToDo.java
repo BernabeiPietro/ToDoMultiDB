@@ -36,7 +36,6 @@ public class ToDo {
 	@Column(name = "doit") // where value are stored
     @Fetch(value = FetchMode.JOIN)
 	private Map<String, Boolean> actionList;
-	
 	@Column(name = "local_date_time", columnDefinition = "TIMESTAMP")
 	private LocalDateTime date;
 	
@@ -58,13 +57,14 @@ public class ToDo {
 
 	void setToDo(Map<String, Boolean> toDo) {
 		this.actionList = toDo;
+
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	void setId(Long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -78,6 +78,7 @@ public class ToDo {
 
 	public void addToDoAction(String action, Boolean doIt) {
 		this.actionList.put(action, doIt);
+
 	}
 
 	public User getIdOfUser() {
@@ -91,6 +92,7 @@ public class ToDo {
 	@Override
 	public int hashCode() {
 		return Objects.hash(actionList, date, id, idOfUser);
+
 	}
 
 	@Override
@@ -106,6 +108,7 @@ public class ToDo {
 				&& Objects.equals(date, other.date)
 				&& Objects.equals(id, other.id) 
 				&& Objects.equals(idOfUser.getId(), other.idOfUser.getId());
+
 	}
 
 }
