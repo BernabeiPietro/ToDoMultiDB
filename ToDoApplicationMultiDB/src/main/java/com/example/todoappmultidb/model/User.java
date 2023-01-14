@@ -1,11 +1,9 @@
 package com.example.todoappmultidb.model;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,9 +21,8 @@ public class User {
 
 	// idOfUser is the name of field of ToDo class, not the mapped name of DB
 
-	
 	@OneToMany(mappedBy = "idOfUser")
-    @Fetch(value = FetchMode.JOIN)
+	@Fetch(value = FetchMode.JOIN)
 	private List<ToDo> todo;
 
 	public User() {
