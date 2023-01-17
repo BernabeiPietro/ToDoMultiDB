@@ -2,6 +2,7 @@ package com.example.todoappmultidb.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +13,7 @@ import com.example.todoappmultidb.repository.ToDoRepository;
 @Service
 public class ToDoService {
 
+	@Autowired
 	ToDoRepository toDoRepository;
 
 	public List<ToDo> findAll() {

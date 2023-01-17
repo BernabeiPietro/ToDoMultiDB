@@ -4,12 +4,16 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
+
+import javax.sql.DataSource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,10 +21,13 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.example.todoappmultidb.model.User;
 import com.example.todoappmultidb.repository.UserRepository;
+import com.example.todoappmultidb.routing.DataSourceContextHolder;
+import com.example.todoappmultidb.routing.config.DataSourceEnum;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
@@ -30,6 +37,8 @@ public class UserServiceTest {
 
 	@InjectMocks
 	private UserService userService;
+	@Spy
+	private DataSourceContextHolder dataContext;
 
 	@Test
 	public void test_getAllUser_empty() {
@@ -44,7 +53,7 @@ public class UserServiceTest {
 		when(userRepository.findAll()).thenReturn(asList(user1, user2));
 		assertThat(userService.getAllUser()).containsExactly(user1, user2);
 	}
-
+	
 	@Test
 	public void test_getUserById_found() {
 		User user = new User(1L, new ArrayList<>(), "first", "email1");
@@ -79,6 +88,21 @@ public class UserServiceTest {
 		InOrder inOrder=inOrder(userToUpdate,userRepository);
 		inOrder.verify(userToUpdate).setId(1L);
 		inOrder.verify(userRepository).save(userToUpdate);
-
+	}
+	@Test
+	public void test_setContext_one()
+	{
+		assertThat(userService.setContext(1)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
+	}
+	@Test
+	public void test_setContext_two()
+	{
+		assertThat(userService.setContext(2)).isEqualTo(DataSourceEnum.DATASOURCE_TWO);
+	}
+	@Test
+	public void test_setContext_callDataContext()
+	{
+		userService.setContext(1);
+		assertThat
 	}
 }

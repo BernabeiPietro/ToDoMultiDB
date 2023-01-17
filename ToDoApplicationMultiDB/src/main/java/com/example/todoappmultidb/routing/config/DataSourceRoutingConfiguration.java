@@ -13,12 +13,14 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.example.todoappmultidb.routing.DataSourceRouter;
 
 @Configuration
 @Profile("!repository")
-@ComponentScan("com.example.todoappmultidb.routing")
+@ComponentScan("com.example.todoappmultidb")
+@EnableTransactionManagement
 public class DataSourceRoutingConfiguration {
 
 	private static final String SCHEMA_MYSQL_SQL = "schema-mysql.sql";
