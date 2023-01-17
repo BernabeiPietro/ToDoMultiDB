@@ -29,19 +29,20 @@ public class RepositoryDataSourceIT {
 	UserRepository userRepository;
 	@Autowired
 	ToDoRepository todoRepository;
-
+	@Autowired
+	DataSourceContextHolder dataContext;
 	@Before
 	public void setup() {
-		DataSourceContextHolder.set(DataSourceEnum.DATASOURCE_ONE);
+		dataContext.set(DataSourceEnum.DATASOURCE_ONE);
 		userRepository.deleteAll();
-		DataSourceContextHolder.set(DataSourceEnum.DATASOURCE_TWO);
+		dataContext.set(DataSourceEnum.DATASOURCE_TWO);
 		userRepository.deleteAll();
 
 	}
 
 	@Test
 	public void saveUserAndToDoFirstDB_test() {
-		DataSourceContextHolder.set(DataSourceEnum.DATASOURCE_ONE);
+		dataContext.set(DataSourceEnum.DATASOURCE_ONE);
 		User toSaveUser = new User(null, new ArrayList<>(), "db1", "db1");
 		ToDo toSaveTodo = new ToDo(null, toSaveUser, new HashMap<>(), LocalDateTime.of(2005, 1, 1, 0, 0));
 		toSaveTodo.addToDoAction("prova", false);
@@ -56,14 +57,14 @@ public class RepositoryDataSourceIT {
 				.hasFieldOrPropertyWithValue("email", savedUser.getEmail())
 				.hasFieldOrPropertyWithValue("name", savedUser.getName());
 		assertThat(findByIdUser.get().getToDo()).containsAll(findToDoByUserId);
-		DataSourceContextHolder.set(DataSourceEnum.DATASOURCE_TWO);
+		dataContext.set(DataSourceEnum.DATASOURCE_TWO);
 		assertThat(userRepository.findById(savedUser.getId())).isEmpty();
 		assertThat(todoRepository.findToDoByUserId(savedUser)).isEmpty();
 	}
 
 	@Test
 	public void saveUserAndToDoSecondDB_test() {
-		DataSourceContextHolder.set(DataSourceEnum.DATASOURCE_TWO);
+		dataContext.set(DataSourceEnum.DATASOURCE_TWO);
 		User toSaveUser = new User(null, new ArrayList<>(), "db1", "db1");
 		ToDo toSaveTodo = new ToDo(null, toSaveUser, new HashMap<>(), LocalDateTime.of(2005, 1, 1, 0, 0));
 		toSaveTodo.addToDoAction("prova", false);
@@ -78,7 +79,7 @@ public class RepositoryDataSourceIT {
 				.hasFieldOrPropertyWithValue("email", savedUser.getEmail())
 				.hasFieldOrPropertyWithValue("name", savedUser.getName());
 		assertThat(findByIdUser.get().getToDo()).contains(findByIdTodo.get());
-		DataSourceContextHolder.set(DataSourceEnum.DATASOURCE_ONE);
+		dataContext.set(DataSourceEnum.DATASOURCE_ONE);
 		assertThat(userRepository.findById(savedUser.getId())).isEmpty();
 		assertThat(todoRepository.findById(savedTodo.getId())).isEmpty();
 	}
