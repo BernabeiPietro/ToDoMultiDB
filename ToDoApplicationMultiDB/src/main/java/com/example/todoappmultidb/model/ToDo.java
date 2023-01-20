@@ -96,22 +96,27 @@ public class ToDo {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(actionList, date, id, idOfUser);
+		return Objects.hash(actionList, date, id, idOfUser.getId());
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (!(obj instanceof ToDo)) {
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+		}
 		ToDo other = (ToDo) obj;
-		return Objects.equals(actionList, other.actionList) 
-				&& Objects.equals(date, other.date)
-				&& Objects.equals(id, other.id) 
-				&& Objects.equals(idOfUser.getId(), other.idOfUser.getId());
+		return Objects.equals(actionList, other.actionList) && Objects.equals(date, other.date)
+				&& Objects.equals(id, other.id) && Objects.equals(idOfUser.getId(), other.idOfUser.getId());
 	}
+
+	@Override
+	public String toString() {
+		return "ToDo [id=" + id + ", actionList=" + actionList + ", date=" + date + ", idOfUser=" + idOfUser.getId() + "]";
+	}
+
+
 
 }

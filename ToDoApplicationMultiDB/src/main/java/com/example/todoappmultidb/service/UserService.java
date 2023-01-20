@@ -19,6 +19,9 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 
+	@Autowired
+	private DataSourceContextHolder dataContext;
+	
 	public List<User> getAllUser() {
 		return userRepository.findAll();
 	}
@@ -41,8 +44,8 @@ public class UserService {
 	}
 
 	public DataSourceEnum setContext(int Ctx) {
-		// TODO Auto-generated method stub
-		return DataSourceEnum.values()[Ctx-1];
+		dataContext.set(DataSourceEnum.values()[Ctx-1]);
+		return dataContext.getDataSource();
 	}
 
 }

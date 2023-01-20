@@ -103,6 +103,6 @@ public class UserServiceTest {
 	public void test_setContext_callDataContext()
 	{
 		userService.setContext(1);
-		assertThat
+		verify(dataContext).set(any(DataSourceEnum.class));
 	}
 }

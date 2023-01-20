@@ -90,7 +90,11 @@ public class User {
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		return Objects.equals(email, other.email) && Objects.equals(id, other.id) && Objects.equals(name, other.name)
-				&& Objects.equals(todo, other.todo);
+		return Objects.equals(email, other.email) && Objects.equals(id, other.id) && Objects.equals(name, other.name);
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", todo=" + todo + ", name=" + name + ", email=" + email + "]";
 	}
 }
