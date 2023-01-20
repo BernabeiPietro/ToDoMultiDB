@@ -2,9 +2,12 @@ package com.example.todoappmultidb.service;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -23,6 +26,8 @@ import com.example.todoappmultidb.model.ToDo;
 import com.example.todoappmultidb.model.User;
 import com.example.todoappmultidb.repository.ToDoRepository;
 
+import javassist.NotFoundException;
+
 
 @RunWith(MockitoJUnitRunner.class)
 public class ToDoServiceTest {
@@ -35,11 +40,12 @@ public class ToDoServiceTest {
 		@Test
 		public void test_findAll_empty() {
 			when(toDoRepository.findAll()).thenReturn(Collections.emptyList());
-			assertThat(toDoService.findAll()).isEmpty();
+			Exception thrown= assertThrows(NotFoundException.class,() -> toDoService.findAll());
+			assertThat(thrown.getMessage()).isEqualTo("Not found any ToDo");
 		}
 
 		@Test
-		public void test_findAll() {
+		public void test_findAll() throws NotFoundException {
 		
 			ToDo todo1 = new ToDo(1L, new User(), new HashMap<String, Boolean>(), LocalDateTime.of(2012,3,5, 0, 0));
 			ToDo todo2 = new ToDo(2L, new User(), new HashMap<String, Boolean>(), LocalDateTime.of(2013,6,7, 0, 0));
@@ -48,7 +54,7 @@ public class ToDoServiceTest {
 		}
 
 		@Test
-		public void test_findById_found() {
+		public void test_findById_found() throws NotFoundException {
 			ToDo todo1 = new ToDo(1L, new User(), new HashMap<String, Boolean>(),  LocalDateTime.of(2012,3,5, 0, 0));
 			when(toDoRepository.findById(1L)).thenReturn(Optional.of(todo1));
 			assertThat(toDoService.findById(1L)).isEqualTo(todo1);
@@ -57,7 +63,8 @@ public class ToDoServiceTest {
 		@Test
 		public void test_findById_notfound() {
 			when(toDoRepository.findById(1L)).thenReturn(Optional.empty());
-			assertThat(toDoService.findById(1L)).isNull();
+			Exception thrown= assertThrows(NotFoundException.class,() -> toDoService.findById(1L));
+			assertThat(thrown.getMessage()).isEqualTo("Not found any ToDo");
 		}
 
 		@Test
@@ -72,6 +79,17 @@ public class ToDoServiceTest {
 			inOrder.verify(toDoRepository).save(toSave);
 		}
 
+		@Test
+		public void test_save_nullvalue() {
+			assertThrows(NullPointerException.class, ()->toDoService.save(new ToDo(null,null,null,null)));
+			verify(toDoRepository,never()).save(any(ToDo.class));
+			
+		}
+		@Test
+		public void test_updateById_nullvalue() {
+			assertThrows(NullPointerException.class, ()->toDoService.updateById(1L,new ToDo(null,null,null,null)));
+			verify(toDoRepository,never()).save(any(ToDo.class));	
+		}
 		@Test
 		public void test_updateById() {
 			User u=new User();

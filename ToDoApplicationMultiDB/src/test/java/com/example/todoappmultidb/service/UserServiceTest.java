@@ -2,6 +2,7 @@ package com.example.todoappmultidb.service;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -29,6 +30,8 @@ import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.routing.DataSourceContextHolder;
 import com.example.todoappmultidb.routing.config.DataSourceEnum;
 
+import javassist.NotFoundException;
+
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
 
@@ -43,11 +46,13 @@ public class UserServiceTest {
 	@Test
 	public void test_getAllUser_empty() {
 		when(userRepository.findAll()).thenReturn(Collections.emptyList());
-		assertThat(userService.getAllUser()).isEmpty();
+		Exception thrown= assertThrows(NotFoundException.class,() -> userService.getAllUser());
+		assertThat(thrown.getMessage()).isEqualTo("Not found any User");
+		
 	}
 
 	@Test
-	public void test_getAllUser() {
+	public void test_getAllUser() throws NotFoundException {
 		User user1 = new User(1L, new ArrayList<>(), "first", "email1");
 		User user2 = new User(2L, new ArrayList<>(), "second", "email2");
 		when(userRepository.findAll()).thenReturn(asList(user1, user2));
@@ -55,7 +60,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void test_getUserById_found() {
+	public void test_getUserById_found() throws NotFoundException {
 		User user = new User(1L, new ArrayList<>(), "first", "email1");
 		when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 		assertThat(userService.getUserById(1L)).isSameAs(user);
@@ -63,7 +68,8 @@ public class UserServiceTest {
 	@Test
 	public void test_getUserById_notfound() {
 		when(userRepository.findById(1L)).thenReturn(Optional.empty());
-		assertThat(userService.getUserById(1L)).isNull();
+		Exception thrown= assertThrows(NotFoundException.class,() -> userService.getUserById(1L));
+		assertThat(thrown.getMessage()).isEqualTo("Not found any User");
 	}
 	
 	@Test

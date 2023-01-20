@@ -12,6 +12,8 @@ import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.routing.DataSourceContextHolder;
 import com.example.todoappmultidb.routing.config.DataSourceEnum;
 
+import javassist.NotFoundException;
+
 @Transactional(readOnly = true)
 @Service
 public class UserService {
@@ -22,12 +24,16 @@ public class UserService {
 	@Autowired
 	private DataSourceContextHolder dataContext;
 	
-	public List<User> getAllUser() {
-		return userRepository.findAll();
+	public List<User> getAllUser() throws NotFoundException {
+		
+		List<User> userFound = userRepository.findAll();
+		if(userFound.isEmpty())
+			throw new NotFoundException("Not found any User");
+		return userFound;
 	}
 
-	public User getUserById(long id) {
-		return userRepository.findById(id).orElse(null);
+	public User getUserById(long id) throws NotFoundException {
+		return userRepository.findById(id).orElseThrow(()->new NotFoundException("Not found any User"));
 	}
 
 	@Transactional(readOnly = false)
