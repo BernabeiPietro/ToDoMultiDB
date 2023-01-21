@@ -5,6 +5,7 @@ import java.util.function.IntPredicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.todoappmultidb.model.User;
@@ -24,6 +25,7 @@ public class UserService {
 	@Autowired
 	private DataSourceContextHolder dataContext;
 
+	@Transactional(rollbackFor=NotFoundException.class)
 	public List<User> getAllUser() throws NotFoundException {
 
 		List<User> userFound = userRepository.findAll();
@@ -32,18 +34,19 @@ public class UserService {
 		return userFound;
 	}
 
+	@Transactional(rollbackFor=NotFoundException.class)
 	public User getUserById(long id) throws NotFoundException {
 		return userRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found any User"));
 	}
 
-	@Transactional(readOnly = false)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = IllegalArgumentException.class)
 	public User insertNewUser(User userToSave) {
 		userToSave.setId(null);
 		verifyNullValue(userToSave);
 		return userRepository.save(userToSave);
 	}
 
-	@Transactional(readOnly = false)
+	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW, rollbackFor = IllegalArgumentException.class)
 	public User updateUserById(long id, User userToUpdate) {
 		verifyNullValue(userToUpdate);
 		userToUpdate.setId(id);

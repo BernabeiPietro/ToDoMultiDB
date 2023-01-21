@@ -1,6 +1,7 @@
 package com.example.todoappmultidb.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -50,13 +51,13 @@ public class ServiceRepositoryIT {
 	private ToDoRepository todoRepository;
 	@Autowired
 	private UserRepository userRepository;
-	@Autowired
-	DataSourceContextHolder dataContext;
 
+	
+	
 	@Test
 	public void findToDoUserWithinTransaction() throws NotFoundException {
 
-		dataContext.set(DataSourceEnum.DATASOURCE_ONE);
+		userService.setContext(1);
 		User toSaveUser = new User(null, new ArrayList<>(), "db1", "db1");
 		ToDo toSaveTodo = new ToDo(null, toSaveUser, new HashMap<>(), LocalDateTime.of(2005, 1, 1, 0, 0));
 		toSaveTodo.addToDoAction("prova", false);
@@ -66,7 +67,7 @@ public class ServiceRepositoryIT {
 
 
 		
-		dataContext.set(DataSourceEnum.DATASOURCE_TWO);
+		userService.setContext(2);
 		User toSaveUser2 = new User(null, new ArrayList<>(), "db2", "db2");
 		ToDo toSaveTodo2 = new ToDo(null, toSaveUser2, new HashMap<>(), LocalDateTime.of(2015, 2, 2, 0, 0));
 		toSaveTodo2.addToDoAction("avorp", true);
@@ -118,6 +119,28 @@ public class ServiceRepositoryIT {
 		userService.setContext(2);
 		assertThat(userService.getUserById(user_two_db.getId())).isEqualTo(user_two_db);
 		assertThat(todoService.findById(todo_two_db.getId())).isEqualTo(todo_two_db);
+	}
+	@Test
+	public void verifyRollBack() {
+		userService.setContext(1);
+		int todoQta1= todoRepository.findAll().size();
+		int userQta1= userRepository.findAll().size();
+
+		userService.setContext(2);
+		int todoQta2= todoRepository.findAll().size();
+		int userQta2= userRepository.findAll().size();
+
+		userService.setContext(1);
+		assertThrows(IllegalArgumentException.class,()->userService.insertNewUser(new User(null,null,null,null)));
+		assertThrows(IllegalArgumentException.class,()->todoService.save(new ToDo(null, null, null, null)));
+		assertThat(todoRepository.findAll().size()).isEqualTo(todoQta1);
+		assertThat(userRepository.findAll().size()).isEqualTo(userQta1);
+
+		userService.setContext(2);
+		assertThrows(IllegalArgumentException.class,()->userService.insertNewUser(new User(null,null,null,null)));
+		assertThrows(IllegalArgumentException.class,()->todoService.save(new ToDo(null, null, null, null)));
+		assertThat(todoRepository.findAll().size()).isEqualTo(todoQta2);
+		assertThat(userRepository.findAll().size()).isEqualTo(userQta2);
 	}
 
 

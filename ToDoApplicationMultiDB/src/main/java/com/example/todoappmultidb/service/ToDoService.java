@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.todoappmultidb.model.ToDo;
@@ -18,24 +19,27 @@ public class ToDoService {
 	@Autowired
 	ToDoRepository toDoRepository;
 
+	@Transactional(rollbackFor = NotFoundException.class)
 	public List<ToDo> findAll() throws NotFoundException {
 		List<ToDo> todoFound = toDoRepository.findAll();
-		if(todoFound.isEmpty())
+		if (todoFound.isEmpty())
 			throw new NotFoundException("Not found any ToDo");
 		return todoFound;
 	}
 
+	@Transactional(rollbackFor = NotFoundException.class)
 	public ToDo findById(Long id) throws NotFoundException {
-		return toDoRepository.findById(id).orElseThrow(()->new NotFoundException("Not found any ToDo"));
+		return toDoRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found any ToDo"));
 	}
-	@Transactional(readOnly = false)
+
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = IllegalArgumentException.class)
 	public ToDo save(ToDo toSave) {
 		verifyNullElement(toSave);
 		return toDoRepository.save(toSave);
-		
+
 	}
 
-	@Transactional(readOnly = false)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = IllegalArgumentException.class)
 	public ToDo updateById(long id, ToDo toUpdate) {
 		verifyNullElement(toUpdate);
 		toUpdate.setId(id);
@@ -43,7 +47,7 @@ public class ToDoService {
 	}
 
 	private void verifyNullElement(ToDo toVerify) {
-		if(toVerify.equals(new ToDo(null,null,null,null)))
+		if (toVerify.equals(new ToDo(null, null, null, null)))
 			throw new IllegalArgumentException("ToDo with null property");
 	}
 
