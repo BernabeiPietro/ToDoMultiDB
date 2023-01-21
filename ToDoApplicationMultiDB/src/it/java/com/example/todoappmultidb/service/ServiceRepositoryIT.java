@@ -122,6 +122,9 @@ public class ServiceRepositoryIT {
 	}
 	@Test
 	public void verifyRollBack() {
+		User nullUser=new User(null,null,null,null);
+		ToDo nullToDo=new ToDo(null, null, null, null);
+		
 		userService.setContext(1);
 		int todoQta1= todoRepository.findAll().size();
 		int userQta1= userRepository.findAll().size();
@@ -131,16 +134,16 @@ public class ServiceRepositoryIT {
 		int userQta2= userRepository.findAll().size();
 
 		userService.setContext(1);
-		assertThrows(IllegalArgumentException.class,()->userService.insertNewUser(new User(null,null,null,null)));
-		assertThrows(IllegalArgumentException.class,()->todoService.save(new ToDo(null, null, null, null)));
-		assertThat(todoRepository.findAll().size()).isEqualTo(todoQta1);
-		assertThat(userRepository.findAll().size()).isEqualTo(userQta1);
+		assertThrows(IllegalArgumentException.class,()->userService.insertNewUser(nullUser));
+		assertThrows(IllegalArgumentException.class,()->todoService.save(nullToDo));
+		assertThat(todoRepository.findAll()).hasSize(todoQta1);
+		assertThat(userRepository.findAll()).hasSize(userQta1);
 
 		userService.setContext(2);
-		assertThrows(IllegalArgumentException.class,()->userService.insertNewUser(new User(null,null,null,null)));
-		assertThrows(IllegalArgumentException.class,()->todoService.save(new ToDo(null, null, null, null)));
-		assertThat(todoRepository.findAll().size()).isEqualTo(todoQta2);
-		assertThat(userRepository.findAll().size()).isEqualTo(userQta2);
+		assertThrows(IllegalArgumentException.class,()->userService.insertNewUser(nullUser));
+		assertThrows(IllegalArgumentException.class,()->todoService.save(nullToDo));
+		assertThat(todoRepository.findAll()).hasSize(todoQta2);
+		assertThat(userRepository.findAll()).hasSize(userQta2);
 	}
 
 

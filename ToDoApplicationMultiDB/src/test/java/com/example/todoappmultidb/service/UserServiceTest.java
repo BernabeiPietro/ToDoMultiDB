@@ -88,7 +88,8 @@ public class UserServiceTest {
 	}
 	@Test
 	public void test_save_nullvalue() {
-		Exception thrown=assertThrows(IllegalArgumentException.class, ()->userService.insertNewUser(new User(null,null,null,null)));
+		User nullUser=new User(null,null,null,null);
+		Exception thrown=assertThrows(IllegalArgumentException.class, ()->userService.insertNewUser(nullUser));
 		verify(userRepository,never()).save(any(User.class));
 		assertThat(thrown.getMessage()).isEqualTo("User with null property");
 		
@@ -106,7 +107,8 @@ public class UserServiceTest {
 	}
 	@Test
 	public void test_updateUserById_nullvalue() {
-		Exception thrown=assertThrows(IllegalArgumentException.class, ()->userService.updateUserById(1L,new User(null,null,null,null)));
+		User nullUser=new User(null,null,null,null);
+		Exception thrown=assertThrows(IllegalArgumentException.class, ()->userService.updateUserById(1L,nullUser));
 		verify(userRepository,never()).save(any(User.class));	
 		assertThat(thrown.getMessage()).isEqualTo("User with null property");
 

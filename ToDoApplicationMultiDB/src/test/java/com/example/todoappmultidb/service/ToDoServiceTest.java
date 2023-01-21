@@ -81,13 +81,15 @@ public class ToDoServiceTest {
 
 		@Test
 		public void test_save_nullvalue() {
-			Exception thrown=assertThrows(IllegalArgumentException.class, ()->toDoService.save(new ToDo(null,null,null,null)));
+			ToDo nullToDo=new ToDo(null, null, null, null);
+			Exception thrown=assertThrows(IllegalArgumentException.class, ()->toDoService.save(nullToDo));
 			verify(toDoRepository,never()).save(any(ToDo.class));
 			assertThat(thrown.getMessage()).isEqualTo("ToDo with null property");
 		}
 		@Test
 		public void test_updateById_nullvalue() {
-			Exception thrown= assertThrows(IllegalArgumentException.class, ()->toDoService.updateById(1L,new ToDo(null,null,null,null)));
+			ToDo nullToDo=new ToDo(null, null, null, null);
+			Exception thrown= assertThrows(IllegalArgumentException.class, ()->toDoService.updateById(1L,nullToDo));
 			verify(toDoRepository,never()).save(any(ToDo.class));	
 			assertThat(thrown.getMessage()).isEqualTo("ToDo with null property");
 		}
