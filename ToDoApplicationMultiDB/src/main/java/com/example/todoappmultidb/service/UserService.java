@@ -2,13 +2,13 @@ package com.example.todoappmultidb.service;
 
 import java.util.List;
 
-import org.hamcrest.Matcher;
+import org.springframework.stereotype.Service;
 
-import com.example.todoappmultidb.model.User;
 import com.example.todoappmultidb.model.dto.UserDTO;
 
 import javassist.NotFoundException;
 
+@Service
 public class UserService {
 
 	private static final String TEMPORARY_IMPLEMENTATION = "Temporary implementation";

@@ -2,11 +2,14 @@ package com.example.todoappmultidb.service;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.model.dto.UserDTO;
 
 import javassist.NotFoundException;
 
+@Service
 public class ToDoService {
 	private static final String TEMPORARY_IMPLEMENTATION = "Temporary implementation";
 
