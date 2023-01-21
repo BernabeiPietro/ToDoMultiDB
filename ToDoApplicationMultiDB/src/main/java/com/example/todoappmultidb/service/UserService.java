@@ -1,7 +1,6 @@
 package com.example.todoappmultidb.service;
 
 import java.util.List;
-import java.util.function.IntPredicate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,8 +53,8 @@ public class UserService {
 		return userRepository.save(userToUpdate);
 	}
 
-	public DataSourceEnum setContext(int Ctx) {
-		dataContext.set(DataSourceEnum.values()[Ctx - 1]);
+	public DataSourceEnum setContext(int ctx) {
+		dataContext.set(DataSourceEnum.values()[ctx - 1]);
 		return dataContext.getDataSource();
 	}
 

@@ -24,8 +24,8 @@ public class DataSourceContextHolder {
 	public void clear() {
 		context.remove();
 	}
-
-	protected void setCONTEXT(ThreadLocal<DataSourceEnum> cont) {
+	
+	protected static void setCONTEXT(ThreadLocal<DataSourceEnum> cont) {
 		context = cont;
 	}
 
