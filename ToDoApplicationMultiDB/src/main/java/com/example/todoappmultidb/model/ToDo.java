@@ -96,7 +96,7 @@ public class ToDo {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(actionList, date, id, idOfUser.getId());
+		return Objects.hash(actionList, date, id, idOfUser);
 	}
 
 	@Override
@@ -104,12 +104,15 @@ public class ToDo {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof ToDo)) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
 		}
 		ToDo other = (ToDo) obj;
 		return Objects.equals(actionList, other.actionList) && Objects.equals(date, other.date)
-				&& Objects.equals(id, other.id) && Objects.equals(idOfUser.getId(), other.idOfUser.getId());
+				&& Objects.equals(id, other.id) && Objects.equals(idOfUser, other.idOfUser);
 	}
 
 	@Override

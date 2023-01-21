@@ -33,6 +33,8 @@ import com.example.todoappmultidb.routing.DataSourceContextHolder;
 import com.example.todoappmultidb.routing.config.DataSourceEnum;
 import com.example.todoappmultidb.routing.config.DataSourceRoutingConfiguration;
 
+import javassist.NotFoundException;
+
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = DataSourceRoutingConfiguration.class)
 @EnableConfigurationProperties
@@ -52,7 +54,7 @@ public class ServiceRepositoryIT {
 	DataSourceContextHolder dataContext;
 
 	@Test
-	public void findToDoUserWithinTransaction() {
+	public void findToDoUserWithinTransaction() throws NotFoundException {
 
 		dataContext.set(DataSourceEnum.DATASOURCE_ONE);
 		User toSaveUser = new User(null, new ArrayList<>(), "db1", "db1");
@@ -83,14 +85,13 @@ public class ServiceRepositoryIT {
 		userService.setContext(2);
 		assertThat(userService.getUserById(savedUser2.getId())).isEqualTo(savedUser2);
 		assertThat(todoService.findById(savedTodo2.getId())).isEqualTo(savedTodo2);
-
 		assertThat(userService.getUserById(savedUser1.getId())).isNotEqualTo(savedUser1);
 		assertThat(todoService.findById(savedTodo1.getId())).isNotEqualTo(savedTodo1);
 
 	}
 
 	@Test
-	public void insertToDoUserWithinTransaction() {
+	public void insertToDoUserWithinTransaction() throws NotFoundException {
 
 		userService.setContext(1);
 		User user_one_db = new User(null, new ArrayList<>(), "db1_int", "db1_int");

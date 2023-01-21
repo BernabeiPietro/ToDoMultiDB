@@ -30,16 +30,21 @@ public class ToDoService {
 	}
 	@Transactional(readOnly = false)
 	public ToDo save(ToDo toSave) {
-		toSave.equals(new ToDo(null,null,null,null));
+		verifyNullElement(toSave);
 		return toDoRepository.save(toSave);
 		
 	}
 
 	@Transactional(readOnly = false)
 	public ToDo updateById(long id, ToDo toUpdate) {
-		toUpdate.equals(new ToDo(null,null,null,null));
+		verifyNullElement(toUpdate);
 		toUpdate.setId(id);
 		return toDoRepository.save(toUpdate);
+	}
+
+	private void verifyNullElement(ToDo toVerify) {
+		if(toVerify.equals(new ToDo(null,null,null,null)))
+			throw new IllegalArgumentException("ToDo with null property");
 	}
 
 }

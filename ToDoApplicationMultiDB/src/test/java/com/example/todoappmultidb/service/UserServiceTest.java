@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,6 +26,7 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import com.example.todoappmultidb.model.ToDo;
 import com.example.todoappmultidb.model.User;
 import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.routing.DataSourceContextHolder;
@@ -85,6 +87,13 @@ public class UserServiceTest {
 		inOrder.verify(userRepository).save(userToSave);
 	}
 	@Test
+	public void test_save_nullvalue() {
+		Exception thrown=assertThrows(IllegalArgumentException.class, ()->userService.insertNewUser(new User(null,null,null,null)));
+		verify(userRepository,never()).save(any(User.class));
+		assertThat(thrown.getMessage()).isEqualTo("User with null property");
+		
+	}
+	@Test
 	public void test_updateUser_ById() {
 		User userToUpdate=spy(new User(null,new ArrayList<>(), "change","change"));
 		User userUpdated=new User(1L,new ArrayList<>(), "changed","changed");
@@ -94,6 +103,13 @@ public class UserServiceTest {
 		InOrder inOrder=inOrder(userToUpdate,userRepository);
 		inOrder.verify(userToUpdate).setId(1L);
 		inOrder.verify(userRepository).save(userToUpdate);
+	}
+	@Test
+	public void test_updateUserById_nullvalue() {
+		Exception thrown=assertThrows(IllegalArgumentException.class, ()->userService.updateUserById(1L,new User(null,null,null,null)));
+		verify(userRepository,never()).save(any(User.class));	
+		assertThat(thrown.getMessage()).isEqualTo("User with null property");
+
 	}
 	@Test
 	public void test_setContext_one()
