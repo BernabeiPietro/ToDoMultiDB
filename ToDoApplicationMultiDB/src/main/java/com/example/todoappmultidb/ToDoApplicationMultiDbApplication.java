@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ToDoApplicationMultiDbApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ToDoApplicationMultiDbApplication.class, args);
+	public static void main(String[] argv) {
+		SpringApplication.run(ToDoApplicationMultiDbApplication.class, argv);
 	}
 
 }

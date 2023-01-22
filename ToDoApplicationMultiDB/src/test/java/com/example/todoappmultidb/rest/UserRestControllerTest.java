@@ -11,9 +11,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,14 +22,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import com.example.todoappmultidb.model.User;
 import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.service.UserService;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.gson.Gson;
 
 import javassist.NotFoundException;
 
@@ -114,7 +108,7 @@ public class UserRestControllerTest {
 
 	@Test
 	public void testPutUpdateUser() throws Exception {
-		when(userService.updateUser(1, new UserDTO(null, "nome1", "email1")))
+		when(userService.updateUserById(1, new UserDTO(null, "nome1", "email1")))
 				.thenReturn(new UserDTO(1l, "nome1", "email1"));
 		this.mvc.perform(
 				put("/api/users/update/1").content(objMapper.writeValueAsString(new UserDTO(null, "nome1", "email1")))
@@ -126,7 +120,7 @@ public class UserRestControllerTest {
 	@Test
 	public void testPutUpdateUserNullProperties() throws Exception {
 
-		when(userService.updateUser(1, new UserDTO(null, null, null)))
+		when(userService.updateUserById(1, new UserDTO(null, null, null)))
 				.thenThrow(new IllegalArgumentException("User with null property"));
 		this.mvc.perform(put("/api/users/update/1").content(objMapper.writeValueAsString(new UserDTO(null, null, null)))
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
@@ -137,7 +131,7 @@ public class UserRestControllerTest {
 	@Test
 	public void testPutUpdateUserNotExistingUser() throws Exception {
 
-		when(userService.updateUser(1, new UserDTO(null, "nome1", "email1")))
+		when(userService.updateUserById(1, new UserDTO(null, "nome1", "email1")))
 				.thenThrow(new NotFoundException("Try to update not existing user"));
 		this.mvc.perform(
 				put("/api/users/update/1").content(objMapper.writeValueAsString(new UserDTO(null, "nome1", "email1")))

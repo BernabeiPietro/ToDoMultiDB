@@ -35,7 +35,7 @@ public class ToDoRestController {
 	@GetMapping
 	public List<ToDoDTO> getToDo() {
 		try {
-			return todoService.getAllToDo();
+			return todoService.findAll();
 
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
@@ -47,28 +47,27 @@ public class ToDoRestController {
 	@GetMapping("/{id}")
 	public ToDoDTO getToDoById(@PathVariable long id) {
 		try {
-			return todoService.getToDoById(id);
+			return todoService.findByIdDTO(id);
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
 		}
 
 	}
 
-	@GetMapping("/ofuser/{id}")
-	public List<ToDoDTO> getToDoByUserId(@PathVariable Long id) {
-		try {
-			return todoService.findByUserId(new UserDTO(id, null, null));
-		
-		} catch (NotFoundException e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-		}
-	}
+	/* Not developed the ToDo Part
+	 * @GetMapping("/ofuser/{id}") public List<ToDoDTO>
+	 * getToDoByUserId(@PathVariable Long id) { try { return
+	 * todoService.findByUserId(new UserDTO(id, null, null));
+	 * 
+	 * } catch (NotFoundException e) { throw new
+	 * ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage()); } }
+	 */
 
 	@PostMapping("/new")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ToDoDTO save(@RequestBody ToDoDTO todo) {
 		try {
-			return todoService.saveToDo(todo);
+			return todoService.save(todo);
 		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
@@ -77,7 +76,7 @@ public class ToDoRestController {
 	@PutMapping("/update/{id}")
 	public ToDoDTO updateToDo(@RequestBody ToDoDTO todo, @PathVariable Long id) {
 		try {
-			return todoService.updateToDo(id, todo);
+			return todoService.updateById(id, todo);
 		} catch (IllegalArgumentException e) {
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		} catch (NotFoundException e) {

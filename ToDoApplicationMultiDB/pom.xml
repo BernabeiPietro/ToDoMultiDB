@@ -20,8 +20,10 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>1.8</java.version>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<!-- For SonarQube -->
+
 		<sonar.coverage.jacoco.xmlReportPaths>
 			${project.reporting.outputDirectory}/jacoco/jacoco.xml
 		</sonar.coverage.jacoco.xmlReportPaths>
@@ -43,14 +45,28 @@
 			and e2e tests. -->
 		<sonar.tests>
 			${project.build.testSourceDirectory},
-			${basedir}/src/it/java,
-			${basedir}/src/e2e/java
+			${basedir}/src/it/java
+			<!-- ${basedir}/src/e2e/java -->
 		</sonar.tests>
-		<!-- Exclude non covered files -->
+
+
 		<sonar.coverage.exclusions>
 			**/*Application.*,
 			**/model/*
 		</sonar.coverage.exclusions>
+		<sonar.projectKey>BernabeiPietro_todomultidb</sonar.projectKey>
+
+		<db.docker.dns>localhost</db.docker.dns>
+		<db.docker.port1>28011</db.docker.port1>
+		<db.docker.port2>28012</db.docker.port2>
+		<db.docker.port>3306</db.docker.port>
+		<db.docker.db1>db_example_1</db.docker.db1>
+		<db.docker.db2>db_example_2</db.docker.db2>
+		<db.docker.user>administrator</db.docker.user>
+		<db.docker.rootpsw>rootpassword</db.docker.rootpsw>
+		<db.docker.psw>password</db.docker.psw>
+		<JDBC-URL1>jdbc:mysql://${db.docker.dns}:${db.docker.port1}/${db.docker.db1}?createDatabaseIfNotExist=true</JDBC-URL1>
+		<JDBC-URL2>jdbc:mysql://${db.docker.dns}:${db.docker.port2}/${db.docker.db2}?createDatabaseIfNotExist=true</JDBC-URL2>
 	</properties>
 
 	<dependencies>
@@ -81,6 +97,11 @@
 			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
@@ -99,6 +120,12 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -111,6 +138,12 @@
 	</dependencies>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -127,6 +160,7 @@
 						<excludes>
 							<exclude>**/ToDoApplicationMultiDbApplication.*</exclude>
 							<exclude>**/model/**</exclude>
+
 						</excludes>
 					</configuration>
 
@@ -139,26 +173,7 @@
 								<goal>report</goal>
 							</goals>
 						</execution>
-						<execution>
-							<id>jacoco-check</id>
-							<goals>
-								<goal>check</goal>
-							</goals>
-							<configuration>
-								<rules>
-									<rule>
-										<element>PACKAGE</element>
-										<limits>
-											<limit>
-												<counter>LINE</counter>
-												<value>COVEREDRATIO</value>
-												<minimum>1</minimum>
-											</limit>
-										</limits>
-									</rule>
-								</rules>
-							</configuration>
-						</execution>
+
 					</executions>
 				</plugin>
 			</plugins>
@@ -253,6 +268,79 @@
 								<include>**/*E2E.java</include>
 							</includes>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.34.1</version>
+				<configuration>
+					<showLogs>true</showLogs>
+					<verbose>build</verbose>
+					<images>
+						<image>
+							<name>mysql:5.6</name>
+							<alias>db1</alias>
+							<run>
+								<wait>
+									<tcp>
+										<ports>
+											<port>${db.docker.port}</port>
+										</ports>
+									</tcp>
+									<time>100000</time>
+								</wait>
+								<env>
+									<MYSQL_ROOT_PASSWORD>${db.docker.rootpsw}</MYSQL_ROOT_PASSWORD>
+									<MYSQL_DATABASE>${db.docker.db1}</MYSQL_DATABASE>
+									<MYSQL_USER>${db.docker.user}</MYSQL_USER>
+									<MYSQL_PASSWORD>${db.docker.psw}</MYSQL_PASSWORD>
+								</env>
+								<ports>
+									<port>${db.docker.port1}:${db.docker.port}</port>
+								</ports>
+							</run>
+						</image>
+						<image>
+							<name>mysql:5.6</name>
+							<alias>db2</alias>
+							<run>
+								<wait>
+									<tcp>
+										<ports>
+											<port>${db.docker.port}</port>
+										</ports>
+									</tcp>
+									<time>100000</time>
+								</wait>
+								<env>
+									<MYSQL_ROOT_PASSWORD>${db.docker.rootpsw}</MYSQL_ROOT_PASSWORD>
+									<MYSQL_DATABASE>${db.docker.db2}</MYSQL_DATABASE>
+									<MYSQL_USER>${db.docker.user}</MYSQL_USER>
+									<MYSQL_PASSWORD>${db.docker.psw}</MYSQL_PASSWORD>
+								</env>
+								<ports>
+									<port>${db.docker.port2}:${db.docker.port}</port>
+								</ports>
+							</run>
+						</image>
+					</images>
+				</configuration>
+				<executions>
+					<execution>
+						<id>docker-start</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>docker-stop</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>

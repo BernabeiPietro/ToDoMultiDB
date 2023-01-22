@@ -7,6 +7,7 @@ import java.util.Objects;
 import javax.persistence.OneToMany;
 
 import com.example.todoappmultidb.model.ToDo;
+import com.example.todoappmultidb.model.User;
 
 public class UserDTO {
 	private Long id;
@@ -20,7 +21,10 @@ public class UserDTO {
 		this.name = name;
 		this.email = email;
 	}
-
+	public UserDTO(User u) {
+		this(u.getId(),u.getName(),u.getEmail());
+	}
+	
 	public UserDTO() {
 		super();
 	}

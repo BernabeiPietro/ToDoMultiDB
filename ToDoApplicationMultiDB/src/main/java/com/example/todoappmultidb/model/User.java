@@ -10,6 +10,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.example.todoappmultidb.model.dto.UserDTO;
+
 @Entity
 public class User {
 
@@ -18,23 +23,28 @@ public class User {
 	private Long id;
 
 	@OneToMany(mappedBy = "idOfUser")
+	@Fetch(value = FetchMode.JOIN)
 	private List<ToDo> todo;
+	private String name;
+	private String email;
 
 	public User() {
 		super();
 	}
 
-	private String name;
-
-	private String email;
-
-	public User(Long id, String name, String email) {
-		// TODO Auto-generated constructor stub
-
+	public User(Long id, List<ToDo> todo, String name, String email) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
-		this.todo = new ArrayList<ToDo>();
+		this.todo = todo;
+	}
+
+	public User(Long id, String name, String email) {
+		this(id, new ArrayList<ToDo>(), name, email);
+	}
+
+	public User(UserDTO u, List<ToDo> listToDo) {
+		this(u.getId(),listToDo,u.getName(),u.getEmail());
 	}
 
 	public Long getId() {
@@ -87,8 +97,9 @@ public class User {
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		return Objects.equals(email, other.email) && Objects.equals(id, other.id) && Objects.equals(name, other.name)
-				&& Objects.equals(todo, other.todo);
+
+		return Objects.equals(email, other.email) && Objects.equals(id, other.id) && Objects.equals(name, other.name);
+
 	}
 
 	@Override

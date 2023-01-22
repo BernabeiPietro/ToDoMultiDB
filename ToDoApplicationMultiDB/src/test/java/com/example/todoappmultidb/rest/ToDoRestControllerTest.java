@@ -61,7 +61,7 @@ public class ToDoRestControllerTest {
 
 	@Test
 	public void testGetAllToDoEmpty() throws Exception {
-		when(todoService.getAllToDo()).thenThrow(new NotFoundException("Not found any todo"));
+		when(todoService.findAll()).thenThrow(new NotFoundException("Not found any todo"));
 		this.mvc.perform(get("/api/todo")).andExpect(status().isNoContent())
 				.andExpect(status().reason("Not found any todo"));
 	}
@@ -71,7 +71,7 @@ public class ToDoRestControllerTest {
 		HashMap<String, Boolean> actions = new HashMap<String, Boolean>();
 		actions.put("first", false);
 		actions.put("second",true);
-		when(todoService.getAllToDo()).thenReturn(
+		when(todoService.findAll()).thenReturn(
 				asList(new ToDoDTO(1l, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1)),
 						new ToDoDTO(2l, 2l, actions, LocalDateTime.of(2001, 6, 3, 5, 0, 8))));
 		this.mvc.perform(get("/api/todo").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
@@ -87,7 +87,7 @@ public class ToDoRestControllerTest {
 
 	@Test
 	public void testGetOneToDoById() throws Exception {
-		when(todoService.getToDoById(1l)).thenReturn(
+		when(todoService.findByIdDTO(1l)).thenReturn(
 				new ToDoDTO(1l, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1)));
 		this.mvc.perform(get("/api/todo/1").contentType(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isOk()).andExpect(jsonPath("$.id", is(1)))
@@ -98,42 +98,42 @@ public class ToDoRestControllerTest {
 
 	@Test
 	public void testGetOneToDoByIdNotFound() throws Exception {
-		when(todoService.getToDoById(2l)).thenThrow(new NotFoundException("Not found any todo with id 2"));
+		when(todoService.findByIdDTO(2l)).thenThrow(new NotFoundException("Not found any todo with id 2"));
 		this.mvc.perform(get("/api/todo/2").contentType(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isNoContent())
 				.andExpect(status().reason("Not found any todo with id 2"));
 	}
 
-	@Test
-	public void testGetToDoByUserId() throws Exception {
-		when(todoService.findByUserId(new UserDTO(1L, null, null))).thenReturn(
-				asList(new ToDoDTO(1l, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1)),
-						new ToDoDTO(2l, 2l, new HashMap<String, Boolean>(), LocalDateTime.of(2001, 6, 3, 5, 0, 8))));
-
-		this.mvc.perform(get("/api/todo/ofuser/1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-				.andExpect(jsonPath("$[0].id", is(1)))
-				.andExpect(jsonPath("$[0].date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
-				.andExpect(jsonPath("$[0].idOfUser", is(1)))
-				.andExpect(jsonPath("$[0].toDo", is(new HashMap<String, Boolean>())))
-				.andExpect(jsonPath("$[1].id", is(2)))
-				.andExpect(jsonPath("$[1].date", is(LocalDateTime.of(2001, 6, 3, 5, 0, 8).toString())))
-				.andExpect(jsonPath("$[1].idOfUser", is(2)))
-				.andExpect(jsonPath("$[1].toDo", is(new HashMap<String, Boolean>())));
-	}
-
-	@Test
-	public void testGetToDoByUserId_foundAnything() throws Exception {
-		when(todoService.findByUserId(new UserDTO(1l, null, null)))
-				.thenThrow(new NotFoundException("Not found todo with user id 1"));
-		this.mvc.perform(get("/api/todo/ofuser/1").contentType(MediaType.APPLICATION_JSON))
-				.andExpect(status().isNotFound()).andExpect(status().reason("Not found todo with user id 1"));
-	}
+	/*not developed into service class
+	 * @Test public void testGetToDoByUserId() throws Exception {
+	 * when(todoService.findByUserId(new UserDTO(1L, null, null))).thenReturn(
+	 * asList(new ToDoDTO(1l, 1l, new HashMap<String, Boolean>(),
+	 * LocalDateTime.of(2000, 5, 13, 1, 1, 1)), new ToDoDTO(2l, 2l, new
+	 * HashMap<String, Boolean>(), LocalDateTime.of(2001, 6, 3, 5, 0, 8))));
+	 * 
+	 * this.mvc.perform(get("/api/todo/ofuser/1").contentType(MediaType.
+	 * APPLICATION_JSON)).andExpect(status().isOk()) .andExpect(jsonPath("$[0].id",
+	 * is(1))) .andExpect(jsonPath("$[0].date", is(LocalDateTime.of(2000, 5, 13, 1,
+	 * 1, 1).toString()))) .andExpect(jsonPath("$[0].idOfUser", is(1)))
+	 * .andExpect(jsonPath("$[0].toDo", is(new HashMap<String, Boolean>())))
+	 * .andExpect(jsonPath("$[1].id", is(2))) .andExpect(jsonPath("$[1].date",
+	 * is(LocalDateTime.of(2001, 6, 3, 5, 0, 8).toString())))
+	 * .andExpect(jsonPath("$[1].idOfUser", is(2))) .andExpect(jsonPath("$[1].toDo",
+	 * is(new HashMap<String, Boolean>()))); }
+	 * 
+	 * @Test public void testGetToDoByUserId_foundAnything() throws Exception {
+	 * when(todoService.findByUserId(new UserDTO(1l, null, null))) .thenThrow(new
+	 * NotFoundException("Not found todo with user id 1"));
+	 * this.mvc.perform(get("/api/todo/ofuser/1").contentType(MediaType.
+	 * APPLICATION_JSON)) .andExpect(status().isNotFound()).andExpect(status().
+	 * reason("Not found todo with user id 1")); }
+	 */
 
 	@Test
 	public void testPostNewToDo_emptyMap() throws Exception {
 
 		ToDoDTO todo = new ToDoDTO(null, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1));
-		when(todoService.saveToDo(todo)).thenReturn(
+		when(todoService.save(todo)).thenReturn(
 				new ToDoDTO(1l, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1)));
 		this.mvc.perform(post("/api/todo/new").content(objMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
@@ -150,7 +150,7 @@ public class ToDoRestControllerTest {
 		actions.put("first", false);
 		actions.put("second", true);
 		ToDoDTO todo = new ToDoDTO(null, 1l, actions, LocalDateTime.of(2000, 5, 13, 1, 1, 1));
-		when(todoService.saveToDo(todo))
+		when(todoService.save(todo))
 				.thenReturn(new ToDoDTO(1l, 1l, actions, LocalDateTime.of(2000, 5, 13, 1, 1, 1)));
 		this.mvc.perform(post("/api/todo/new").content(objMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
@@ -162,7 +162,7 @@ public class ToDoRestControllerTest {
 	@Test
 	public void testPostNewToDoNullValue() throws Exception {
 		ToDoDTO todo = new ToDoDTO(null, null, null, null);
-		when(todoService.saveToDo(todo)).thenThrow(new IllegalArgumentException("Insert ToDo with null value"));
+		when(todoService.save(todo)).thenThrow(new IllegalArgumentException("Insert ToDo with null value"));
 		this.mvc.perform(post("/api/todo/new").content(objMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict()).andExpect(status().reason("Insert ToDo with null value"));
@@ -171,7 +171,7 @@ public class ToDoRestControllerTest {
 	@Test
 	public void testPutUpdateToDo_emptyMaps() throws Exception {
 		ToDoDTO todo = new ToDoDTO(null, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1));
-		when(todoService.updateToDo(1l, todo)).thenReturn(
+		when(todoService.updateById(1l, todo)).thenReturn(
 				new ToDoDTO(1l, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1)));
 		this.mvc.perform(put("/api/todo/update/1").content(objMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
@@ -186,7 +186,7 @@ public class ToDoRestControllerTest {
 		actions.put("first", false);
 		actions.put("second", true);
 		ToDoDTO todo = new ToDoDTO(null, 1l, actions, LocalDateTime.of(2000, 5, 13, 1, 1, 1));
-		when(todoService.updateToDo(1l, todo)).thenReturn(
+		when(todoService.updateById(1l, todo)).thenReturn(
 				new ToDoDTO(1l, 1l, actions, LocalDateTime.of(2000, 5, 13, 1, 1, 1)));
 		this.mvc.perform(put("/api/todo/update/1").content(objMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
@@ -198,7 +198,7 @@ public class ToDoRestControllerTest {
 	@Test
 	public void testPutUpdateToDoWithNullValue() throws Exception {
 		ToDoDTO todo = new ToDoDTO(null, null, null, null);
-		when(todoService.updateToDo(1l, todo)).thenThrow(new IllegalArgumentException("Update ToDo with null value"));
+		when(todoService.updateById(1l, todo)).thenThrow(new IllegalArgumentException("Update ToDo with null value"));
 		this.mvc.perform(put("/api/todo/update/1").content(objMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict()).andExpect(status().reason("Update ToDo with null value"));
@@ -207,7 +207,7 @@ public class ToDoRestControllerTest {
 	@Test
 	public void testPutUpdateToDoNotFound() throws Exception {
 		ToDoDTO todo = new ToDoDTO(null, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1));
-		when(todoService.updateToDo(1l, todo)).thenThrow(new NotFoundException("Not Found any ToDo with id 1"));
+		when(todoService.updateById(1l, todo)).thenThrow(new NotFoundException("Not Found any ToDo with id 1"));
 		this.mvc.perform(put("/api/todo/update/1").content(objMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound()).andExpect(status().reason("Not Found any ToDo with id 1"));

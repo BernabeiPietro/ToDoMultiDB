@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 
+import com.example.todoappmultidb.model.ToDo;
 import com.example.todoappmultidb.model.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -36,6 +37,10 @@ public class ToDoDTO {
 		this.idOfUser=idOfUser;
 		this.toDo=todo;
 		this.date=date;
+	}
+	public ToDoDTO(ToDo td)
+	{
+		this(td.getId(),td.getIdOfUser().getId(),td.getToDo(),td.getLocalDateTime());
 	}
 
 	public Long getId() {
@@ -69,7 +74,11 @@ public class ToDoDTO {
 	public void setIdOfUser(Long idOfUser) {
 		this.idOfUser = idOfUser;
 	}
+	public void addToDoAction(String action, Boolean doIt) {
 
+		this.toDo.put(action, doIt);
+
+	}
 	@Override
 	public int hashCode() {
 		return Objects.hash(date, id, idOfUser, toDo);

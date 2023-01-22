@@ -67,7 +67,7 @@ public class UserRestController {
 	public UserDTO updateUser(@PathVariable long id, @RequestBody UserDTO newUser) {
 
 		try {
-			return userService.updateUser(id, newUser);
+			return userService.updateUserById(id, newUser);
 		} catch (IllegalArgumentException e) {
 
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
