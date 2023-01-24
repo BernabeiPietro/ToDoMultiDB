@@ -1,24 +1,10 @@
 package com.example.todoappmultidb.model.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapKeyColumn;
-
 import com.example.todoappmultidb.model.ToDo;
-import com.example.todoappmultidb.model.User;
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class ToDoDTO {
 

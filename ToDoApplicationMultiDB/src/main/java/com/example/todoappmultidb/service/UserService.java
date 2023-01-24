@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.todoappmultidb.model.ToDo;
 import com.example.todoappmultidb.model.User;
-import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.routing.DataSourceContextHolder;
@@ -35,7 +34,7 @@ public class UserService {
 		List<User> userFound = userRepository.findAll();
 		if (userFound.isEmpty())
 			throw new NotFoundException("Not found any User");
-		return userFound.stream().map(x->toDTO(x)).collect(Collectors.toList());
+		return userFound.stream().map(this::toDTO).collect(Collectors.toList());
 	}
 	
 	@Transactional(rollbackFor=NotFoundException.class)
@@ -49,7 +48,7 @@ public class UserService {
 	public UserDTO insertNewUser(UserDTO userToSave) {
 		userToSave.setId(null);
 		verifyNullValue(userToSave);
-		return toDTO(userRepository.save(new User(userToSave, new ArrayList<ToDo>())));
+		return toDTO(userRepository.save(new User(userToSave, new ArrayList<>())));
 	}
 
 	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW, rollbackFor = {IllegalArgumentException.class,NotFoundException.class})

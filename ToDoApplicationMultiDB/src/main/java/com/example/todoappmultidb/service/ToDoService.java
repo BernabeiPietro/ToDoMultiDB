@@ -12,7 +12,6 @@ import com.example.todoappmultidb.model.ToDo;
 import com.example.todoappmultidb.model.User;
 import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.repository.ToDoRepository;
-import com.example.todoappmultidb.repository.UserRepository;
 
 import javassist.NotFoundException;
 
@@ -30,7 +29,7 @@ public class ToDoService {
 		List<ToDo> todoFound = toDoRepository.findAll();
 		if (todoFound.isEmpty())
 			throw new NotFoundException("Not found any ToDo");
-		return todoFound.stream().map(x->toDTO(x)).collect(Collectors.toList());
+		return todoFound.stream().map(this::toDTO).collect(Collectors.toList());
 	}
 
 	@Transactional(rollbackFor = NotFoundException.class)

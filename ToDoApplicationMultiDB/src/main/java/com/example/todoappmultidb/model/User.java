@@ -40,7 +40,7 @@ public class User {
 	}
 
 	public User(Long id, String name, String email) {
-		this(id, new ArrayList<ToDo>(), name, email);
+		this(id, new ArrayList<>(), name, email);
 	}
 
 	public User(UserDTO u, List<ToDo> listToDo) {
