@@ -37,11 +37,11 @@ public class UserService {
 			throw new NotFoundException("Not found any User");
 		return userFound.stream().map(x->toDTO(x)).collect(Collectors.toList());
 	}
-
+	
+	@Transactional(rollbackFor=NotFoundException.class)
 	public UserDTO getUserById(long id) throws NotFoundException {
 		return toDTO(getUser(id));
 	}
-	@Transactional(rollbackFor=NotFoundException.class)
 	protected User getUser(long id) throws NotFoundException {
 		return userRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found any User"));
 	}
@@ -52,7 +52,7 @@ public class UserService {
 		return toDTO(userRepository.save(new User(userToSave, new ArrayList<ToDo>())));
 	}
 
-	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW, rollbackFor = IllegalArgumentException.class)
+	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW, rollbackFor = {IllegalArgumentException.class,NotFoundException.class})
 	public UserDTO updateUserById(long id, UserDTO userToUpdate) throws NotFoundException {
 		verifyNullValue(userToUpdate);
 		userToUpdate.setId(id);
@@ -63,7 +63,10 @@ public class UserService {
 	}
 
 	public DataSourceEnum setContext(int ctx) {
-		dataContext.set(DataSourceEnum.values()[ctx - 1]);
+		if(ctx<1)
+			dataContext.set(DataSourceEnum.values()[0]);
+		else 
+			dataContext.set(DataSourceEnum.values()[(ctx-1)%2]);
 		return dataContext.getDataSource();
 	}
 
@@ -73,7 +76,6 @@ public class UserService {
 	}
 
 	public UserDTO toDTO(User user) {
-		// TODO Auto-generated method stub
 		return new UserDTO(user);
 	}
 

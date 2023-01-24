@@ -128,10 +128,6 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 		</dependency>
@@ -240,7 +236,7 @@
 
 				<executions>
 					<execution>
-						<id>default-it</id>
+						<id>default</id>
 						<goals>
 							<goal>integration-test</goal>
 							<goal>verify</goal>

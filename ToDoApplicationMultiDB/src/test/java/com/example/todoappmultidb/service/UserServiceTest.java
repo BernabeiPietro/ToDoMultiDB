@@ -153,6 +153,18 @@ public class UserServiceTest {
 		verify(dataContext).set(any(DataSourceEnum.class));
 	}
 	@Test
+	public void test_setContext_outside_range()
+	{
+		assertThat(userService.setContext(3)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
+
+	}
+	@Test
+	public void test_setContext_under_range()
+	{
+		assertThat(userService.setContext(0)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
+
+	}
+	@Test
 	public void test_fromUser_toDTO() {
 		assertThat(userService.toDTO(new User(1l,"prova","prova"))).isEqualTo(new UserDTO(1l,"prova","prova"));
 	}

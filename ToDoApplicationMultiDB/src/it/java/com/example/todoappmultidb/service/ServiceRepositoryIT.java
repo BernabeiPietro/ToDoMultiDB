@@ -81,14 +81,14 @@ public class ServiceRepositoryIT {
 		assertThat(userService.getUserById(savedUser1.getId()))
 			.isEqualTo(new UserDTO(savedUser1));
 		assertThat(todoService.findByIdDTO(savedTodo1.getId())).isEqualTo(new ToDoDTO(savedTodo1));
-		assertThat(userService.getUserById(savedUser2.getId())).isNotEqualTo(new UserDTO(savedUser2));
-		assertThat(todoService.findByIdDTO(savedTodo2.getId())).isNotEqualTo(new ToDoDTO(savedTodo2));
+		assertThat(userService.getAllUser()).doesNotContain(new UserDTO(savedUser2));
+		assertThat(todoService.findAll()).doesNotContain(new ToDoDTO(savedTodo2));
 		
 		userService.setContext(2);
 		assertThat(userService.getUserById(savedUser2.getId())).isEqualTo(new UserDTO(savedUser2));
 		assertThat(todoService.findByIdDTO(savedTodo2.getId())).isEqualTo(new ToDoDTO(savedTodo2));
-		assertThat(userService.getUserById(savedUser1.getId())).isNotEqualTo(new UserDTO(savedUser1));
-		assertThat(todoService.findByIdDTO(savedTodo1.getId())).isNotEqualTo(new ToDoDTO(savedTodo1));
+		assertThat(userService.getAllUser()).doesNotContain(new UserDTO(savedUser1));
+		assertThat(todoService.findAll()).doesNotContain(new ToDoDTO(savedTodo1));
 
 	}
 

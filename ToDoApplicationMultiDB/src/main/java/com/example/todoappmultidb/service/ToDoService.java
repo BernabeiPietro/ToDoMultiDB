@@ -42,7 +42,7 @@ public class ToDoService {
 		return toDoRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found any ToDo"));
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = IllegalArgumentException.class)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = {IllegalArgumentException.class,NotFoundException.class})
 	public ToDoDTO save(ToDoDTO toDoDTO) throws NotFoundException {
 		verifyNullElement(toDoDTO);
 		
@@ -52,7 +52,7 @@ public class ToDoService {
 
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = IllegalArgumentException.class)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = {IllegalArgumentException.class,NotFoundException.class})
 	public ToDoDTO updateById(long id, ToDoDTO toUpdate) throws NotFoundException {
 		verifyNullElement(toUpdate);
 		toUpdate.setId(id);

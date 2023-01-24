@@ -15,8 +15,6 @@ public class UserDTO {
 	private String email;
 
 	public UserDTO(Long id, String name, String email) {
-		// TODO Auto-generated constructor stub
-
 		this.id = id;
 		this.name = name;
 		this.email = email;

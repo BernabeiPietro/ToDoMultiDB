@@ -2,6 +2,7 @@ package com.example.todoappmultidb.rest;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,8 +31,9 @@ public class UserRestController {
 	@Autowired
 	private UserService userService;
 
-	@GetMapping
-	public List<UserDTO> getUsers() {
+	@GetMapping("/{db}")
+	public List<UserDTO> getUsers(@PathVariable int db) {
+		userService.setContext(db);
 		try {
 			return userService.getAllUser();
 
@@ -41,8 +43,9 @@ public class UserRestController {
 		}
 	}
 
-	@GetMapping("/{id}")
-	public UserDTO getUserById(@PathVariable long id) {
+	@GetMapping("/{db}/id/{id}")
+	public UserDTO getUserById(@PathVariable int db,@PathVariable long id) {
+		userService.setContext(db);
 		try {
 		return userService.getUserById(id);
 
@@ -52,20 +55,20 @@ public class UserRestController {
 		}
 	}
 
-	@PostMapping("/new")
+	@PostMapping("/{db}/new")
 	@ResponseStatus(HttpStatus.CREATED)
-	public UserDTO saveUser(@RequestBody UserDTO newUser) {
+	public UserDTO saveUser(@PathVariable int db,@RequestBody UserDTO newUser) {
+		userService.setContext(db);
 		try {
 			return userService.insertNewUser(newUser);
 		} catch (Exception e) {
-			// TODO: handle exception
 			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
 		}
 	}
 
-	@PutMapping("/update/{id}")
-	public UserDTO updateUser(@PathVariable long id, @RequestBody UserDTO newUser) {
-
+	@PutMapping("/{db}/update/{id}")
+	public UserDTO updateUser(@PathVariable int db,@PathVariable long id, @RequestBody UserDTO newUser) {
+		userService.setContext(db);
 		try {
 			return userService.updateUserById(id, newUser);
 		} catch (IllegalArgumentException e) {

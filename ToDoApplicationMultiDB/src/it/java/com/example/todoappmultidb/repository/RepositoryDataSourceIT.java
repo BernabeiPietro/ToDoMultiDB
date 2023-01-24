@@ -11,10 +11,13 @@ import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.transaction.BeforeTransaction;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.todoappmultidb.model.ToDo;
 import com.example.todoappmultidb.model.User;
@@ -47,10 +50,11 @@ public class RepositoryDataSourceIT {
 		dataContext.set(DataSourceEnum.DATASOURCE_ONE);
 		savedUser1 = userRepository.save(toSaveUser);
 		savedTodo1 = todoRepository.save(toSaveTodo);
+		
 		dataContext.set(DataSourceEnum.DATASOURCE_TWO);
 	
 		User toSaveUser2 = new User(null, new ArrayList<>(), "db2", "db2");
-		ToDo toSaveTodo2 = new ToDo(null, toSaveUser, new HashMap<>(), LocalDateTime.of(2015, 2, 2, 0, 0));
+		ToDo toSaveTodo2 = new ToDo(null, toSaveUser2, new HashMap<>(), LocalDateTime.of(2015, 2, 2, 0, 0));
 		toSaveTodo2.addToDoAction("avorp", false);
 		toSaveUser2.addToDo(toSaveTodo);
 		savedUser2 = userRepository.save(toSaveUser2);
@@ -71,14 +75,13 @@ public class RepositoryDataSourceIT {
 				.hasFieldOrPropertyWithValue("name", savedUser1.getName());
 		assertThat(findByIdUser.get().getToDo()).containsAll(findToDoByUserId);
 		dataContext.set(DataSourceEnum.DATASOURCE_TWO);
-		assertThat(userRepository.findById(savedUser1.getId())).isNotEqualTo(savedUser1);
-		assertThat(todoRepository.findToDoByUserId(savedUser1)).isNotEqualTo(savedTodo1);
+		assertThat(userRepository.findAll()).doesNotContain(savedUser1);
+		assertThat(todoRepository.findAll()).doesNotContain(savedTodo1);
 	}
 
 	@Test
 	public void saveUserAndToDoSecondDB_test() {
 		dataContext.set(DataSourceEnum.DATASOURCE_TWO);
-	
 		Optional<User> findByIdUser = userRepository.findById(savedUser2.getId());
 		Optional<ToDo> findByIdTodo = todoRepository.findById(savedTodo2.getId());
 		assertTrue(findByIdUser.isPresent());
@@ -88,8 +91,8 @@ public class RepositoryDataSourceIT {
 				.hasFieldOrPropertyWithValue("name", savedUser2.getName());
 		assertThat(findByIdUser.get().getToDo()).contains(findByIdTodo.get());
 		dataContext.set(DataSourceEnum.DATASOURCE_ONE);
-		assertThat(userRepository.findById(savedUser2.getId())).isNotEqualTo(savedUser2);
-		assertThat(todoRepository.findById(savedTodo2.getId())).isNotEqualTo(savedTodo2);
+		assertThat(userRepository.findAll()).doesNotContain(savedUser2);
+		assertThat(todoRepository.findAll()).doesNotContain(savedTodo2);
 	}
 
 }

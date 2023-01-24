@@ -22,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.service.ToDoService;
+import com.example.todoappmultidb.service.UserService;
 
 import javassist.NotFoundException;
 
@@ -31,9 +32,11 @@ public class ToDoRestController {
 
 	@Autowired
 	private ToDoService todoService;
-
-	@GetMapping
-	public List<ToDoDTO> getToDo() {
+	@Autowired
+	private UserService userService;
+	@GetMapping("/{db}")
+	public List<ToDoDTO> getToDo(@PathVariable int db) {
+		userService.setContext(db);
 		try {
 			return todoService.findAll();
 
@@ -44,8 +47,9 @@ public class ToDoRestController {
 
 	}
 
-	@GetMapping("/{id}")
-	public ToDoDTO getToDoById(@PathVariable long id) {
+	@GetMapping("/{db}/id/{id}")
+	public ToDoDTO getToDoById(@PathVariable int db,@PathVariable long id) {
+		userService.setContext(db);
 		try {
 			return todoService.findByIdDTO(id);
 		} catch (Exception e) {
@@ -63,9 +67,10 @@ public class ToDoRestController {
 	 * ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage()); } }
 	 */
 
-	@PostMapping("/new")
+	@PostMapping("/{db}/new")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ToDoDTO save(@RequestBody ToDoDTO todo) {
+	public ToDoDTO save(@PathVariable int db, @RequestBody ToDoDTO todo) {
+		userService.setContext(db);
 		try {
 			return todoService.save(todo);
 		} catch (Exception e) {
@@ -73,8 +78,9 @@ public class ToDoRestController {
 		}
 	}
 
-	@PutMapping("/update/{id}")
-	public ToDoDTO updateToDo(@RequestBody ToDoDTO todo, @PathVariable Long id) {
+	@PutMapping("/{db}/update/{id}")
+	public ToDoDTO updateToDo(@RequestBody ToDoDTO todo, @PathVariable int db,@PathVariable Long id) {
+		userService.setContext(db);
 		try {
 			return todoService.updateById(id, todo);
 		} catch (IllegalArgumentException e) {
