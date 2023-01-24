@@ -156,8 +156,7 @@
 						<excludes>
 							<exclude>**/ToDoApplicationMultiDbApplication.*</exclude>
 							<exclude>**/model/**</exclude>
-							<exclude>**/model/dto/**</exclude>
-
+							
 						</excludes>
 					</configuration>
 

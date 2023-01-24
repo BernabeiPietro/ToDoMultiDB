@@ -2,6 +2,7 @@ package com.example.todoappmultidb.rest;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -19,6 +20,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -118,14 +121,36 @@ public class RestServiceIT {
 		User toSaveUser = new User(null, new ArrayList<>(), "db1", "db1");
 		ToDo toSaveTodo = new ToDo(null, toSaveUser, new HashMap<>(), LocalDateTime.of(2005, 1, 1, 1, 1,1));
 		toSaveTodo.addToDoAction("prova", false);
-		toSaveUser.addToDo(toSaveTodo);
-		User savedUser1 = userRepository.save(toSaveUser);
+		userRepository.save(toSaveUser);
 		ToDo savedTodo1 = todoRepository.save(toSaveTodo);
 		this.mvc.perform(get("/api/todo/1/id/"+savedTodo1.getId().toString()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isOk()).andExpect(jsonPath("$.id", is(savedTodo1.getId().intValue())))
 				.andExpect(jsonPath("$.date", is(savedTodo1.getLocalDateTime().toString())))
 				.andExpect(jsonPath("$.idOfUser", is(savedTodo1.getIdOfUser().getId().intValue())))
 				.andExpect(jsonPath("$.toDo", is(savedTodo1.getToDo())));
+		userService.setContext(2);
+		User toSaveUser2 = new User(null, new ArrayList<>(), "db1", "db1");
+		ToDo toSaveTodo2 = new ToDo(null, toSaveUser2, new HashMap<>(), LocalDateTime.of(2005, 1, 1, 1, 1,1));
+		toSaveTodo2.addToDoAction("prova", false);
+		userRepository.save(toSaveUser2);
+		ToDo savedTodo2 = todoRepository.save(toSaveTodo2);
+		this.mvc.perform(get("/api/todo/2/id/"+savedTodo2.getId().toString()).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+				.andDo(MockMvcResultHandlers.print()).andExpect(status().isOk()).andExpect(jsonPath("$.id", is(savedTodo2.getId().intValue())))
+				.andExpect(jsonPath("$.date", is(savedTodo2.getLocalDateTime().toString())))
+				.andExpect(jsonPath("$.idOfUser", is(savedTodo2.getIdOfUser().getId().intValue())))
+				.andExpect(jsonPath("$.toDo", is(savedTodo2.getToDo())));
 	}
-
+	@Test
+	public void testGetOneUser() throws Exception {
+		userService.setContext(1);
+		User savedUser1=userRepository.save(new User(null, new ArrayList<>(), "db1", "db1"));
+		this.mvc.perform(get("/api/users/1/id/"+savedUser1.getId().toString()).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(savedUser1.getId().intValue()))).andExpect(jsonPath("$.name", is(savedUser1.getName())))
+				.andExpect(jsonPath("$.email", is(savedUser1.getEmail())));
+		userService.setContext(2);
+		User savedUser2=userRepository.save(new User(null, new ArrayList<>(), "db1", "db1"));
+		this.mvc.perform(get("/api/users/1/id/"+savedUser2.getId().toString()).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$.id", is(savedUser2.getId().intValue()))).andExpect(jsonPath("$.name", is(savedUser2.getName())))
+				.andExpect(jsonPath("$.email", is(savedUser2.getEmail())));
+	}
 }
