@@ -52,7 +52,7 @@
 
 		<sonar.coverage.exclusions>
 			**/*Application.*,
-			**/model/*
+			**/model/**
 		</sonar.coverage.exclusions>
 		<sonar.projectKey>BernabeiPietro_todomultidb</sonar.projectKey>
 

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.todoappmultidb.model.ToDo;
 import com.example.todoappmultidb.model.User;
 import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.repository.UserRepository;

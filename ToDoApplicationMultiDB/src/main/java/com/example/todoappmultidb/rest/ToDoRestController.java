@@ -52,14 +52,7 @@ public class ToDoRestController {
 
 	}
 
-	/* Not developed the ToDo Part
-	 * @GetMapping("/ofuser/{id}") public List<ToDoDTO>
-	 * getToDoByUserId(@PathVariable Long id) { try { return
-	 * todoService.findByUserId(new UserDTO(id, null, null));
-	 * 
-	 * } catch (NotFoundException e) { throw new
-	 * ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage()); } }
-	 */
+	
 
 	@PostMapping("/{db}/new")
 	@ResponseStatus(HttpStatus.CREATED)
