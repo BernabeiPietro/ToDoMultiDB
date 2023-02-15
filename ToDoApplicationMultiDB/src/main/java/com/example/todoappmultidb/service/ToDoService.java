@@ -55,7 +55,7 @@ public class ToDoService {
 	public ToDoDTO updateById(long id, ToDoDTO toUpdate) throws NotFoundException {
 		verifyNullElement(toUpdate);
 		toUpdate.setId(id);
-		ToDo retrieve=findById(toUpdate.getIdOfUser());
+		ToDo retrieve=findById(toUpdate.getId());
 		retrieve.setLocalDateTime(toUpdate.getDate());
 		retrieve.setToDo(toUpdate.getToDo());
 		return toDTO(toDoRepository.save(retrieve));

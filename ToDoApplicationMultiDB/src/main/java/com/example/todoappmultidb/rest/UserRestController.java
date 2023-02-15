@@ -1,6 +1,8 @@
 package com.example.todoappmultidb.rest;
 
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,9 +29,11 @@ public class UserRestController {
 
 	@GetMapping("/{db}")
 	public List<UserDTO> getUsers(@PathVariable int db) {
+		userService.clearContext();
 		userService.setContext(db);
 		try {
-			return userService.getAllUser();
+			List<UserDTO> u=userService.getAllUser();
+			return u;
 
 		} catch (NotFoundException e) {
 
@@ -38,20 +42,23 @@ public class UserRestController {
 	}
 
 	@GetMapping("/{db}/id/{id}")
-	public UserDTO getUserById(@PathVariable int db,@PathVariable long id) {
+	public UserDTO getUserById(@PathVariable int db, @PathVariable long id) {
+		userService.clearContext();
 		userService.setContext(db);
 		try {
-		return userService.getUserById(id);
+			UserDTO u=userService.getUserById(id);
+			return u;
 
 		} catch (NotFoundException e) {
 
-		throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
 		}
 	}
 
 	@PostMapping("/{db}/new")
 	@ResponseStatus(HttpStatus.CREATED)
-	public UserDTO saveUser(@PathVariable int db,@RequestBody UserDTO newUser) {
+	public UserDTO saveUser(@PathVariable int db, @RequestBody UserDTO newUser) {
+		userService.clearContext();
 		userService.setContext(db);
 		try {
 			return userService.insertNewUser(newUser);
@@ -61,7 +68,8 @@ public class UserRestController {
 	}
 
 	@PutMapping("/{db}/update/{id}")
-	public UserDTO updateUser(@PathVariable int db,@PathVariable long id, @RequestBody UserDTO newUser) {
+	public UserDTO updateUser(@PathVariable int db, @PathVariable long id, @RequestBody UserDTO newUser) {
+		userService.clearContext();
 		userService.setContext(db);
 		try {
 			return userService.updateUserById(id, newUser);

@@ -17,7 +17,6 @@ import com.example.todoappmultidb.routing.config.DataSourceEnum;
 
 import javassist.NotFoundException;
 
-@Transactional(readOnly = true)
 @Service
 public class UserService {
 
@@ -27,7 +26,7 @@ public class UserService {
 	@Autowired
 	private DataSourceContextHolder dataContext;
 
-	@Transactional(rollbackFor=NotFoundException.class)
+	@Transactional(rollbackFor = NotFoundException.class)
 	public List<UserDTO> getAllUser() throws NotFoundException {
 
 		List<User> userFound = userRepository.findAll();
@@ -35,14 +34,16 @@ public class UserService {
 			throw new NotFoundException("Not found any User");
 		return userFound.stream().map(this::toDTO).collect(Collectors.toList());
 	}
-	
-	@Transactional(rollbackFor=NotFoundException.class)
+
+	@Transactional(rollbackFor = NotFoundException.class)
 	public UserDTO getUserById(long id) throws NotFoundException {
 		return toDTO(getUser(id));
 	}
+
 	protected User getUser(long id) throws NotFoundException {
 		return userRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found any User"));
 	}
+
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = IllegalArgumentException.class)
 	public UserDTO insertNewUser(UserDTO userToSave) {
 		userToSave.setId(null);
@@ -50,22 +51,27 @@ public class UserService {
 		return toDTO(userRepository.save(new User(userToSave, new ArrayList<>())));
 	}
 
-	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW, rollbackFor = {IllegalArgumentException.class,NotFoundException.class})
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = {
+			IllegalArgumentException.class, NotFoundException.class })
 	public UserDTO updateUserById(long id, UserDTO userToUpdate) throws NotFoundException {
 		verifyNullValue(userToUpdate);
 		userToUpdate.setId(id);
-		User retrieved=this.getUser(id);
+		User retrieved = this.getUser(id);
 		retrieved.setEmail(userToUpdate.getEmail());
 		retrieved.setName(userToUpdate.getName());
 		return toDTO(userRepository.save(retrieved));
 	}
 
 	public DataSourceEnum setContext(int ctx) {
-		if(ctx<1)
+		if (ctx < 1)
 			dataContext.set(DataSourceEnum.values()[0]);
-		else 
-			dataContext.set(DataSourceEnum.values()[(ctx-1)%2]);
+		else
+			dataContext.set(DataSourceEnum.values()[(ctx - 1) % 2]);
 		return dataContext.getDataSource();
+	}
+
+	public void clearContext() {
+		dataContext.clear();
 	}
 
 	private void verifyNullValue(UserDTO userToSave) {

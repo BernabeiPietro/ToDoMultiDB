@@ -131,6 +131,11 @@
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -156,7 +161,7 @@
 						<excludes>
 							<exclude>**/ToDoApplicationMultiDbApplication.*</exclude>
 							<exclude>**/model/**</exclude>
-							
+
 						</excludes>
 					</configuration>
 
