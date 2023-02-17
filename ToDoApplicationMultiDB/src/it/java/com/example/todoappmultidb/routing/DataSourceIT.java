@@ -26,19 +26,21 @@ public class DataSourceIT {
 
 	@Autowired
 	private DataSource data;
+	@Autowired
+	private DataSourceContextHolder dataContext;
 	@Test
 	public void dataSourceConnectionOne_test() throws SQLException {
-		DataSourceContextHolder.set(DataSourceEnum.DATASOURCE_ONE);
+		dataContext.set(DataSourceEnum.DATASOURCE_ONE);
 		assertThat(data.getConnection().isValid(10)).isTrue();
 		assertThat(data.getConnection().getMetaData().getURL()).isEqualTo("jdbc:mysql://localhost:28011/db_example_1?createDatabaseIfNotExist=true");
-		DataSourceContextHolder.clear();
+		dataContext.clear();
 	}
 	@Test
 	public void dataSourceConnectionTwo_test() throws SQLException {
-		DataSourceContextHolder.set(DataSourceEnum.DATASOURCE_TWO);
+		dataContext.set(DataSourceEnum.DATASOURCE_TWO);
 		assertThat(data.getConnection().isValid(10)).isTrue();
 		assertThat(data.getConnection().getMetaData().getURL()).isEqualTo("jdbc:mysql://localhost:28012/db_example_2?createDatabaseIfNotExist=true");
-		DataSourceContextHolder.clear();
+		dataContext.clear();
 	}
 
 }

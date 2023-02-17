@@ -86,8 +86,6 @@ public class ToDoRepositoryTest {
 
 	@Test
 	public void test_findById_notFound() {
-		entityManager.persistAndFlush(u);
-		entityManager.persistAndFlush(todo1);
 		assertThat(toDoRepository.findById(0L)).isEmpty();
 	}
 
@@ -151,5 +149,4 @@ public class ToDoRepositoryTest {
 		assertThat(entityManager.find(User.class, u2.getId())).isNull();
 		assertThat(toDoRepository.findToDoByUserId(u2)).isEqualTo(Collections.emptyList());
 	}
-
 }

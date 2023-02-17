@@ -34,6 +34,7 @@ public class ToDo {
 			@JoinColumn(name = "todo_map_id", referencedColumnName = "id") })
 	@MapKeyColumn(name = "todo_action") /* where keys are stored */
 	@Column(name = "doit") // where value are stored
+
     @Fetch(value = FetchMode.JOIN)
 	private Map<String, Boolean> actionList;
 	
@@ -53,10 +54,13 @@ public class ToDo {
 	}
 
 	public Map<String, Boolean> getToDo() {
+
 		return actionList;
+
 	}
 
 	void setToDo(Map<String, Boolean> toDo) {
+
 		this.actionList = toDo;
 	}
 
@@ -64,7 +68,7 @@ public class ToDo {
 		return id;
 	}
 
-	void setId(Long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -77,7 +81,9 @@ public class ToDo {
 	}
 
 	public void addToDoAction(String action, Boolean doIt) {
+
 		this.actionList.put(action, doIt);
+
 	}
 
 	public User getIdOfUser() {
@@ -95,17 +101,25 @@ public class ToDo {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		ToDo other = (ToDo) obj;
-		return Objects.equals(actionList, other.actionList) 
-				&& Objects.equals(date, other.date)
-				&& Objects.equals(id, other.id) 
-				&& Objects.equals(idOfUser.getId(), other.idOfUser.getId());
+		return Objects.equals(actionList, other.actionList) && Objects.equals(date, other.date)
+				&& Objects.equals(id, other.id) && Objects.equals(idOfUser, other.idOfUser);
 	}
+
+	@Override
+	public String toString() {
+		return "ToDo [id=" + id + ", actionList=" + actionList + ", date=" + date + ", idOfUser=" + idOfUser.getId() + "]";
+	}
+
+
 
 }

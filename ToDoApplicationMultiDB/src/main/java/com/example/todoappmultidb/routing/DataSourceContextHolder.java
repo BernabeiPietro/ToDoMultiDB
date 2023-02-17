@@ -1,7 +1,10 @@
 package com.example.todoappmultidb.routing;
 
+import org.springframework.stereotype.Component;
+
 import com.example.todoappmultidb.routing.config.DataSourceEnum;
 
+@Component
 public class DataSourceContextHolder {
 
 	private static ThreadLocal<DataSourceEnum> context = new ThreadLocal<>();
@@ -9,19 +12,19 @@ public class DataSourceContextHolder {
 	private DataSourceContextHolder() {
 		
 	}
-	public static void set(DataSourceEnum data) {
+	public void set(DataSourceEnum data) {
 		context.set(data);
 
 	}
 
-	public static DataSourceEnum getDataSource() {
+	public DataSourceEnum getDataSource() {
 		return context.get();
 	}
 
-	public static void clear() {
+	public void clear() {
 		context.remove();
 	}
-
+	
 	protected static void setCONTEXT(ThreadLocal<DataSourceEnum> cont) {
 		context = cont;
 	}
