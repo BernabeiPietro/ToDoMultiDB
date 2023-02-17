@@ -37,6 +37,7 @@
 			pom.xml,
 			${project.build.sourceDirectory},
 			${basedir}/src/main/resources
+
 		</sonar.sources>
 		<!-- Manually specify sonar.tests since, if we run sonar:sonar in a separate 
 			build, SonarQube can only detect the standard test source folder and not 
@@ -51,10 +52,11 @@
 
 
 		<sonar.coverage.exclusions>
-			**/*Application.*,
+			**/*Application.java,
 			**/model/*
 		</sonar.coverage.exclusions>
 		<sonar.projectKey>BernabeiPietro_todomultidb</sonar.projectKey>
+
 
 		<db.docker.dns>localhost</db.docker.dns>
 		<db.docker.port1>28011</db.docker.port1>
@@ -67,6 +69,7 @@
 		<db.docker.psw>password</db.docker.psw>
 		<JDBC-URL1>jdbc:mysql://${db.docker.dns}:${db.docker.port1}/${db.docker.db1}?createDatabaseIfNotExist=true</JDBC-URL1>
 		<JDBC-URL2>jdbc:mysql://${db.docker.dns}:${db.docker.port2}/${db.docker.db2}?createDatabaseIfNotExist=true</JDBC-URL2>
+
 	</properties>
 
 	<dependencies>
