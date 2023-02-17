@@ -1,6 +1,8 @@
 package com.example.todoappmultidb.service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,13 +10,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.todoappmultidb.model.User;
+import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.routing.DataSourceContextHolder;
 import com.example.todoappmultidb.routing.config.DataSourceEnum;
 
 import javassist.NotFoundException;
 
-@Transactional(readOnly = true)
 @Service
 public class UserService {
 
@@ -24,42 +26,61 @@ public class UserService {
 	@Autowired
 	private DataSourceContextHolder dataContext;
 
-	@Transactional(rollbackFor=NotFoundException.class)
-	public List<User> getAllUser() throws NotFoundException {
+	@Transactional(rollbackFor = NotFoundException.class)
+	public List<UserDTO> getAllUser() throws NotFoundException {
 
 		List<User> userFound = userRepository.findAll();
 		if (userFound.isEmpty())
 			throw new NotFoundException("Not found any User");
-		return userFound;
+		return userFound.stream().map(this::toDTO).collect(Collectors.toList());
 	}
 
-	@Transactional(rollbackFor=NotFoundException.class)
-	public User getUserById(long id) throws NotFoundException {
+	@Transactional(rollbackFor = NotFoundException.class)
+	public UserDTO getUserById(long id) throws NotFoundException {
+		return toDTO(getUser(id));
+	}
+
+	protected User getUser(long id) throws NotFoundException {
 		return userRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found any User"));
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = IllegalArgumentException.class)
-	public User insertNewUser(User userToSave) {
+	public UserDTO insertNewUser(UserDTO userToSave) {
 		userToSave.setId(null);
 		verifyNullValue(userToSave);
-		return userRepository.save(userToSave);
+		return toDTO(userRepository.save(new User(userToSave, new ArrayList<>())));
 	}
 
-	@Transactional(readOnly = false, propagation=Propagation.REQUIRES_NEW, rollbackFor = IllegalArgumentException.class)
-	public User updateUserById(long id, User userToUpdate) {
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = {
+			IllegalArgumentException.class, NotFoundException.class })
+	public UserDTO updateUserById(long id, UserDTO userToUpdate) throws NotFoundException {
 		verifyNullValue(userToUpdate);
 		userToUpdate.setId(id);
-
-		return userRepository.save(userToUpdate);
+		User retrieved = this.getUser(id);
+		retrieved.setEmail(userToUpdate.getEmail());
+		retrieved.setName(userToUpdate.getName());
+		return toDTO(userRepository.save(retrieved));
 	}
 
 	public DataSourceEnum setContext(int ctx) {
-		dataContext.set(DataSourceEnum.values()[ctx - 1]);
+		if (ctx < 1)
+			dataContext.set(DataSourceEnum.values()[0]);
+		else
+			dataContext.set(DataSourceEnum.values()[(ctx - 1) % 2]);
 		return dataContext.getDataSource();
 	}
 
-	private void verifyNullValue(User userToSave) {
-		if (userToSave.equals(new User(null, null, null, null)))
+	public void clearContext() {
+		dataContext.clear();
+	}
+
+	private void verifyNullValue(UserDTO userToSave) {
+		if (userToSave.equals(new UserDTO(null, null, null)))
 			throw new IllegalArgumentException("User with null property");
 	}
+
+	public UserDTO toDTO(User user) {
+		return new UserDTO(user);
+	}
+
 }

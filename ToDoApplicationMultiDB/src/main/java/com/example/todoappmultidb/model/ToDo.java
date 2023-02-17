@@ -1,6 +1,7 @@
 package com.example.todoappmultidb.model;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -18,13 +19,10 @@ import javax.persistence.MapKeyColumn;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.example.todoappmultidb.model.dto.ToDoDTO;
+
 @Entity
 public class ToDo {
-
-	public ToDo() {
-		super();
-	}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -34,7 +32,6 @@ public class ToDo {
 			@JoinColumn(name = "todo_map_id", referencedColumnName = "id") })
 	@MapKeyColumn(name = "todo_action") /* where keys are stored */
 	@Column(name = "doit") // where value are stored
-
     @Fetch(value = FetchMode.JOIN)
 	private Map<String, Boolean> actionList;
 	
@@ -42,15 +39,32 @@ public class ToDo {
 	private LocalDateTime date;
 	
 	@ManyToOne
-	@JoinColumn(name = "idUser")
+	@JoinColumn(name = "idUser",nullable=false)
 	private User idOfUser;
 
+
+	public ToDo() {
+		super();
+	}
+
+	
 	public ToDo(Long id, User idOfUser, Map<String, Boolean> toDo, LocalDateTime date) {
 		super();
 		this.id = id;
 		this.actionList = toDo;
 		this.date = date;
 		this.idOfUser = idOfUser;
+	}
+	public ToDo(Long id, User idOfUser, LocalDateTime date) {
+		super();
+		this.id = id;
+		this.actionList = new HashMap<>();
+		this.date = date;
+		this.idOfUser = idOfUser;
+	}
+
+	public ToDo(ToDoDTO td,User u) {
+		this(td.getId(),u, td.getToDo(),td.getDate());
 	}
 
 	public Map<String, Boolean> getToDo() {
@@ -59,7 +73,7 @@ public class ToDo {
 
 	}
 
-	void setToDo(Map<String, Boolean> toDo) {
+	public void setToDo(Map<String, Boolean> toDo) {
 
 		this.actionList = toDo;
 	}

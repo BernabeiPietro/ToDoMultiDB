@@ -47,13 +47,15 @@
 		<sonar.tests>
 			${project.build.testSourceDirectory},
 			${basedir}/src/it/java
-		<!-- 	${basedir}/src/e2e/java -->
+			<!-- ${basedir}/src/e2e/java -->
 		</sonar.tests>
 
 
 		<sonar.coverage.exclusions>
-			**/*Application.java,
-			**/model/*
+
+			**/*Application.*,
+			**/model/**
+
 		</sonar.coverage.exclusions>
 		<sonar.projectKey>BernabeiPietro_todomultidb</sonar.projectKey>
 
@@ -96,6 +98,10 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
@@ -126,6 +132,15 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -151,7 +166,7 @@
 						<excludes>
 							<exclude>**/ToDoApplicationMultiDbApplication.*</exclude>
 							<exclude>**/model/**</exclude>
-							
+
 						</excludes>
 					</configuration>
 
@@ -164,7 +179,7 @@
 								<goal>report</goal>
 							</goals>
 						</execution>
-						
+
 					</executions>
 				</plugin>
 			</plugins>
@@ -231,7 +246,7 @@
 
 				<executions>
 					<execution>
-						<id>default-it</id>
+						<id>default</id>
 						<goals>
 							<goal>integration-test</goal>
 							<goal>verify</goal>

@@ -1,6 +1,7 @@
 package com.example.todoappmultidb.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.todoappmultidb.model.ToDo;
+import com.example.todoappmultidb.model.User;
+import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.repository.ToDoRepository;
 
 import javassist.NotFoundException;
@@ -18,37 +21,55 @@ public class ToDoService {
 
 	@Autowired
 	ToDoRepository toDoRepository;
+	@Autowired
+	UserService userService;
 
 	@Transactional(rollbackFor = NotFoundException.class)
-	public List<ToDo> findAll() throws NotFoundException {
+	public List<ToDoDTO> findAll() throws NotFoundException {
 		List<ToDo> todoFound = toDoRepository.findAll();
 		if (todoFound.isEmpty())
 			throw new NotFoundException("Not found any ToDo");
-		return todoFound;
+		return todoFound.stream().map(this::toDTO).collect(Collectors.toList());
 	}
 
 	@Transactional(rollbackFor = NotFoundException.class)
-	public ToDo findById(Long id) throws NotFoundException {
+	public ToDoDTO findByIdDTO(Long id) throws NotFoundException {
+		return toDTO(findById(id));
+	}
+
+	protected ToDo findById(Long id) throws NotFoundException {
 		return toDoRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found any ToDo"));
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = IllegalArgumentException.class)
-	public ToDo save(ToDo toSave) {
-		verifyNullElement(toSave);
-		return toDoRepository.save(toSave);
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = {IllegalArgumentException.class,NotFoundException.class})
+	public ToDoDTO save(ToDoDTO toDoDTO) throws NotFoundException {
+		verifyNullElement(toDoDTO);
+		
+		User retrieved = userService.getUser(toDoDTO.getIdOfUser());
+		ToDo toSave=new ToDo(toDoDTO,retrieved);
+		return toDTO(toDoRepository.save(toSave));
 
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = IllegalArgumentException.class)
-	public ToDo updateById(long id, ToDo toUpdate) {
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = {IllegalArgumentException.class,NotFoundException.class})
+	public ToDoDTO updateById(long id, ToDoDTO toUpdate) throws NotFoundException {
 		verifyNullElement(toUpdate);
 		toUpdate.setId(id);
-		return toDoRepository.save(toUpdate);
+		ToDo retrieve=findById(toUpdate.getId());
+		retrieve.setLocalDateTime(toUpdate.getDate());
+		retrieve.setToDo(toUpdate.getToDo());
+		return toDTO(toDoRepository.save(retrieve));
 	}
 
-	private void verifyNullElement(ToDo toVerify) {
-		if (toVerify.equals(new ToDo(null, null, null, null)))
+	private void verifyNullElement(ToDoDTO toDoDTO) {
+		if (toDoDTO.equals(new ToDoDTO(null, null, null, null)))
 			throw new IllegalArgumentException("ToDo with null property");
 	}
-
+	
+	public ToDoDTO toDTO(ToDo t)
+	{
+		return new ToDoDTO(t);
+	}
+	
+	
 }
