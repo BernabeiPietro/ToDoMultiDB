@@ -67,7 +67,6 @@ public class ToDoRestController {
 
 	@PutMapping("/{db}/update/{id}")
 	public ToDoDTO updateToDo(@RequestBody ToDoDTO todo, @PathVariable int db,@PathVariable Long id) {
-		userService.clearContext();
 		userService.setContext(db);
 		try {
 			return todoService.updateById(id, todo);

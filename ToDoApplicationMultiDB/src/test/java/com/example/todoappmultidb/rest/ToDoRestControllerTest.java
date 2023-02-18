@@ -177,6 +177,8 @@ public class ToDoRestControllerTest {
 		inOrder.verify(userService).setContext(2);
 		inOrder.verify(todoService).findByIdDTO(2l);
 	}
+
+	
 	/*
 	 * not developed into service class
 	 * 

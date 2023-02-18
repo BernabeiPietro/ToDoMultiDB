@@ -1,6 +1,7 @@
 package com.example.todoappmultidb.routing;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 
 import org.junit.Before;
@@ -52,4 +53,33 @@ public class DataSourceContextHolderTest {
 		assertThat(dataContext.getDataSource()).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
 	}
 
+
+	@Test
+	public void test_setContext_one()
+	{
+		assertThat(dataContext.setContext(1)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
+	}
+	@Test
+	public void test_setContext_two()
+	{
+		assertThat(dataContext.setContext(2)).isEqualTo(DataSourceEnum.DATASOURCE_TWO);
+	}
+	@Test
+	public void test_setContext_callDataContext()
+	{
+		dataContext.setContext(1);
+		verify(CONTEXT).set(any(DataSourceEnum.class));
+	}
+	@Test
+	public void test_setContext_outside_range()
+	{
+		assertThat(dataContext.setContext(3)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
+
+	}
+	@Test
+	public void test_setContext_under_range()
+	{
+		assertThat(dataContext.setContext(0)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
+
+	}
 }

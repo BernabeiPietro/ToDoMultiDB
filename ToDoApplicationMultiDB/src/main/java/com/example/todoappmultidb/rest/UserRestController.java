@@ -1,8 +1,6 @@
 package com.example.todoappmultidb.rest;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,25 +27,25 @@ public class UserRestController {
 
 	@GetMapping("/{db}")
 	public List<UserDTO> getUsers(@PathVariable int db) {
-		userService.clearContext();
 		userService.setContext(db);
 		try {
-			List<UserDTO> u=userService.getAllUser();
-			return u;
+			return userService.getAllUser();
 
 		} catch (NotFoundException e) {
 
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
+		}
+		catch (NullPointerException e) {
 			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
 		}
 	}
 
 	@GetMapping("/{db}/id/{id}")
 	public UserDTO getUserById(@PathVariable int db, @PathVariable long id) {
-		userService.clearContext();
 		userService.setContext(db);
 		try {
-			UserDTO u=userService.getUserById(id);
-			return u;
+			return userService.getUserById(id);
+			
 
 		} catch (NotFoundException e) {
 
@@ -58,7 +56,6 @@ public class UserRestController {
 	@PostMapping("/{db}/new")
 	@ResponseStatus(HttpStatus.CREATED)
 	public UserDTO saveUser(@PathVariable int db, @RequestBody UserDTO newUser) {
-		userService.clearContext();
 		userService.setContext(db);
 		try {
 			return userService.insertNewUser(newUser);
@@ -69,7 +66,6 @@ public class UserRestController {
 
 	@PutMapping("/{db}/update/{id}")
 	public UserDTO updateUser(@PathVariable int db, @PathVariable long id, @RequestBody UserDTO newUser) {
-		userService.clearContext();
 		userService.setContext(db);
 		try {
 			return userService.updateUserById(id, newUser);

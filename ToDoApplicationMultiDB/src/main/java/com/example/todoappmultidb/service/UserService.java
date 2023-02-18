@@ -47,14 +47,14 @@ public class UserService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = IllegalArgumentException.class)
 	public UserDTO insertNewUser(UserDTO userToSave) {
 		userToSave.setId(null);
-		verifyNullValue(userToSave);
+		verifyNullField(userToSave);
 		return toDTO(userRepository.save(new User(userToSave, new ArrayList<>())));
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = {
 			IllegalArgumentException.class, NotFoundException.class })
 	public UserDTO updateUserById(long id, UserDTO userToUpdate) throws NotFoundException {
-		verifyNullValue(userToUpdate);
+		verifyNullField(userToUpdate);
 		userToUpdate.setId(id);
 		User retrieved = this.getUser(id);
 		retrieved.setEmail(userToUpdate.getEmail());
@@ -63,18 +63,14 @@ public class UserService {
 	}
 
 	public DataSourceEnum setContext(int ctx) {
-		if (ctx < 1)
-			dataContext.set(DataSourceEnum.values()[0]);
-		else
-			dataContext.set(DataSourceEnum.values()[(ctx - 1) % 2]);
-		return dataContext.getDataSource();
+		return dataContext.setContext(ctx);
 	}
 
 	public void clearContext() {
 		dataContext.clear();
 	}
 
-	private void verifyNullValue(UserDTO userToSave) {
+	private void verifyNullField(UserDTO userToSave) {
 		if (userToSave.equals(new UserDTO(null, null, null)))
 			throw new IllegalArgumentException("User with null property");
 	}

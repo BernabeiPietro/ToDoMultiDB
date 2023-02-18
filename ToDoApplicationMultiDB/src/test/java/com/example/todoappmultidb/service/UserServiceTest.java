@@ -55,7 +55,12 @@ public class UserServiceTest {
 		assertThat(thrown.getMessage()).isEqualTo("Not found any User");
 		
 	}
-
+	@Test
+	public void test_getAllUser_null() {
+		when(userRepository.findAll()).thenReturn(null);
+		Exception thrown= assertThrows(NullPointerException.class,() -> userService.getAllUser());
+		
+	}
 	@Test
 	public void test_getAllUser() throws NotFoundException {
 		User user1 = new User(1L, new ArrayList<>(), "first", "email1");
@@ -76,7 +81,11 @@ public class UserServiceTest {
 		Exception thrown= assertThrows(NotFoundException.class,() -> userService.getUserById(1L));
 		assertThat(thrown.getMessage()).isEqualTo("Not found any User");
 	}
-	
+	@Test
+	public void test_getUserById_null() {
+		when(userRepository.findById(1L)).thenReturn(null);
+		Exception thrown= assertThrows(NullPointerException.class,() -> userService.getUserById(1L));
+	}
 	@Test
 	public void test_insertNewUser_nullId_returnSavedUser() {
 		UserDTO userToSave=spy(new UserDTO(99L, "prova","prova"));
@@ -99,7 +108,7 @@ public class UserServiceTest {
 	}
 	@Test
 	public void test_updateUserById() throws NotFoundException {
-		UserDTO inputDTO=new UserDTO(null, "changed","changed");
+		UserDTO inputDTO=spy(new UserDTO(null, "changed","changed"));
 	
 		
 		User retrieved = spy(new User(1L,new ArrayList<>(),"changeIt","changeIt"));
@@ -114,7 +123,8 @@ public class UserServiceTest {
 
 		assertThat(result).isEqualTo(new UserDTO(userUpdated));
 		
-		InOrder inOrder=inOrder(retrieved,userRepository);
+		InOrder inOrder=inOrder(inputDTO,retrieved,userRepository);
+		inOrder.verify(inputDTO).setId(any(Long.class));
 		inOrder.verify(retrieved).setEmail("changed");
 		inOrder.verify(retrieved).setName("changed");
 		inOrder.verify(retrieved,never()).setTodo(any(ArrayList.class));
@@ -136,37 +146,15 @@ public class UserServiceTest {
 		assertThat(thrown.getMessage()).isEqualTo("Not found any User");
 
 	}
-	@Test
-	public void test_setContext_one()
-	{
-		assertThat(userService.setContext(1)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
-	}
-	@Test
-	public void test_setContext_two()
-	{
-		assertThat(userService.setContext(2)).isEqualTo(DataSourceEnum.DATASOURCE_TWO);
-	}
-	@Test
-	public void test_setContext_callDataContext()
-	{
-		userService.setContext(1);
-		verify(dataContext).set(any(DataSourceEnum.class));
-	}
-	@Test
-	public void test_setContext_outside_range()
-	{
-		assertThat(userService.setContext(3)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
-
-	}
-	@Test
-	public void test_setContext_under_range()
-	{
-		assertThat(userService.setContext(0)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
-
-	}
+	
 	@Test
 	public void test_fromUser_toDTO() {
 		assertThat(userService.toDTO(new User(1l,"prova","prova"))).isEqualTo(new UserDTO(1l,"prova","prova"));
+	}
+	@Test
+	public void test_clearContex() {
+		userService.clearContext();
+		verify(dataContext).clear();
 	}
 	
 }
