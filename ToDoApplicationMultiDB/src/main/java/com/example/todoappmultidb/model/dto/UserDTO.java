@@ -1,4 +1,4 @@
-package com.example.todoappmultidb.dto;
+package com.example.todoappmultidb.model.dto;
 
 import java.util.Objects;
 

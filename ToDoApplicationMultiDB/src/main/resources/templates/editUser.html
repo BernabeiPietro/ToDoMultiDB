@@ -13,13 +13,13 @@
 		<span th:text="${message}"></span>
 	</div>
 	<div th:if="${message.empty}">
-		<form name="user_form" action="#" th:action="@{/user/save}" th:object="${user}" method="post">
+		<form name="user_form" action="#"  th:action="${param.db==null}?@{/user/save}:@{/user/save(db=${param.db})}" th:object="${user}" method="post">
 			<input type="hidden" th:field="*{id}" />
 			<p>
 				Name: <input type="text" th:field="*{name}" />
 			</p>
 			<p>
-				Salary: <input type="text" th:field="*{email}" />
+				Email: <input type="text" th:field="*{email}" />
 			</p>
 			<button type="submit" name="btn_submit">Save</button>
 		</form>

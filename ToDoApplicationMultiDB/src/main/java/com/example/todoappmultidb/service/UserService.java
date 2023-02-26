@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.example.todoappmultidb.dto.UserDTO;
+import com.example.todoappmultidb.model.dto.UserDTO;
 
 @Service
 public class UserService {
@@ -24,6 +24,10 @@ public class UserService {
 	}
 
 	public void updateUserById(long l, UserDTO userDTO) {
+		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
+		
+	}
+	public void setContext(int db) {
 		throw new UnsupportedOperationException(TEMPORARY_IMPLEMENTATION);
 		
 	}
