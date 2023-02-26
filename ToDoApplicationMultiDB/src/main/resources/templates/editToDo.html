@@ -8,12 +8,10 @@
 
 <body>
 	<h1>Edit ToDo</h1>
-	<div th:unless="${message.empty}">
-		<span th:text="${message}"></span>
-	</div>
-	<div th:if="${message.empty}">
-		<form name="todo_form" action="#" th:action="@{/todo/save}" th:object="${todo}" method="post">
-			<input type="hidden" th:field="*{id}" />
+
+	<div th:if="${#strings.isEmpty(message)}">
+		<form name="todo_form" action="#" th:action="${param.db==null}?@{/todo/save}:@{/todo/save(db=${param.db})}" th:object="${todo}" method="post">
+		    <input type="hidden" th:field="*{id}" />
 			<input type="hidden" th:field="*{idOfUser}" />
 			<p>
 				Date: <input type="datetime-local" th:field="*{date}" />
@@ -41,12 +39,15 @@
 					<tr>
 						<td> <input type="text" th:name="key" th:id="key" th:value="NULL"></td>
 						<td> <input type="text" th:name="value" th:id="value" th:value="NULL"></td>
-						<td> <button type="submit" name="btn_add" th:formation="@{/todo/addaction}">Add
+						<td> <button type="submit" name="btn_add" th:formation="${param.db==null}?@{/todo/addaction}:@{/todo/addaction(db=${param.db})}" th:object="${todo}">Add
 								action</button></td>
 					</tr>
 				</tbody>
 			</table>
 
+	</div>
+	<div th:unless="${#strings.isEmpty(message)}">
+		<span th:text="${message}"></span>
 	</div>
 	<button type="submit" name="btn_submit">Save</button>
 	</form>

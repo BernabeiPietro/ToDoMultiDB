@@ -1,22 +1,11 @@
 package com.example.todoappmultidb.webcontroller.databinder;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InOrder;
-import org.mockito.Mockito;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.inOrder;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
+
+import org.junit.Test;
 
 public class StringToMapConverterTest {
 
@@ -48,40 +37,44 @@ public class StringToMapConverterTest {
 
 	@Test
 	public void test_convert_OnePair() {
-		toMap=new StringToMapConverter();
+		toMap = new StringToMapConverter();
 		HashMap<String, Boolean> result = new HashMap<String, Boolean>();
 		result.put("first", true);
 		assertThat(toMap.convert("{first=true}")).isEqualTo(result);
 	}
+
 	@Test
 	public void test_convert_OnePair_BadDefined() {
-		toMap=new StringToMapConverter();
+		toMap = new StringToMapConverter();
 		HashMap<String, Boolean> result = new HashMap<String, Boolean>();
 		result.put("first", false);
 		assertThat(toMap.convert("{first=Pippo}")).isEqualTo(result);
 	}
+
 	@Test
 	public void test_convert_OnePair_NotStartWithCurvyBracket() {
-		toMap=new StringToMapConverter();
+		toMap = new StringToMapConverter();
 		assertThat(toMap.convert("first=Pippo}")).isEqualTo(Collections.EMPTY_MAP);
 	}
+
 	@Test
 	public void test_convert_OnePair_NotEndWithCurvyBracket() {
-		toMap=new StringToMapConverter();
+		toMap = new StringToMapConverter();
 		assertThat(toMap.convert("{first=Pippo")).isEqualTo(Collections.EMPTY_MAP);
 	}
-	
+
 	@Test
 	public void test_convert_TwoPair() {
-		toMap=new StringToMapConverter();
+		toMap = new StringToMapConverter();
 		HashMap<String, Boolean> result = new HashMap<String, Boolean>();
 		result.put("first", false);
-		result.put("second",true);
+		result.put("second", true);
 		assertThat(toMap.convert("{first=false,second=true}")).isEqualTo(result);
 	}
+
 	@Test
 	public void test_convert_TwoPair_oneBadFormed() {
-		toMap=new StringToMapConverter();
+		toMap = new StringToMapConverter();
 		HashMap<String, Boolean> result = new HashMap<String, Boolean>();
 		result.put("first", false);
 		assertThat(toMap.convert("{first=false,second true}")).isEqualTo(result);

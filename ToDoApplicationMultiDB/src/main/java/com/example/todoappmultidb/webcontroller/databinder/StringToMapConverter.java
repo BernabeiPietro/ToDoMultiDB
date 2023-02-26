@@ -13,7 +13,7 @@ public class StringToMapConverter implements Converter<String, Map<String, Boole
 	@Override
 	public Map<String, Boolean> convert(String source) {
 
-		if (source == null ||!source.startsWith("{")|| !source.endsWith("}"))
+		if (source == null || !source.startsWith("{") || !source.endsWith("}"))
 			return Collections.emptyMap();
 		source = source.substring(1, source.length() - 1);
 		HashMap<String, Boolean> result = new HashMap<>();

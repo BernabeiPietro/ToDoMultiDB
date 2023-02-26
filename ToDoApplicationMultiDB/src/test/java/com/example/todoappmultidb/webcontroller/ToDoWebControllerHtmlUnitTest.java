@@ -5,8 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 
@@ -17,10 +15,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.example.todoappmultidb.dto.ToDoDTO;
-import com.example.todoappmultidb.dto.UserDTO;
+import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.service.ToDoService;
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import com.example.todoappmultidb.service.UserService;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -36,18 +33,20 @@ public class ToDoWebControllerHtmlUnitTest {
 	@MockBean
 	private ToDoService todoService;
 
+	@MockBean
+	private UserService userService;
+
 	// index of todo
 	@Test
-	public void testToDoListOfUserPage_WithNoToDo() throws Exception {
-		when(todoService.findByUserId(new UserDTO(1l, null, null)))
-				.thenThrow(new NotFoundException("Not found any Todo for You"));
+	public void test_ToDoListOfUserPage_WithNoToDo() throws Exception {
+		when(todoService.findByUserId(1l)).thenThrow(new NotFoundException("Not found any Todo for You"));
 		HtmlPage page = this.webClient.getPage("/todo/ofuser/1");
 		assertThat(page.getBody().getTextContent()).contains("Not found any Todo for You");
 	}
 
 	@Test
 	public void test_ToDoListOfUserPage_WithToDo_EmptyMap() throws Exception {
-		when(todoService.findByUserId(new UserDTO(1l, null, null)))
+		when(todoService.findByUserId(1l))
 				.thenReturn(asList(new ToDoDTO(1l, 1l, new HashMap<>(), LocalDateTime.of(2005, 5, 1, 0, 0)),
 						new ToDoDTO(2l, 1l, new HashMap<>(), LocalDateTime.of(2017, 5, 1, 0, 0))));
 		HtmlPage page = this.webClient.getPage("/todo/ofuser/1");
@@ -62,7 +61,7 @@ public class ToDoWebControllerHtmlUnitTest {
 		HashMap<String, Boolean> actions = new HashMap<>();
 		actions.put("first", true);
 		actions.put("second", true);
-		when(todoService.findByUserId(new UserDTO(1l, null, null)))
+		when(todoService.findByUserId(1l))
 				.thenReturn(asList(new ToDoDTO(1l, 1l, actions, LocalDateTime.of(2005, 5, 1, 0, 0)),
 						new ToDoDTO(2l, 1l, actions, LocalDateTime.of(2017, 5, 1, 0, 0))));
 		HtmlPage page = this.webClient.getPage("/todo/ofuser/1");
@@ -95,6 +94,38 @@ public class ToDoWebControllerHtmlUnitTest {
 	}
 
 	@Test
+	public void test_EditTodo_dbDefault() throws Exception {
+		when(todoService.getToDoById(1L))
+				.thenReturn(new ToDoDTO(1l, 1l, new HashMap<>(), LocalDateTime.of(2005, 5, 1, 0, 0)));
+		HtmlPage page = this.webClient.getPage("/todo/edit/1");
+		final HtmlForm form = page.getFormByName("todo_form");
+		assertThat(form.getActionAttribute()).isEqualTo("/todo/save");
+		assertThat(form.getButtonByName("btn_add").getAttribute("formation")).isEqualTo("/todo/addaction");
+	}
+
+	@Test
+	public void test_EditTodo_db1() throws Exception {
+		when(todoService.getToDoById(1L))
+				.thenReturn(new ToDoDTO(1l, 1l, new HashMap<>(), LocalDateTime.of(2005, 5, 1, 0, 0)));
+		HtmlPage page = this.webClient.getPage("/todo/edit/1?db=1");
+		final HtmlForm form = page.getFormByName("todo_form");
+		assertThat(form.getActionAttribute()).isEqualTo("/todo/save?db=1");
+		assertThat(form.getButtonByName("btn_add").getAttribute("formation")).isEqualTo("/todo/addaction?db=1");
+
+	}
+
+	@Test
+	public void test_EditTodo_db2() throws Exception {
+		when(todoService.getToDoById(1L))
+				.thenReturn(new ToDoDTO(1l, 1l, new HashMap<>(), LocalDateTime.of(2005, 5, 1, 0, 0)));
+		HtmlPage page = this.webClient.getPage("/todo/edit/1?db=2");
+		final HtmlForm form = page.getFormByName("todo_form");
+		assertThat(form.getActionAttribute()).isEqualTo("/todo/save?db=2");
+		assertThat(form.getButtonByName("btn_add").getAttribute("formation")).isEqualTo("/todo/addaction?db=2");
+
+	}
+
+	@Test
 	public void test_EditExistentTodo() throws Exception {
 		HashMap<String, Boolean> actions = new HashMap<>();
 		actions.put("first", true);
@@ -111,6 +142,7 @@ public class ToDoWebControllerHtmlUnitTest {
 		actions.put("second", false);
 		verify(todoService).updateToDo(1l, new ToDoDTO(1l, 1l, actions, LocalDateTime.of(2007, 06, 01, 00, 00)));
 	}
+
 	@Test
 	public void test_EditExistentToDo_addAction() throws Exception {
 		HashMap<String, Boolean> actions = new HashMap<>();
@@ -138,12 +170,55 @@ public class ToDoWebControllerHtmlUnitTest {
 		form.getButtonByName("btn_add").click();
 	}
 
+	@Test
+	public void test_EditNewToDo_dbDefault() throws Exception {
+		HashMap<String, Boolean> actions = new HashMap<>();
+		actions.put("first", true);
+		HtmlPage page = this.webClient.getPage("/todo/new/1");
+		final HtmlForm form = page.getFormByName("todo_form");
+		assertThat(form.getActionAttribute()).isEqualTo("/todo/save");
+		assertThat(form.getButtonByName("btn_add").getAttribute("formation")).isEqualTo("/todo/addaction");
+
+	}
+
+	@Test
+	public void test_EditNewToDo_db1() throws Exception {
+		HashMap<String, Boolean> actions = new HashMap<>();
+		actions.put("first", true);
+		HtmlPage page = this.webClient.getPage("/todo/new/1?db=1");
+		final HtmlForm form = page.getFormByName("todo_form");
+		assertThat(form.getActionAttribute()).isEqualTo("/todo/save?db=1");
+		assertThat(form.getButtonByName("btn_add").getAttribute("formation")).isEqualTo("/todo/addaction?db=1");
+
+	}
+
+	@Test
+	public void test_EditNewToDo_db2() throws Exception {
+		HashMap<String, Boolean> actions = new HashMap<>();
+		actions.put("first", true);
+		HtmlPage page = this.webClient.getPage("/todo/new/1?db=2");
+		final HtmlForm form = page.getFormByName("todo_form");
+		assertThat(form.getActionAttribute()).isEqualTo("/todo/save?db=2");
+		assertThat(form.getButtonByName("btn_add").getAttribute("formation")).isEqualTo("/todo/addaction?db=2");
+
+	}
 
 	// Test link
 	@Test
-	public void test_ToDoShow_ShouldProvideALinkForCreatingANewToDo() throws Exception {
+	public void test_ToDoShow_NewToDoLink() throws Exception {
 		HtmlPage page = this.webClient.getPage("/todo/ofuser/1");
 		assertThat(page.getAnchorByText("New ToDo").getHrefAttribute()).isEqualTo("/todo/new/1");
 	}
-	
+
+	@Test
+	public void test_ToDoShow_NewToDoLink_db1() throws Exception {
+		HtmlPage page = this.webClient.getPage("/todo/ofuser/1?db=1");
+		assertThat(page.getAnchorByText("New ToDo").getHrefAttribute()).isEqualTo("/todo/new/1?db=1");
+	}
+
+	@Test
+	public void test_ToDoShow_NewToDoLink_db2() throws Exception {
+		HtmlPage page = this.webClient.getPage("/todo/ofuser/1?db=2");
+		assertThat(page.getAnchorByText("New ToDo").getHrefAttribute()).isEqualTo("/todo/new/1?db=2");
+	}
 }

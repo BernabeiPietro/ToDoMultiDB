@@ -9,14 +9,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.todoappmultidb.dto.ToDoDTO;
-import com.example.todoappmultidb.dto.UserDTO;
+import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.service.ToDoService;
+import com.example.todoappmultidb.service.UserService;
 
 import javassist.NotFoundException;
 
 @Controller
+@RequestMapping("/todo")
 public class ToDoWebController {
 
 	private static final String LIST_TODO_PAGE = "todo";
@@ -24,11 +27,15 @@ public class ToDoWebController {
 	private static final String MESSAGE = "message";
 	@Autowired
 	private ToDoService todoService;
+	@Autowired
+	private UserService userService;
 
-	@GetMapping("/todo/ofuser/{id}")
-	public String getUserToDo(@PathVariable long id, Model model) {
+	@GetMapping("/ofuser/{id}")
+	public String getUserToDo(@RequestParam(required = false, defaultValue = "1") int db, @PathVariable long id,
+			Model model) {
+		userService.setContext(db);
 		try {
-			model.addAttribute("todo", todoService.findByUserId(new UserDTO(id, null, null)));
+			model.addAttribute("todo", todoService.findByUserId(id));
 			model.addAttribute(MESSAGE, "");
 		} catch (NotFoundException e) {
 			model.addAttribute("todo", Collections.emptyMap());
@@ -39,38 +46,47 @@ public class ToDoWebController {
 		return LIST_TODO_PAGE;
 	}
 
-	@GetMapping("/todo/edit/{id}")
-	public String editToDo(@PathVariable long id, Model model) {
+	@GetMapping("/edit/{id}")
+	public String editToDo(@RequestParam(required = false, defaultValue = "1") int db, @PathVariable long id,
+			Model model) {
+		userService.setContext(db);
 		try {
+
 			model.addAttribute("todo", todoService.getToDoById(id));
 			model.addAttribute(MESSAGE, "");
 		} catch (NotFoundException e) {
+			model.addAttribute("todo", Collections.emptyMap());
 			model.addAttribute(MESSAGE, e.getMessage());
 		}
 
 		return EDIT_TODO_PAGE;
 	}
 
-	@GetMapping("/todo/new/{id}")
+	@GetMapping("/new/{id}")
 	public String newToDo(@PathVariable long id, Model model) {
 		model.addAttribute("todo", new ToDoDTO(-1L, id, new HashMap<>(), null));
 		model.addAttribute(MESSAGE, "");
 		return EDIT_TODO_PAGE;
 	}
 
-	@PostMapping("/todo/addaction")
+	@PostMapping("/addaction")
 	public String addAction(ToDoDTO todo, String key, boolean value, Model model) {
 		if (todo.getActions() == null)
 			todo.setActions(new HashMap<>());
 		if (!(key == null || key.isEmpty()))
-			todo.addToDoAction(key, value); 
+			todo.addToDoAction(key, value);
 		model.addAttribute("todo", todo);
 		model.addAttribute(MESSAGE, "");
 		return EDIT_TODO_PAGE;
 	}
 
-	@PostMapping("/todo/save")
-	public String saveToDo(ToDoDTO todo, String key, Boolean value) {
+	@PostMapping("/save")
+	public String saveToDo(@RequestParam(required = false, defaultValue = "0") int db, ToDoDTO todo, String key,
+			Boolean value) {
+		if (db == 0)
+			userService.setContext(1);
+		else
+			userService.setContext(db);
 		if (todo.getActions() == null || todo.getActions().isEmpty()) {
 			todo.setActions(new HashMap<String, Boolean>());
 		}
@@ -85,9 +101,10 @@ public class ToDoWebController {
 				todoService.saveToDo(todo);
 			}
 		} catch (NotFoundException e) {
-			return "redirect:/error/"+e.getMessage();
+			return "redirect:/error/" + e.getMessage();
 		}
-		return "redirect:/todo/ofuser/" + todo.getIdOfUser();
+		return db == 0 ? "redirect:/todo/ofuser/" + todo.getIdOfUser()
+				: "redirect:/todo/ofuser/" + todo.getIdOfUser() + "?db=" + db;
 
-	} 
+	}
 }

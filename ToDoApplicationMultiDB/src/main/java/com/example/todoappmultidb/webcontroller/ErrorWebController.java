@@ -17,5 +17,5 @@ public class ErrorWebController {
 		model.addAttribute(MESSAGE, message);
 		return "errorPage";
 	}
-	
+
 }

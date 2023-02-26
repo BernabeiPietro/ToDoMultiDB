@@ -2,7 +2,6 @@ package com.example.todoappmultidb.webcontroller;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -167,6 +166,7 @@ public class UserWebControllerTest {
 		inOrder.verify(userService).updateUserById(1L, new UserDTO(1L, "test name", "test email"));
 
 	}
+
 	@Test
 	public void test_Save_db2_update() throws Exception {
 		InOrder inOrder = Mockito.inOrder(userService);

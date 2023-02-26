@@ -35,7 +35,7 @@
 			</tbody>
 		</table>
 	</div>
-	<a th:href="@{'/todo/new/'+ ${id}}">New ToDo</a>
+	<a th:href="${param.db==null}?@{'/todo/new/'+ ${id}}:@{'/todo/new/'+ ${id}(db=${param.db})}">New ToDo</a>
 
 </body>
 

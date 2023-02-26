@@ -15,20 +15,20 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrint;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.example.todoappmultidb.dto.ToDoDTO;
-import com.example.todoappmultidb.dto.UserDTO;
-import com.example.todoappmultidb.model.ToDo;
+import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.service.ToDoService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.todoappmultidb.service.UserService;
 
 import javassist.NotFoundException;
 
@@ -41,7 +41,15 @@ public class ToDoWebControllerTest {
 	private MockMvc mvc;
 	@MockBean
 	private ToDoService todoService;
-	ObjectMapper objMapper = new ObjectMapper();
+	@MockBean
+	private UserService userService;
+
+	private ToDoDTO notImportant;
+
+	@Before
+	public void setup() {
+		notImportant = new ToDoDTO(1l, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2005, 3, 4, 0, 0));
+	}
 
 	@Test
 	public void test_UserToDoView_ShowUserToDo() throws Exception {
@@ -50,20 +58,44 @@ public class ToDoWebControllerTest {
 		actions.put("prova2", false);
 		List<ToDoDTO> todo = asList(new ToDoDTO(1l, 1l, actions, LocalDateTime.of(2005, 3, 4, 0, 0)),
 				new ToDoDTO(2l, 1l, actions, LocalDateTime.of(2005, 3, 4, 0, 0)));
-		when(todoService.findByUserId(new UserDTO(1l, null, null))).thenReturn(todo);
+		when(todoService.findByUserId(1l)).thenReturn(todo);
 		mvc.perform(get("/todo/ofuser/1")).andExpect(view().name("todo")).andExpect(model().attribute("todo", todo))
 				.andExpect(model().attribute(MESSAGE, "")).andExpect(model().attribute(ID, 1L));
 	}
 
 	@Test
 	public void test_UserToDoView_EmptyUserToDo() throws Exception {
-		when(todoService.findByUserId(new UserDTO(1l, null, null)))
-				.thenThrow(new NotFoundException("Not found User ToDo  with id 1"));
+		when(todoService.findByUserId(1l)).thenThrow(new NotFoundException("Not found User ToDo  with id 1"));
 		mvc.perform(get("/todo/ofuser/1")).andExpect(view().name("todo"))
 				.andExpect(model().attribute(MESSAGE, "Not found User ToDo  with id 1"))
 				.andExpect(model().attribute("todo", Collections.EMPTY_MAP)).andExpect(model().attribute(ID, 1L));
 	}
 
+//show_db
+
+	@Test
+	public void test_userToDoView_db_2() throws Exception {
+		InOrder inOrder = Mockito.inOrder(userService, todoService);
+		List<ToDoDTO> todo = asList(notImportant);
+		when(todoService.findByUserId(1l)).thenReturn(todo);
+
+		mvc.perform(get("/todo/ofuser/1").param("db", "2"));
+		inOrder.verify(userService).setContext(2);
+		inOrder.verify(todoService).findByUserId(1l);
+	}
+
+	@Test
+	public void test_userToDoView_db_default() throws Exception {
+		InOrder inOrder = Mockito.inOrder(userService, todoService);
+		List<ToDoDTO> todo = asList(notImportant);
+		when(todoService.findByUserId(1l)).thenReturn(todo);
+
+		mvc.perform(get("/todo/ofuser/1"));
+		inOrder.verify(userService).setContext(1);
+		inOrder.verify(todoService).findByUserId(1l);
+	}
+
+//edit
 	@Test
 	public void test_EditToDo_IdFound() throws Exception {
 
@@ -84,15 +116,43 @@ public class ToDoWebControllerTest {
 
 	}
 
+//edit_db
 	@Test
-	public void test_EditNewToDo() throws Exception {
+	public void test_EditToDo_db_2() throws Exception {
+		InOrder inOrder = Mockito.inOrder(userService, todoService);
+		when(todoService.getToDoById(1)).thenReturn(notImportant);
+		mvc.perform(get("/todo/edit/1").param("db", "2"));
+		inOrder.verify(userService).setContext(2);
+		inOrder.verify(todoService).getToDoById(1l);
+	}
+
+	@Test
+	public void test_EditToDo_db_default() throws Exception {
+		InOrder inOrder = Mockito.inOrder(userService, todoService);
+		when(todoService.getToDoById(1)).thenReturn(notImportant);
+		mvc.perform(get("/todo/edit/1"));
+		inOrder.verify(userService).setContext(1);
+		inOrder.verify(todoService).getToDoById(1l);
+	}
+
+//new
+	@Test
+	public void test_EditNewToDo_db_default() throws Exception {
 		mvc.perform(get("/todo/new/1")).andExpect(view().name("editToDo"))
 				.andExpect(model().attribute("todo", new ToDoDTO(-1l, 1L, new HashMap<>(), null)))
 				.andExpect(model().attribute(MESSAGE, ""));
 		verifyNoInteractions(todoService);
 	}
 
-//post withoutID
+	@Test
+	public void test_EditNewToDo_db_2() throws Exception {
+		mvc.perform(get("/todo/new/1").param("db", "2")).andExpect(view().name("editToDo"))
+				.andExpect(model().attribute("todo", new ToDoDTO(-1l, 1L, new HashMap<>(), null)))
+				.andExpect(model().attribute(MESSAGE, ""));
+		verifyNoInteractions(todoService);
+	}
+
+//save new
 	@Test
 	public void test_PostToDoWithoutId_emptyActions() throws Exception {
 		mvc.perform(post("/todo/save").param(ID, "-1").param("idOfUser", "1").param("date", "2005-01-12 00:00:00"))
@@ -137,7 +197,38 @@ public class ToDoWebControllerTest {
 		verify(todoService).saveToDo(new ToDoDTO(null, 1l, actions, LocalDateTime.of(2005, 1, 12, 0, 0)));
 	}
 
-//post withID
+//save new_db
+	@Test
+	public void test_saveTodo_db_default() throws Exception {
+		InOrder inOrder = Mockito.inOrder(userService, todoService);
+		mvc.perform(post("/todo/save").param(ID, "-1").param("idOfUser", "1").param("date", "2005-01-12 00:00:00"))
+				.andExpect(view().name("redirect:/todo/ofuser/1"));
+		inOrder.verify(userService).setContext(1);
+		inOrder.verify(todoService)
+				.saveToDo(new ToDoDTO(null, 1l, new HashMap<>(), LocalDateTime.of(2005, 1, 12, 0, 0)));
+	}
+
+	@Test
+	public void test_saveTodo_db_1() throws Exception {
+		InOrder inOrder = Mockito.inOrder(userService, todoService);
+		mvc.perform(post("/todo/save").param(ID, "-1").param("idOfUser", "1").param("date", "2005-01-12 00:00:00")
+				.param("db", "1")).andExpect(view().name("redirect:/todo/ofuser/1?db=1"));
+		inOrder.verify(userService).setContext(1);
+		inOrder.verify(todoService)
+				.saveToDo(new ToDoDTO(null, 1l, new HashMap<>(), LocalDateTime.of(2005, 1, 12, 0, 0)));
+	}
+
+	@Test
+	public void test_saveTodo_db_2() throws Exception {
+		InOrder inOrder = Mockito.inOrder(userService, todoService);
+		mvc.perform(post("/todo/save").param(ID, "-1").param("idOfUser", "1").param("date", "2005-01-12 00:00:00")
+				.param("db", "2")).andExpect(view().name("redirect:/todo/ofuser/1?db=2"));
+		inOrder.verify(userService).setContext(2);
+		inOrder.verify(todoService)
+				.saveToDo(new ToDoDTO(null, 1l, new HashMap<>(), LocalDateTime.of(2005, 1, 12, 0, 0)));
+	}
+
+//update
 	@Test
 	public void test_PostToDoWithId_emptyActions() throws Exception {
 		mvc.perform(post("/todo/save").param(ID, "1").param("idOfUser", "1").param("date", "2005-01-12 00:00:00")
@@ -183,7 +274,43 @@ public class ToDoWebControllerTest {
 		verify(todoService).updateToDo(1l, new ToDoDTO(1l, 1l, actions, LocalDateTime.of(2005, 1, 12, 0, 0)));
 	}
 
-//add function
+//update_db
+	@Test
+	public void test_UpdateToDo_db_default() throws Exception {
+		InOrder inOrder = Mockito.inOrder(userService, todoService);
+		mvc.perform(post("/todo/save").param(ID, "1").param("idOfUser", "1").param("date", "2005-01-12 00:00:00")
+				.param("actions", "").param("key", "").param("value", ""))
+				.andExpect(view().name("redirect:/todo/ofuser/1"));
+		inOrder.verify(userService).setContext(1);
+		inOrder.verify(todoService).updateToDo(1l,
+				new ToDoDTO(1l, 1l, new HashMap<>(), LocalDateTime.of(2005, 1, 12, 0, 0)));
+
+	}
+
+	@Test
+	public void test_UpdateToDo_db_1() throws Exception {
+		InOrder inOrder = Mockito.inOrder(userService, todoService);
+		mvc.perform(post("/todo/save").param(ID, "1").param("idOfUser", "1").param("date", "2005-01-12 00:00:00")
+				.param("actions", "").param("key", "").param("value", "").param("db", "1"))
+				.andExpect(view().name("redirect:/todo/ofuser/1?db=1"));
+		inOrder.verify(userService).setContext(1);
+		inOrder.verify(todoService).updateToDo(1l,
+				new ToDoDTO(1l, 1l, new HashMap<>(), LocalDateTime.of(2005, 1, 12, 0, 0)));
+
+	}
+
+	@Test
+	public void test_UpdateToDo_db_2() throws Exception {
+		InOrder inOrder = Mockito.inOrder(userService, todoService);
+		mvc.perform(post("/todo/save").param(ID, "1").param("idOfUser", "1").param("date", "2005-01-12 00:00:00")
+				.param("actions", "").param("key", "").param("value", "").param("db", "2"))
+				.andExpect(view().name("redirect:/todo/ofuser/1?db=2"));
+		inOrder.verify(userService).setContext(2);
+		inOrder.verify(todoService).updateToDo(1l,
+				new ToDoDTO(1l, 1l, new HashMap<>(), LocalDateTime.of(2005, 1, 12, 0, 0)));
+	}
+
+//add task
 	@Test
 	public void test_PostAddNewTask_emptyMap_fullTask() throws Exception {
 		HashMap<String, Boolean> actions = new HashMap<>();
@@ -220,8 +347,18 @@ public class ToDoWebControllerTest {
 		HashMap<String, Boolean> actions = new HashMap<>();
 		actions.put("first", false);
 		actions.put("second", true);
-		mvc.perform(post("/todo/addaction").param(ID, "1").param("actions", "{first=false,second=true}")
-				.param("idOfUser", "1").param("date", "2005-01-12 00:00:00")).andExpect(view().name("editToDo"))
+		mvc.perform(post("/todo/addaction").param(ID, "1").param("idOfUser", "1")
+				.param("actions", "{first=false,second=true}").param("date", "2005-01-12 00:00:00"))
+				.andExpect(view().name("editToDo")).andExpect(model().attribute(MESSAGE, "")).andExpect(
+						model().attribute("todo", new ToDoDTO(1l, 1l, actions, LocalDateTime.of(2005, 1, 12, 0, 0))));
+	}
+
+	@Test
+	public void test_PostAddNewTask_db2() throws Exception {
+		HashMap<String, Boolean> actions = new HashMap<>();
+		actions.put("first", true);
+		mvc.perform(post("/todo/addaction?db=2").param(ID, "1").param("idOfUser", "1").param("key", "first")
+				.param("value", "true").param("date", "2005-01-12 00:00:00")).andExpect(view().name("editToDo"))
 				.andExpect(model().attribute(MESSAGE, "")).andExpect(
 						model().attribute("todo", new ToDoDTO(1l, 1l, actions, LocalDateTime.of(2005, 1, 12, 0, 0))));
 	}
