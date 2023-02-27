@@ -9,16 +9,15 @@ jobs:
       workdir: ToDoApplicationMultiDB
     strategy:
       matrix:
-        include:
-        - java: [ 8, 11 ]
-          additional-maven-args:
-            -Pcoveralls sonar:sonar
-            -DrepoToken=$COVERALLS_REPO_TOKEN 
-            -DpullRequest=${{ github.event.pull_request.number }} 
-            coveralls:report
-            -Dsonar.organization=bernabeipietro
-            -Dsonar.host.url=https://sonarcloud.io
-            
+        java: [ 8 , 11 ]
+        additional-maven-args:
+          - Pcoveralls sonar:sonar
+          - DrepoToken=$COVERALLS_REPO_TOKEN 
+          - DpullRequest=${{ github.event.pull_request.number }} 
+          - coveralls:report
+          - Dsonar.organization=bernabeipietro
+          - Dsonar.host.url=https://sonarcloud.io
+          
     name: Build with Java ${{ matrix.java }} on Linux
     steps:
     - uses: actions/checkout@v2
