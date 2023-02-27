@@ -18,6 +18,7 @@ jobs:
             coveralls:report
             -Dsonar.organization=bernabeipietro
             -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.verbose=true
             
     name: Build with Java ${{ matrix.java }} on Linux
     steps:
