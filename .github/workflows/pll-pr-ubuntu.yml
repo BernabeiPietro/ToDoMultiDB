@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         include:
-        - java: [8,11]
+        - java: [ 8, 11 ]
           additional-maven-args:
             -Pcoveralls sonar:sonar
             -DrepoToken=$COVERALLS_REPO_TOKEN 
