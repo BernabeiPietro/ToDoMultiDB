@@ -8,7 +8,9 @@
 
 <body>
 	<h1>Edit ToDo</h1>
-
+	<div>
+		<a href="/">Home</a>
+	</div>
 	<div th:if="${#strings.isEmpty(message)}">
 		<form name="todo_form" action="#" th:action="${param.db==null}?@{/todo/save}:@{/todo/save(db=${param.db})}" th:object="${todo}" method="post">
 		    <input type="hidden" th:field="*{id}" />

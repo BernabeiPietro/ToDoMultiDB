@@ -221,4 +221,24 @@ public class ToDoWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/todo/ofuser/1?db=2");
 		assertThat(page.getAnchorByText("New ToDo").getHrefAttribute()).isEqualTo("/todo/new/1?db=2");
 	}
+
+	@Test
+	public void test_ToDoShow_returnToHome() throws Exception {
+		HtmlPage page = this.webClient.getPage("/todo/ofuser/1");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+	}
+
+	@Test
+	public void test_ToDoEdit_returnToHome() throws Exception {
+		when(todoService.getToDoById(1L)).thenReturn(new ToDoDTO(1l, 1l, new HashMap<>(), LocalDateTime.of(2005, 5, 1, 0, 0)));
+		HtmlPage page = this.webClient.getPage("/todo/edit/1");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+	}
+
+	@Test
+	public void test_ToDoNew_returnToHome() throws Exception {
+		HtmlPage page = this.webClient.getPage("/todo/new/1");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+	}
+
 }

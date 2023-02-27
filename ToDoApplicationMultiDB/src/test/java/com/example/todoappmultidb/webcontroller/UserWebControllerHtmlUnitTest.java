@@ -208,5 +208,16 @@ public class UserWebControllerHtmlUnitTest {
 		form.getButtonByName("btn_submit").click();
 		verify(userService).insertNewUser(new UserDTO(null, "new name", "new email"));
 	}
-
+//test link
+	@Test
+	public void test_UserEdit_returnToHome() throws Exception {
+		when(userService.getUserById(1)).thenReturn(new UserDTO(1L, "original name", "original email"));
+		HtmlPage page = this.webClient.getPage("/user/edit/1");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+	}
+	@Test
+	public void test_UserNew_returnToHome() throws Exception {
+		HtmlPage page = this.webClient.getPage("/user/new");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
+	}
 }
