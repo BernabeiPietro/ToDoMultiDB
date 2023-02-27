@@ -21,13 +21,15 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
 		<!-- For SonarQube -->
 		<sonar.coverage.jacoco.xmlReportPaths>
 			${project.reporting.outputDirectory}/jacoco/jacoco.xml
 		</sonar.coverage.jacoco.xmlReportPaths>
 		<!-- Also collects integration tests -->
 		<sonar.junit.reportPaths>
-			${project.build.directory}/surefire-reports,
+			${project.build.directory}/surefire-reports,maven
 			${project.build.directory}/failsafe-reports
 		</sonar.junit.reportPaths>
 		<!-- Also scans HTML files -->
@@ -43,8 +45,8 @@
 			and e2e tests. -->
 		<sonar.tests>
 			${project.build.testSourceDirectory},
-<!-- 			${basedir}/src/it/java, -->
-<!-- 			${basedir}/src/e2e/java -->
+			<!-- ${basedir}/src/it/java, -->
+			<!-- ${basedir}/src/e2e/java -->
 		</sonar.tests>
 		<!-- Exclude non covered files -->
 		<sonar.coverage.exclusions>
