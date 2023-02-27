@@ -6,11 +6,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      workdir: TODOApplication
+      workdir: ToDoApplicationMultiDB
     strategy:
       matrix:
         include:
-        - java: 11
+        - java: [8,11]
           additional-maven-args:
             -Pcoveralls sonar:sonar
             -DrepoToken=$COVERALLS_REPO_TOKEN 

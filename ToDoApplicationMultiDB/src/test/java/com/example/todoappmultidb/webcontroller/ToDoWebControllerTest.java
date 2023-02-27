@@ -74,7 +74,7 @@ public class ToDoWebControllerTest {
 //show_db
 
 	@Test
-	public void test_userToDoView_db_2() throws Exception {
+	public void test_UserToDoView_db_2() throws Exception {
 		InOrder inOrder = Mockito.inOrder(userService, todoService);
 		List<ToDoDTO> todo = asList(notImportant);
 		when(todoService.findByUserId(1l)).thenReturn(todo);
