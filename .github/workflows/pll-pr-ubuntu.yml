@@ -9,7 +9,6 @@ jobs:
       workdir: ToDoApplicationMultiDB
     strategy:
       matrix:
-        java: 8
         include:
         - java: 8
           additional-maven-args:
