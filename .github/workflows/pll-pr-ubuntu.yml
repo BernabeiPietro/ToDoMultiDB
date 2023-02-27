@@ -9,8 +9,9 @@ jobs:
       workdir: ToDoApplicationMultiDB
     strategy:
       matrix:
+        java: [8,11]
         include:
-        - java: [8,11]
+        - java: 8
           additional-maven-args:
             -Pcoveralls sonar:sonar
             -DrepoToken=$COVERALLS_REPO_TOKEN 
