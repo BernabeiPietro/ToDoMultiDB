@@ -12,8 +12,11 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
 		if (source.isEmpty() || source.contentEquals("[]"))
 			return LocalDateTime.of(0, 1, 1, 0, 0);
 
-		if (source.startsWith("[") && source.endsWith("]"))
-			source = source.substring(1, source.length() - 1);
+		if (source.startsWith("["))
+			source = source.substring(1, source.length());
+		if(source.endsWith("]"))
+
+			source = source.substring(0, source.length()-1);
 		if (source.contains("T"))
 			return LocalDateTime.parse(source, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 		else {

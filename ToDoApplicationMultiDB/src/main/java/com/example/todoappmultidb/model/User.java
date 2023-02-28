@@ -29,12 +29,11 @@ public class User {
 	private String email;
 
 	public User(Long id, String name, String email) {
-		// TODO Auto-generated constructor stub
 
 		this.id = id;
 		this.name = name;
 		this.email = email;
-		this.todo = new ArrayList<ToDo>();
+		this.todo = new ArrayList<>();
 	}
 
 	public Long getId() {

@@ -118,9 +118,8 @@ public class UserWebControllerHtmlUnitTest {
 	public void test_HomePage_dbDefault_db2_displayed()
 			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		HtmlPage page = this.webClient.getPage("/");
-		assertThat(page.getElementById("db2"));
 		HtmlButton b2 = page.getElementByName("db2");
-		assertThat(b2.isDisplayed());
+		assertThat(b2.isDisplayed()).isTrue();
 	}
 
 	@Test
@@ -134,9 +133,8 @@ public class UserWebControllerHtmlUnitTest {
 	public void test_HomePage_db1_db2_displayed()
 			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		HtmlPage page = this.webClient.getPage("/?db=1");
-		assertThat(page.getElementById("db2"));
 		HtmlButton b2 = page.getElementByName("db2");
-		assertThat(b2.isDisplayed());
+		assertThat(b2.isDisplayed()).isTrue();
 	}
 
 	@Test
@@ -144,7 +142,7 @@ public class UserWebControllerHtmlUnitTest {
 			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
 		HtmlPage page = this.webClient.getPage("/?db=2");
 		HtmlButton b1 = page.getElementByName("db1");
-		assertThat(b1.isDisplayed());
+		assertThat(b1.isDisplayed()).isTrue();
 	}
 
 	@Test

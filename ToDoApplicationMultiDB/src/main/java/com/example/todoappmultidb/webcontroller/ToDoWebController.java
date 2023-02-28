@@ -88,7 +88,7 @@ public class ToDoWebController {
 		else
 			userService.setContext(db);
 		if (todo.getActions() == null || todo.getActions().isEmpty()) {
-			todo.setActions(new HashMap<String, Boolean>());
+			todo.setActions(new HashMap<>());
 		}
 		if (!(key == null || key.isEmpty()))
 
