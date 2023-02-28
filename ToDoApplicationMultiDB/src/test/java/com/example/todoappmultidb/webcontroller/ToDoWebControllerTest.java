@@ -352,7 +352,38 @@ public class ToDoWebControllerTest {
 				.andExpect(view().name("editToDo")).andExpect(model().attribute(MESSAGE, "")).andExpect(
 						model().attribute("todo", new ToDoDTO(1l, 1l, actions, LocalDateTime.of(2005, 1, 12, 0, 0))));
 	}
-
+	@Test
+	public void test_PostAddNewTask_fullMap_nullKey_fullValue() throws Exception {
+		HashMap<String, Boolean> actions = new HashMap<>();
+		actions.put("first", false);
+		actions.put("second", true);
+		mvc.perform(post("/todo/addaction").param(ID, "1").param("idOfUser", "1")
+				.param("actions", "{first=false,second=true}").param("date", "2005-01-12 00:00:00").param("value", "true"))
+				.andExpect(view().name("editToDo")).andExpect(model().attribute(MESSAGE, "")).andExpect(
+						model().attribute("todo", new ToDoDTO(1l, 1l, actions, LocalDateTime.of(2005, 1, 12, 0, 0))));
+	}
+	@Test
+	public void test_PostAddNewTask_fullMap_fullKey_emptyValue() throws Exception {
+		HashMap<String, Boolean> actions = new HashMap<>();
+		actions.put("prova", false);
+		actions.put("first", false);
+		actions.put("second", true);
+		mvc.perform(post("/todo/addaction").param(ID, "1").param("idOfUser", "1")
+				.param("actions", "{first=false,second=true}").param("date", "2005-01-12 00:00:00").param("key", "prova"))
+				.andExpect(view().name("editToDo")).andExpect(model().attribute(MESSAGE, "")).andExpect(
+						model().attribute("todo", new ToDoDTO(1l, 1l, actions, LocalDateTime.of(2005, 1, 12, 0, 0))));
+	}
+	@Test
+	public void test_PostAddNewTask_fullMap_emptyKey_fullValue() throws Exception {
+		HashMap<String, Boolean> actions = new HashMap<>();
+		actions.put("first", false);
+		actions.put("second", true);
+		mvc.perform(post("/todo/addaction").param(ID, "1").param("idOfUser", "1")
+				.param("actions", "{first=false,second=true}").param("date", "2005-01-12 00:00:00").param("key", "").param("value","true"))
+				.andExpect(view().name("editToDo")).andExpect(model().attribute(MESSAGE, "")).andExpect(
+						model().attribute("todo", new ToDoDTO(1l, 1l, actions, LocalDateTime.of(2005, 1, 12, 0, 0))));
+	}
+	
 	@Test
 	public void test_PostAddNewTask_db2() throws Exception {
 		HashMap<String, Boolean> actions = new HashMap<>();
