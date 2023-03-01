@@ -27,7 +27,7 @@ public class UserRestController {
 
 	@GetMapping("/{db}")
 	public List<UserDTO> getUsers(@PathVariable int db) {
-		userService.setContext(db);
+		userService.setDatabase(db);
 		try {
 			return userService.getAllUser();
 
@@ -39,7 +39,7 @@ public class UserRestController {
 
 	@GetMapping("/{db}/id/{id}")
 	public UserDTO getUserById(@PathVariable int db, @PathVariable long id) {
-		userService.setContext(db);
+		userService.setDatabase(db);
 		try {
 			return userService.getUserById(id);
 			
@@ -53,7 +53,7 @@ public class UserRestController {
 	@PostMapping("/{db}/new")
 	@ResponseStatus(HttpStatus.CREATED)
 	public UserDTO saveUser(@PathVariable int db, @RequestBody UserDTO newUser) {
-		userService.setContext(db);
+		userService.setDatabase(db);
 		try {
 			return userService.insertNewUser(newUser);
 		} catch (Exception e) {
@@ -63,7 +63,7 @@ public class UserRestController {
 
 	@PutMapping("/{db}/update/{id}")
 	public UserDTO updateUser(@PathVariable int db, @PathVariable long id, @RequestBody UserDTO newUser) {
-		userService.setContext(db);
+		userService.setDatabase(db);
 		try {
 			return userService.updateUserById(id, newUser);
 		} catch (IllegalArgumentException e) {

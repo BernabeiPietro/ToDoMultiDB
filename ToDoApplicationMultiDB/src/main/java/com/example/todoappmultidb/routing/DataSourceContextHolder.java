@@ -29,7 +29,7 @@ public class DataSourceContextHolder {
 		context = cont;
 	}
 	
-	public DataSourceEnum setContext(int ctx) {
+	public DataSourceEnum setDatabase(int ctx) {
 		if (ctx <= 1)
 			this.set(DataSourceEnum.values()[0]);
 		else

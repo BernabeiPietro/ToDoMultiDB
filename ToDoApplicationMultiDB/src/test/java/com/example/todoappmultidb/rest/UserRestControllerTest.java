@@ -48,7 +48,6 @@ public class UserRestControllerTest {
 	@Before
 	public void setup() {
 		objMapper = new ObjectMapper();
-		// objMapper.setSerializationInclusion(Include.NON_EMPTY);
 		objMapper.registerModule(new JavaTimeModule());
 		objMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
@@ -60,7 +59,7 @@ public class UserRestControllerTest {
 		when(userService.getAllUser()).thenThrow(new NotFoundException("Not found any user"));
 		this.mvc.perform(get("/api/users/1").accept(MediaType.APPLICATION_JSON)).andDo(MockMvcResultHandlers.print())
 				.andExpect(status().isNoContent()).andExpect(status().reason("Not found any user"));
-		inOrder.verify(userService).setContext(1);
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(userService).getAllUser();
 	}
 
@@ -74,7 +73,7 @@ public class UserRestControllerTest {
 				.andExpect(jsonPath("$[0].name", is("nome1"))).andExpect(jsonPath("$[0].email", is("email1")))
 				.andExpect(jsonPath("$[1].id", is(2))).andExpect(jsonPath("$[1].name", is("nome2")))
 				.andExpect(jsonPath("$[1].email", is("email2")));
-		inOrder.verify(userService).setContext(1);
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(userService).getAllUser();
 	}
 
@@ -84,7 +83,7 @@ public class UserRestControllerTest {
 		when(userService.getAllUser()).thenThrow(new NotFoundException("Not found any user"));
 		this.mvc.perform(get("/api/users/2").accept(MediaType.APPLICATION_JSON)).andDo(MockMvcResultHandlers.print())
 				.andExpect(status().isNoContent()).andExpect(status().reason("Not found any user"));
-		inOrder.verify(userService).setContext(2);
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(userService).getAllUser();
 	}
 
@@ -98,7 +97,7 @@ public class UserRestControllerTest {
 				.andExpect(jsonPath("$[0].name", is("nome1"))).andExpect(jsonPath("$[0].email", is("email1")))
 				.andExpect(jsonPath("$[1].id", is(2))).andExpect(jsonPath("$[1].name", is("nome2")))
 				.andExpect(jsonPath("$[1].email", is("email2")));
-		inOrder.verify(userService).setContext(2);
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(userService).getAllUser();
 	}
 
@@ -110,7 +109,7 @@ public class UserRestControllerTest {
 		when(userService.getUserById(1l)).thenThrow(new NotFoundException("Not found user with id 1"));
 		this.mvc.perform(get("/api/users/1/id/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent())
 				.andExpect(status().reason("Not found user with id 1"));
-		inOrder.verify(userService).setContext(1);
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(userService).getUserById(1l);
 	
 	}
@@ -122,7 +121,7 @@ public class UserRestControllerTest {
 		this.mvc.perform(get("/api/users/1/id/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.id", is(1))).andExpect(jsonPath("$.name", is("nome1")))
 				.andExpect(jsonPath("$.email", is("email1")));
-		inOrder.verify(userService).setContext(1);
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(userService).getUserById(1l);
 	}
 	@Test
@@ -131,7 +130,7 @@ public class UserRestControllerTest {
 		when(userService.getUserById(1l)).thenThrow(new NotFoundException("Not found user with id 1"));
 		this.mvc.perform(get("/api/users/2/id/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isNoContent())
 				.andExpect(status().reason("Not found user with id 1"));
-		inOrder.verify(userService).setContext(2);
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(userService).getUserById(1l);
 	
 	}
@@ -143,7 +142,7 @@ public class UserRestControllerTest {
 		this.mvc.perform(get("/api/users/2/id/1").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.id", is(1))).andExpect(jsonPath("$.name", is("nome1")))
 				.andExpect(jsonPath("$.email", is("email1")));
-		inOrder.verify(userService).setContext(2);
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(userService).getUserById(1l);
 	}
 	
@@ -160,7 +159,7 @@ public class UserRestControllerTest {
 						.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated()).andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.name", is("nome1"))).andExpect(jsonPath("$.email", is("email1")));
-		inOrder.verify(userService).setContext(1);
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(userService).insertNewUser(userToSave);
 	}
 
@@ -174,7 +173,7 @@ public class UserRestControllerTest {
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isConflict())
 				.andExpect(status().reason("User with null property"));
-		inOrder.verify(userService).setContext(1);
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(userService).insertNewUser(userToSave);
 	}
 
@@ -189,7 +188,7 @@ public class UserRestControllerTest {
 						.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isCreated()).andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.name", is("nome1"))).andExpect(jsonPath("$.email", is("email1")));
-		inOrder.verify(userService).setContext(2);
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(userService).insertNewUser(userToSave);
 	}
 
@@ -203,7 +202,7 @@ public class UserRestControllerTest {
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isConflict())
 				.andExpect(status().reason("User with null property"));
-		inOrder.verify(userService).setContext(2);
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(userService).insertNewUser(userToSave);
 	}
 
@@ -218,7 +217,7 @@ public class UserRestControllerTest {
 						.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.name", is("nome1"))).andExpect(jsonPath("$.email", is("email1")));
-		inOrder.verify(userService).setContext(1);
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(userService).updateUserById(1, userToUpdate);
 	}
 
@@ -232,7 +231,7 @@ public class UserRestControllerTest {
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isConflict())
 				.andExpect(status().reason("User with null property"));
-		inOrder.verify(userService).setContext(1);
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(userService).updateUserById(1, userToUpdate);
 	}
 
@@ -247,7 +246,7 @@ public class UserRestControllerTest {
 						.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isNotFound())
 				.andExpect(status().reason("Try to update not existing user"));
-		inOrder.verify(userService).setContext(1);
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(userService).updateUserById(1, userToUpdate);
 	}
 	@Test
@@ -261,7 +260,7 @@ public class UserRestControllerTest {
 						.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk()).andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.name", is("nome1"))).andExpect(jsonPath("$.email", is("email1")));
-		inOrder.verify(userService).setContext(2);
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(userService).updateUserById(1, userToUpdate);
 	}
 
@@ -275,7 +274,7 @@ public class UserRestControllerTest {
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isConflict())
 				.andExpect(status().reason("User with null property"));
-		inOrder.verify(userService).setContext(2);
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(userService).updateUserById(1, userToUpdate);
 	}
 
@@ -290,7 +289,7 @@ public class UserRestControllerTest {
 						.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isNotFound())
 				.andExpect(status().reason("Try to update not existing user"));
-		inOrder.verify(userService).setContext(2);
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(userService).updateUserById(1, userToUpdate);
 	}
 }

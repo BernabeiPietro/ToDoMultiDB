@@ -47,69 +47,69 @@ public class ToDoRestServiceIT {
 	@Before
 	public void setup() {
 		RestAssured.port = port;
-		userService.setContext(1);
+		userService.setDatabase(1);
 		userRepository.deleteAll();
 		userRepository.flush();
-		userService.setContext(2);
+		userService.setDatabase(2);
 		userRepository.deleteAll();
 		userRepository.flush();
 	}
 
 	@Test
 	public void testPost_NewTodo_db1() throws Exception {
-		userService.setContext(1);
+		userService.setDatabase(1);
 		User saved = userRepository.save(new User(null, "1emon", "1emon"));
 		Response response = given().contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(new ToDoDTO(null, saved.getId(), new HashMap<>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1))).when()
 				.post("/api/todo/1/new");
 		ToDoDTO todoSaved = response.getBody().as(ToDoDTO.class);
-		userService.setContext(1);
+		userService.setDatabase(1);
 		assertThat(new ToDoDTO(todoRepository.findById(todoSaved.getId()).get())).isEqualTo(todoSaved);
-		userService.setContext(2);
+		userService.setDatabase(2);
 		assertThat(todoRepository.findById(todoSaved.getId()).isPresent()).isFalse();
 	}
 
 	@Test
 	public void testPost_NewTodo_db2() throws Exception {
-		userService.setContext(2);
+		userService.setDatabase(2);
 		User saved = userRepository.save(new User(null, "2emon", "2emon"));
 		Response response = given().contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(new ToDoDTO(null, saved.getId(), new HashMap<>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1))).when()
 				.post("/api/todo/2/new");
 		ToDoDTO todoSaved = response.getBody().as(ToDoDTO.class);
-		userService.setContext(2);
+		userService.setDatabase(2);
 		assertThat(new ToDoDTO(todoRepository.findById(todoSaved.getId()).get())).isEqualTo(todoSaved);
-		userService.setContext(1);
+		userService.setDatabase(1);
 		assertThat(todoRepository.findById(todoSaved.getId()).isPresent()).isFalse();
 	}
 
 	@Test
 	public void testPut_UpdateUser_db2() {
-		userService.setContext(2);
+		userService.setDatabase(2);
 		User userSaved = userRepository.save(new User(1L, "2emon", "2emon"));
 		ToDo todoSaved = todoRepository.save(new ToDo(null, userSaved, LocalDateTime.of(2000, 5, 13, 1, 1, 1)));
 		Response response = given().contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(new ToDoDTO(null, userSaved.getId(), new HashMap<>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1)))
 				.when().put("/api/todo/2/update/" + todoSaved.getId());
 		ToDoDTO todo = response.getBody().as(ToDoDTO.class);
-		userService.setContext(2);
+		userService.setDatabase(2);
 		assertThat(new ToDoDTO(todoRepository.findById(todoSaved.getId()).get())).isEqualTo(todo);
-		userService.setContext(1);
+		userService.setDatabase(1);
 		assertThat(todoRepository.findById(todoSaved.getId()).isPresent()).isFalse();
 	}
 
 	@Test
 	public void testPut_UpdateUser_db1() {
-		userService.setContext(1);
+		userService.setDatabase(1);
 		User userSaved = userRepository.save(new User(1L, "1emon", "1emon"));
 		ToDo todoSaved = todoRepository.save(new ToDo(null, userSaved, LocalDateTime.of(2000, 5, 13, 1, 1, 1)));
 		Response response = given().contentType(MediaType.APPLICATION_JSON_VALUE)
 				.body(new ToDoDTO(null, userSaved.getId(), new HashMap<>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1)))
 				.when().put("/api/todo/1/update/" + todoSaved.getId());
 		ToDoDTO todo = response.getBody().as(ToDoDTO.class);
-		userService.setContext(1);
+		userService.setDatabase(1);
 		assertThat(new ToDoDTO(todoRepository.findById(todoSaved.getId()).get())).isEqualTo(todo);
-		userService.setContext(2);
+		userService.setDatabase(2);
 		assertThat(todoRepository.findById(todoSaved.getId()).isPresent()).isFalse();
 	}
 }

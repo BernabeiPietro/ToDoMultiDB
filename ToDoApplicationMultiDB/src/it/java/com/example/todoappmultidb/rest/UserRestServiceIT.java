@@ -36,10 +36,10 @@ public class UserRestServiceIT {
 	public void setup() {
 	RestAssured.port = port;
 	// always start with an empty database
-	userService.setContext(1);
+	userService.setDatabase(1);
 	userRepository.deleteAll();
 	userRepository.flush();
-	userService.setContext(2);
+	userService.setDatabase(2);
 	userRepository.deleteAll();
 	userRepository.flush();
 	}
@@ -53,9 +53,9 @@ public class UserRestServiceIT {
 				when().
 				post("/api/users/1/new");
 		UserDTO userSaved =response.getBody().as(UserDTO.class);
-		userService.setContext(1);
+		userService.setDatabase(1);
 		assertThat(new UserDTO(userRepository.findById(userSaved.getId()).get())).isEqualTo(userSaved);
-		userService.setContext(2);
+		userService.setDatabase(2);
 		assertThat(userRepository.findById(userSaved.getId()).isPresent()).isFalse();
 	}
 	@Test
@@ -66,15 +66,15 @@ public class UserRestServiceIT {
 				when().
 				post("/api/users/2/new");
 		UserDTO userSaved =response.getBody().as(UserDTO.class);
-		userService.setContext(2);
+		userService.setDatabase(2);
 		assertThat(new UserDTO(userRepository.findById(userSaved.getId()).get())).isEqualTo(userSaved);
-		userService.setContext(1);
+		userService.setDatabase(1);
 		assertThat(userRepository.findById(userSaved.getId())).isEmpty();
 	}
 	
 	@Test
 	public void testPut_UpdateUser_db2() {
-		userService.setContext(2);
+		userService.setDatabase(2);
 		User saved=userRepository.save(new User(1L, "2emon", "2emon"));
 		Response response = given().
 				contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -82,14 +82,14 @@ public class UserRestServiceIT {
 				when().
 				put("/api/users/2/update/"+saved.getId());
 		UserDTO userSaved =response.getBody().as(UserDTO.class);
-		userService.setContext(2);
+		userService.setDatabase(2);
 		assertThat(new UserDTO(userRepository.findById(userSaved.getId()).get())).isEqualTo(userSaved);
-		userService.setContext(1);
+		userService.setDatabase(1);
 		assertThat(userRepository.findById(userSaved.getId())).isEmpty();
 		}
 	@Test
 	public void testPut_UpdateUser_db1() {
-		userService.setContext(1);
+		userService.setDatabase(1);
 		User saved=userRepository.save(new User(1L, "1emon", "1emon"));
 		Response response = given().
 				contentType(MediaType.APPLICATION_JSON_VALUE).
@@ -97,9 +97,9 @@ public class UserRestServiceIT {
 				when().
 				put("/api/users/1/update/"+saved.getId());
 		UserDTO userSaved =response.getBody().as(UserDTO.class);
-		userService.setContext(1);
+		userService.setDatabase(1);
 		assertThat(new UserDTO(userRepository.findById(userSaved.getId()).get())).isEqualTo(userSaved);
-		userService.setContext(2);
+		userService.setDatabase(2);
 		assertThat(userRepository.findById(userSaved.getId())).isEmpty();
 		}
 	

@@ -57,29 +57,29 @@ public class DataSourceContextHolderTest {
 	@Test
 	public void test_setContext_one()
 	{
-		assertThat(dataContext.setContext(1)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
+		assertThat(dataContext.setDatabase(1)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
 	}
 	@Test
 	public void test_setContext_two()
 	{
-		assertThat(dataContext.setContext(2)).isEqualTo(DataSourceEnum.DATASOURCE_TWO);
+		assertThat(dataContext.setDatabase(2)).isEqualTo(DataSourceEnum.DATASOURCE_TWO);
 	}
 	@Test
 	public void test_setContext_callDataContext()
 	{
-		dataContext.setContext(1);
+		dataContext.setDatabase(1);
 		verify(CONTEXT).set(any(DataSourceEnum.class));
 	}
 	@Test
 	public void test_setContext_outside_range()
 	{
-		assertThat(dataContext.setContext(3)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
+		assertThat(dataContext.setDatabase(3)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
 
 	}
 	@Test
 	public void test_setContext_under_range()
 	{
-		assertThat(dataContext.setContext(0)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
+		assertThat(dataContext.setDatabase(0)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
 
 	}
 }

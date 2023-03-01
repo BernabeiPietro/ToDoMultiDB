@@ -65,10 +65,10 @@ public class UserService {
 	@Transactional(rollbackFor = NotFoundException.class)
 	public List<ToDoDTO> getToDoOfUser(long id) throws NotFoundException {
 		User retrieved =getUser(id);
-		return retrieved.getToDo().stream().map(x->new ToDoDTO(x)).collect(Collectors.toList());
+		return retrieved.getToDo().stream().map(ToDoDTO::new).collect(Collectors.toList());
 	}
-	public DataSourceEnum setContext(int ctx) {
-		return dataContext.setContext(ctx);
+	public DataSourceEnum setDatabase(int ctx) {
+		return dataContext.setDatabase(ctx);
 	}
 
 	public void clearContext() {
