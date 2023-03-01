@@ -28,5 +28,12 @@ public class DataSourceContextHolder {
 	protected static void setCONTEXT(ThreadLocal<DataSourceEnum> cont) {
 		context = cont;
 	}
-
+	
+	public DataSourceEnum setDatabase(int ctx) {
+		if (ctx <= 1)
+			this.set(DataSourceEnum.values()[0]);
+		else
+			this.set(DataSourceEnum.values()[(ctx-1) % 2]);
+		return this.getDataSource();
+	}
 }

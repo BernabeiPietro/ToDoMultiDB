@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.todoappmultidb.model.User;
+import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.routing.DataSourceContextHolder;
@@ -47,34 +48,34 @@ public class UserService {
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = IllegalArgumentException.class)
 	public UserDTO insertNewUser(UserDTO userToSave) {
 		userToSave.setId(null);
-		verifyNullValue(userToSave);
+		verifyNullField(userToSave);
 		return toDTO(userRepository.save(new User(userToSave, new ArrayList<>())));
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = {
 			IllegalArgumentException.class, NotFoundException.class })
 	public UserDTO updateUserById(long id, UserDTO userToUpdate) throws NotFoundException {
-		verifyNullValue(userToUpdate);
+		verifyNullField(userToUpdate);
 		userToUpdate.setId(id);
 		User retrieved = this.getUser(id);
 		retrieved.setEmail(userToUpdate.getEmail());
 		retrieved.setName(userToUpdate.getName());
 		return toDTO(userRepository.save(retrieved));
 	}
-
-	public DataSourceEnum setContext(int ctx) {
-		if (ctx < 1)
-			dataContext.set(DataSourceEnum.values()[0]);
-		else
-			dataContext.set(DataSourceEnum.values()[(ctx - 1) % 2]);
-		return dataContext.getDataSource();
+	@Transactional(rollbackFor = NotFoundException.class)
+	public List<ToDoDTO> getToDoOfUser(long id) throws NotFoundException {
+		User retrieved =getUser(id);
+		return retrieved.getToDo().stream().map(ToDoDTO::new).collect(Collectors.toList());
+	}
+	public DataSourceEnum setDatabase(int ctx) {
+		return dataContext.setDatabase(ctx);
 	}
 
 	public void clearContext() {
 		dataContext.clear();
 	}
 
-	private void verifyNullValue(UserDTO userToSave) {
+	private void verifyNullField(UserDTO userToSave) {
 		if (userToSave.equals(new UserDTO(null, null, null)))
 			throw new IllegalArgumentException("User with null property");
 	}

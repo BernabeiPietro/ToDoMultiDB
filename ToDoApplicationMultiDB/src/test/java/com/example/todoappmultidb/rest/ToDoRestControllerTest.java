@@ -1,24 +1,17 @@
 package com.example.todoappmultidb.rest;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 
-import org.hamcrest.core.IsNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,14 +26,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import com.example.todoappmultidb.model.dto.ToDoDTO;
-import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.service.ToDoService;
 import com.example.todoappmultidb.service.UserService;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.gson.Gson;
 
 import javassist.NotFoundException;
 
@@ -72,7 +62,7 @@ public class ToDoRestControllerTest {
 		when(todoService.findAll()).thenThrow(new NotFoundException("Not found any todo"));
 		this.mvc.perform(get("/api/todo/1")).andExpect(status().isNoContent())
 				.andExpect(status().reason("Not found any todo"));
-		inOrder.verify(userService).setContext(1);
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(todoService).findAll();
 	}
 
@@ -89,11 +79,11 @@ public class ToDoRestControllerTest {
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isOk()).andExpect(jsonPath("$[0].id", is(1)))
 				.andExpect(jsonPath("$[0].date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
 				.andExpect(jsonPath("$[0].idOfUser", is(1)))
-				.andExpect(jsonPath("$[0].toDo", is(new HashMap<String, Boolean>())))
+				.andExpect(jsonPath("$[0].actions", is(new HashMap<String, Boolean>())))
 				.andExpect(jsonPath("$[1].id", is(2)))
 				.andExpect(jsonPath("$[1].date", is(LocalDateTime.of(2001, 6, 3, 5, 0, 8).toString())))
-				.andExpect(jsonPath("$[1].idOfUser", is(2))).andExpect(jsonPath("$[1].toDo", is(actions)));
-		inOrder.verify(userService).setContext(1);
+				.andExpect(jsonPath("$[1].idOfUser", is(2))).andExpect(jsonPath("$[1].actions", is(actions)));
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(todoService).findAll();
 	}
 
@@ -103,7 +93,7 @@ public class ToDoRestControllerTest {
 		when(todoService.findAll()).thenThrow(new NotFoundException("Not found any todo"));
 		this.mvc.perform(get("/api/todo/2")).andExpect(status().isNoContent())
 				.andExpect(status().reason("Not found any todo"));
-		inOrder.verify(userService).setContext(2);
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(todoService).findAll();
 	}
 
@@ -120,11 +110,11 @@ public class ToDoRestControllerTest {
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isOk()).andExpect(jsonPath("$[0].id", is(1)))
 				.andExpect(jsonPath("$[0].date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
 				.andExpect(jsonPath("$[0].idOfUser", is(1)))
-				.andExpect(jsonPath("$[0].toDo", is(new HashMap<String, Boolean>())))
+				.andExpect(jsonPath("$[0].actions", is(new HashMap<String, Boolean>())))
 				.andExpect(jsonPath("$[1].id", is(2)))
 				.andExpect(jsonPath("$[1].date", is(LocalDateTime.of(2001, 6, 3, 5, 0, 8).toString())))
-				.andExpect(jsonPath("$[1].idOfUser", is(2))).andExpect(jsonPath("$[1].toDo", is(actions)));
-		inOrder.verify(userService).setContext(2);
+				.andExpect(jsonPath("$[1].idOfUser", is(2))).andExpect(jsonPath("$[1].actions", is(actions)));
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(todoService).findAll();
 	}
 
@@ -137,8 +127,8 @@ public class ToDoRestControllerTest {
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isOk()).andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
 				.andExpect(jsonPath("$.idOfUser", is(1)))
-				.andExpect(jsonPath("$.toDo", is(new HashMap<String, Boolean>())));
-		inOrder.verify(userService).setContext(1);
+				.andExpect(jsonPath("$.actions", is(new HashMap<String, Boolean>())));
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(todoService).findByIdDTO(1l);
 	}
 
@@ -149,7 +139,7 @@ public class ToDoRestControllerTest {
 		this.mvc.perform(get("/api/todo/1/id/2").contentType(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isNoContent())
 				.andExpect(status().reason("Not found any todo with id 2"));
-		inOrder.verify(userService).setContext(1);
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(todoService).findByIdDTO(2l);
 	}
 
@@ -162,8 +152,8 @@ public class ToDoRestControllerTest {
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isOk()).andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
 				.andExpect(jsonPath("$.idOfUser", is(1)))
-				.andExpect(jsonPath("$.toDo", is(new HashMap<String, Boolean>())));
-		inOrder.verify(userService).setContext(2);
+				.andExpect(jsonPath("$.actions", is(new HashMap<String, Boolean>())));
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(todoService).findByIdDTO(1l);
 	}
 
@@ -174,35 +164,69 @@ public class ToDoRestControllerTest {
 		this.mvc.perform(get("/api/todo/2/id/2").contentType(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isNoContent())
 				.andExpect(status().reason("Not found any todo with id 2"));
-		inOrder.verify(userService).setContext(2);
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(todoService).findByIdDTO(2l);
 	}
-	/*
-	 * not developed into service class
-	 * 
-	 * @Test public void testGetToDoByUserId() throws Exception {
-	 * when(todoService.findByUserId(new UserDTO(1L, null, null))).thenReturn(
-	 * asList(new ToDoDTO(1l, 1l, new HashMap<String, Boolean>(),
-	 * LocalDateTime.of(2000, 5, 13, 1, 1, 1)), new ToDoDTO(2l, 2l, new
-	 * HashMap<String, Boolean>(), LocalDateTime.of(2001, 6, 3, 5, 0, 8))));
-	 * 
-	 * this.mvc.perform(get("/api/todo/ofuser/1").contentType(MediaType.
-	 * APPLICATION_JSON)).andExpect(status().isOk()) .andExpect(jsonPath("$[0].id",
-	 * is(1))) .andExpect(jsonPath("$[0].date", is(LocalDateTime.of(2000, 5, 13, 1,
-	 * 1, 1).toString()))) .andExpect(jsonPath("$[0].idOfUser", is(1)))
-	 * .andExpect(jsonPath("$[0].toDo", is(new HashMap<String, Boolean>())))
-	 * .andExpect(jsonPath("$[1].id", is(2))) .andExpect(jsonPath("$[1].date",
-	 * is(LocalDateTime.of(2001, 6, 3, 5, 0, 8).toString())))
-	 * .andExpect(jsonPath("$[1].idOfUser", is(2))) .andExpect(jsonPath("$[1].toDo",
-	 * is(new HashMap<String, Boolean>()))); }
-	 * 
-	 * @Test public void testGetToDoByUserId_foundAnything() throws Exception {
-	 * when(todoService.findByUserId(new UserDTO(1l, null, null))) .thenThrow(new
-	 * NotFoundException("Not found todo with user id 1"));
-	 * this.mvc.perform(get("/api/todo/ofuser/1").contentType(MediaType.
-	 * APPLICATION_JSON)) .andExpect(status().isNotFound()).andExpect(status().
-	 * reason("Not found todo with user id 1")); }
-	 */
+
+	@Test
+	public void testGetToDoByUserId_db1() throws Exception {
+		InOrder inOrder = Mockito.inOrder(userService);
+		when(userService.getToDoOfUser(1L)).thenReturn(
+				asList(new ToDoDTO(1l, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1)),
+						new ToDoDTO(2l, 2l, new HashMap<String, Boolean>(), LocalDateTime.of(2001, 6, 3, 5, 0, 8))));
+
+		this.mvc.perform(get("/api/todo/1/ofuser/1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$[0].id", is(1)))
+				.andExpect(jsonPath("$[0].date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
+				.andExpect(jsonPath("$[0].idOfUser", is(1)))
+				.andExpect(jsonPath("$[0].actions", is(new HashMap<String, Boolean>())))
+				.andExpect(jsonPath("$[1].id", is(2)))
+				.andExpect(jsonPath("$[1].date", is(LocalDateTime.of(2001, 6, 3, 5, 0, 8).toString())))
+				.andExpect(jsonPath("$[1].idOfUser", is(2)))
+				.andExpect(jsonPath("$[1].actions", is(new HashMap<String, Boolean>())));
+		inOrder.verify(userService).setDatabase(1);
+		inOrder.verify(userService).getToDoOfUser(1L);
+	}
+
+	@Test
+	public void testGetToDoByUserId_db2() throws Exception {
+		InOrder inOrder = Mockito.inOrder(userService);
+		when(userService.getToDoOfUser(1L)).thenReturn(
+				asList(new ToDoDTO(1l, 1l, new HashMap<String, Boolean>(), LocalDateTime.of(2000, 5, 13, 1, 1, 1)),
+						new ToDoDTO(2l, 2l, new HashMap<String, Boolean>(), LocalDateTime.of(2001, 6, 3, 5, 0, 8))));
+
+		this.mvc.perform(get("/api/todo/2/ofuser/1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+				.andExpect(jsonPath("$[0].id", is(1)))
+				.andExpect(jsonPath("$[0].date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
+				.andExpect(jsonPath("$[0].idOfUser", is(1)))
+				.andExpect(jsonPath("$[0].actions", is(new HashMap<String, Boolean>())))
+				.andExpect(jsonPath("$[1].id", is(2)))
+				.andExpect(jsonPath("$[1].date", is(LocalDateTime.of(2001, 6, 3, 5, 0, 8).toString())))
+				.andExpect(jsonPath("$[1].idOfUser", is(2)))
+				.andExpect(jsonPath("$[1].actions", is(new HashMap<String, Boolean>())));
+		inOrder.verify(userService).setDatabase(2);
+		inOrder.verify(userService).getToDoOfUser(1L);
+	}
+
+	@Test
+	public void testGetToDoByUserId_foundAnything_db1() throws Exception {
+		InOrder inOrder = Mockito.inOrder(userService);
+		when(userService.getToDoOfUser(1l)).thenThrow(new NotFoundException("Not found todo with user id 1"));
+		this.mvc.perform(get("/api/todo/1/ofuser/1").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNoContent()).andExpect(status().reason("Not found todo with user id 1"));
+		inOrder.verify(userService).setDatabase(1);
+		inOrder.verify(userService).getToDoOfUser(1L);
+	}
+
+	@Test
+	public void testGetToDoByUserId_foundAnything_db2() throws Exception {
+		InOrder inOrder = Mockito.inOrder(userService);
+		when(userService.getToDoOfUser(1l)).thenThrow(new NotFoundException("Not found todo with user id 1"));
+		this.mvc.perform(get("/api/todo/2/ofuser/1").contentType(MediaType.APPLICATION_JSON))
+				.andExpect(status().isNoContent()).andExpect(status().reason("Not found todo with user id 1"));
+		inOrder.verify(userService).setDatabase(2);
+		inOrder.verify(userService).getToDoOfUser(1L);
+	}
 
 	@Test
 	public void testPostNewToDo_emptyMap_db1() throws Exception {
@@ -215,8 +239,8 @@ public class ToDoRestControllerTest {
 				.andExpect(status().isCreated()).andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
 				.andExpect(jsonPath("$.idOfUser", is(1)))
-				.andExpect(jsonPath("$.toDo", is(new HashMap<String, Boolean>())));
-		inOrder.verify(userService).setContext(1);
+				.andExpect(jsonPath("$.actions", is(new HashMap<String, Boolean>())));
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(todoService).save(todo);
 	}
 
@@ -232,8 +256,8 @@ public class ToDoRestControllerTest {
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isCreated()).andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
-				.andExpect(jsonPath("$.idOfUser", is(1))).andExpect(jsonPath("$.toDo", is(actions)));
-		inOrder.verify(userService).setContext(1);
+				.andExpect(jsonPath("$.idOfUser", is(1))).andExpect(jsonPath("$.actions", is(actions)));
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(todoService).save(todo);
 	}
 
@@ -245,9 +269,10 @@ public class ToDoRestControllerTest {
 		this.mvc.perform(post("/api/todo/1/new").content(objMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict()).andExpect(status().reason("Insert ToDo with null value"));
-		inOrder.verify(userService).setContext(1);
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(todoService).save(todo);
 	}
+
 	@Test
 	public void testPostNewToDo_emptyMap_db2() throws Exception {
 		InOrder inOrder = Mockito.inOrder(todoService, userService);
@@ -259,8 +284,8 @@ public class ToDoRestControllerTest {
 				.andExpect(status().isCreated()).andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
 				.andExpect(jsonPath("$.idOfUser", is(1)))
-				.andExpect(jsonPath("$.toDo", is(new HashMap<String, Boolean>())));
-		inOrder.verify(userService).setContext(2);
+				.andExpect(jsonPath("$.actions", is(new HashMap<String, Boolean>())));
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(todoService).save(todo);
 	}
 
@@ -276,8 +301,8 @@ public class ToDoRestControllerTest {
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 				.andDo(MockMvcResultHandlers.print()).andExpect(status().isCreated()).andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
-				.andExpect(jsonPath("$.idOfUser", is(1))).andExpect(jsonPath("$.toDo", is(actions)));
-		inOrder.verify(userService).setContext(2);
+				.andExpect(jsonPath("$.idOfUser", is(1))).andExpect(jsonPath("$.actions", is(actions)));
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(todoService).save(todo);
 	}
 
@@ -289,10 +314,10 @@ public class ToDoRestControllerTest {
 		this.mvc.perform(post("/api/todo/2/new").content(objMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict()).andExpect(status().reason("Insert ToDo with null value"));
-		inOrder.verify(userService).setContext(2);
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(todoService).save(todo);
 	}
-	
+
 	@Test
 	public void testPutUpdateToDo_emptyMaps_db1() throws Exception {
 		InOrder inOrder = Mockito.inOrder(todoService, userService);
@@ -304,8 +329,8 @@ public class ToDoRestControllerTest {
 				.andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
 				.andExpect(jsonPath("$.idOfUser", is(1)))
-				.andExpect(jsonPath("$.toDo", is(new HashMap<String, Boolean>())));
-		inOrder.verify(userService).setContext(1);
+				.andExpect(jsonPath("$.actions", is(new HashMap<String, Boolean>())));
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(todoService).updateById(1l, todo);
 	}
 
@@ -322,8 +347,8 @@ public class ToDoRestControllerTest {
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
-				.andExpect(jsonPath("$.idOfUser", is(1))).andExpect(jsonPath("$.toDo", is(actions)));
-		inOrder.verify(userService).setContext(1);
+				.andExpect(jsonPath("$.idOfUser", is(1))).andExpect(jsonPath("$.actions", is(actions)));
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(todoService).updateById(1l, todo);
 	}
 
@@ -336,7 +361,7 @@ public class ToDoRestControllerTest {
 		this.mvc.perform(put("/api/todo/1/update/1").content(objMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict()).andExpect(status().reason("Update ToDo with null value"));
-		inOrder.verify(userService).setContext(1);
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(todoService).updateById(1l, todo);
 	}
 
@@ -348,9 +373,10 @@ public class ToDoRestControllerTest {
 		this.mvc.perform(put("/api/todo/1/update/1").content(objMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound()).andExpect(status().reason("Not Found any ToDo with id 1"));
-		inOrder.verify(userService).setContext(1);
+		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(todoService).updateById(1l, todo);
 	}
+
 	@Test
 	public void testPutUpdateToDo_emptyMaps_db2() throws Exception {
 		InOrder inOrder = Mockito.inOrder(todoService, userService);
@@ -362,8 +388,8 @@ public class ToDoRestControllerTest {
 				.andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
 				.andExpect(jsonPath("$.idOfUser", is(1)))
-				.andExpect(jsonPath("$.toDo", is(new HashMap<String, Boolean>())));
-		inOrder.verify(userService).setContext(2);
+				.andExpect(jsonPath("$.actions", is(new HashMap<String, Boolean>())));
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(todoService).updateById(1l, todo);
 	}
 
@@ -380,8 +406,8 @@ public class ToDoRestControllerTest {
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(jsonPath("$.id", is(1)))
 				.andExpect(jsonPath("$.date", is(LocalDateTime.of(2000, 5, 13, 1, 1, 1).toString())))
-				.andExpect(jsonPath("$.idOfUser", is(1))).andExpect(jsonPath("$.toDo", is(actions)));
-		inOrder.verify(userService).setContext(2);
+				.andExpect(jsonPath("$.idOfUser", is(1))).andExpect(jsonPath("$.actions", is(actions)));
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(todoService).updateById(1l, todo);
 	}
 
@@ -394,7 +420,7 @@ public class ToDoRestControllerTest {
 		this.mvc.perform(put("/api/todo/2/update/1").content(objMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isConflict()).andExpect(status().reason("Update ToDo with null value"));
-		inOrder.verify(userService).setContext(2);
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(todoService).updateById(1l, todo);
 	}
 
@@ -406,7 +432,7 @@ public class ToDoRestControllerTest {
 		this.mvc.perform(put("/api/todo/2/update/1").content(objMapper.writeValueAsString(todo))
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 				.andExpect(status().isNotFound()).andExpect(status().reason("Not Found any ToDo with id 1"));
-		inOrder.verify(userService).setContext(2);
+		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(todoService).updateById(1l, todo);
 	}
 

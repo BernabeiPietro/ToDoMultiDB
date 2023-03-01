@@ -10,7 +10,7 @@ public class ToDoDTO {
 
 	private Long id;
 
-	private Map<String, Boolean> toDo;
+	private Map<String, Boolean> actions;
 	private LocalDateTime date;
 	private Long idOfUser;
 
@@ -21,7 +21,7 @@ public class ToDoDTO {
 	public ToDoDTO(Long id, Long idOfUser, Map<String, Boolean> todo, LocalDateTime date) {
 		this.id=id;
 		this.idOfUser=idOfUser;
-		this.toDo=todo;
+		this.actions=todo;
 		this.date=date;
 	}
 	public ToDoDTO(ToDo td)
@@ -37,12 +37,12 @@ public class ToDoDTO {
 		this.id = id;
 	}
 
-	public Map<String, Boolean> getToDo() {
-		return toDo;
+	public Map<String, Boolean> getActions() {
+		return actions;
 	}
 
-	public void setToDo(Map<String, Boolean> toDo) {
-		this.toDo = toDo;
+	public void setToDo(Map<String, Boolean> actions) {
+		this.actions = actions;
 	}
 
 	public LocalDateTime getDate() {
@@ -62,12 +62,12 @@ public class ToDoDTO {
 	}
 	public void addToDoAction(String action, Boolean doIt) {
 
-		this.toDo.put(action, doIt);
+		this.actions.put(action, doIt);
 
 	}
 	@Override
 	public int hashCode() {
-		return Objects.hash(date, id, idOfUser, toDo);
+		return Objects.hash(date, id, idOfUser, actions);
 	}
 
 	@Override
@@ -80,12 +80,12 @@ public class ToDoDTO {
 			return false;
 		ToDoDTO other = (ToDoDTO) obj;
 		return Objects.equals(date, other.date) && Objects.equals(id, other.id)
-				&& Objects.equals(idOfUser, other.idOfUser) && Objects.equals(toDo, other.toDo);
+				&& Objects.equals(idOfUser, other.idOfUser) && Objects.equals(actions, other.actions);
 	}
 
 	@Override
 	public String toString() {
-		return "ToDoDTO [id=" + id + ", toDo=" + toDo + ", date=" + date + ", idOfUser=" + idOfUser + "]";
+		return "ToDoDTO [id=" + id + ", actions=" + actions + ", date=" + date + ", idOfUser=" + idOfUser + "]";
 	}
 
 	

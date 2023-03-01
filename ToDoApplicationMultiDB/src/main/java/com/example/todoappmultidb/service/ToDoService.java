@@ -57,7 +57,7 @@ public class ToDoService {
 		toUpdate.setId(id);
 		ToDo retrieve=findById(toUpdate.getId());
 		retrieve.setLocalDateTime(toUpdate.getDate());
-		retrieve.setToDo(toUpdate.getToDo());
+		retrieve.setToDo(toUpdate.getActions());
 		return toDTO(toDoRepository.save(retrieve));
 	}
 

@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -16,8 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
-
-import javax.sql.DataSource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,10 +27,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import com.example.todoappmultidb.model.ToDo;
 import com.example.todoappmultidb.model.User;
+import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.routing.DataSourceContextHolder;
-import com.example.todoappmultidb.routing.config.DataSourceEnum;
 
 import javassist.NotFoundException;
 
@@ -55,7 +52,12 @@ public class UserServiceTest {
 		assertThat(thrown.getMessage()).isEqualTo("Not found any User");
 		
 	}
-
+	@Test
+	public void test_getAllUser_null() {
+		when(userRepository.findAll()).thenReturn(null);
+		Exception thrown= assertThrows(NullPointerException.class,() -> userService.getAllUser());
+		
+	}
 	@Test
 	public void test_getAllUser() throws NotFoundException {
 		User user1 = new User(1L, new ArrayList<>(), "first", "email1");
@@ -76,7 +78,11 @@ public class UserServiceTest {
 		Exception thrown= assertThrows(NotFoundException.class,() -> userService.getUserById(1L));
 		assertThat(thrown.getMessage()).isEqualTo("Not found any User");
 	}
-	
+	@Test
+	public void test_getUserById_null() {
+		when(userRepository.findById(1L)).thenReturn(null);
+		Exception thrown= assertThrows(NullPointerException.class,() -> userService.getUserById(1L));
+	}
 	@Test
 	public void test_insertNewUser_nullId_returnSavedUser() {
 		UserDTO userToSave=spy(new UserDTO(99L, "prova","prova"));
@@ -99,7 +105,7 @@ public class UserServiceTest {
 	}
 	@Test
 	public void test_updateUserById() throws NotFoundException {
-		UserDTO inputDTO=new UserDTO(null, "changed","changed");
+		UserDTO inputDTO=spy(new UserDTO(null, "changed","changed"));
 	
 		
 		User retrieved = spy(new User(1L,new ArrayList<>(),"changeIt","changeIt"));
@@ -114,7 +120,8 @@ public class UserServiceTest {
 
 		assertThat(result).isEqualTo(new UserDTO(userUpdated));
 		
-		InOrder inOrder=inOrder(retrieved,userRepository);
+		InOrder inOrder=inOrder(inputDTO,retrieved,userRepository);
+		inOrder.verify(inputDTO).setId(any(Long.class));
 		inOrder.verify(retrieved).setEmail("changed");
 		inOrder.verify(retrieved).setName("changed");
 		inOrder.verify(retrieved,never()).setTodo(any(ArrayList.class));
@@ -137,36 +144,35 @@ public class UserServiceTest {
 
 	}
 	@Test
-	public void test_setContext_one()
-	{
-		assertThat(userService.setContext(1)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
+	public void test_getToDoOfUser() throws NotFoundException {
+		User user = new User(1L,"first", "email1");
+		ToDo todo1 = new ToDo(1L, user, new HashMap<String, Boolean>(), LocalDateTime.of(2012, 3, 5, 0, 0));
+		ToDo todo2 = new ToDo(2L, user, new HashMap<String, Boolean>(), LocalDateTime.of(2013, 6, 7, 0, 0));
+		user.addToDo(todo1);
+		user.addToDo(todo2);
+		when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+		assertThat(userService.getToDoOfUser(1L)).isEqualTo(asList(new ToDoDTO(todo1),new ToDoDTO(todo2)));
 	}
 	@Test
-	public void test_setContext_two()
-	{
-		assertThat(userService.setContext(2)).isEqualTo(DataSourceEnum.DATASOURCE_TWO);
+	public void test_getToDoOfUser_notfound() {
+		when(userRepository.findById(1L)).thenReturn(Optional.empty());
+		Exception thrown = assertThrows(NotFoundException.class, () -> userService.getToDoOfUser(1L));
+		assertThat(thrown.getMessage()).isEqualTo("Not found any User");
 	}
-	@Test
-	public void test_setContext_callDataContext()
-	{
-		userService.setContext(1);
-		verify(dataContext).set(any(DataSourceEnum.class));
-	}
-	@Test
-	public void test_setContext_outside_range()
-	{
-		assertThat(userService.setContext(3)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
 
-	}
 	@Test
-	public void test_setContext_under_range()
-	{
-		assertThat(userService.setContext(0)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
-
+	public void test_getToDoOfUser_null() {
+		when(userRepository.findById(1L)).thenReturn(null);
+		Exception thrown = assertThrows(NullPointerException.class, () -> userService.getToDoOfUser(1L));
 	}
 	@Test
 	public void test_fromUser_toDTO() {
 		assertThat(userService.toDTO(new User(1l,"prova","prova"))).isEqualTo(new UserDTO(1l,"prova","prova"));
+	}
+	@Test
+	public void test_clearContex() {
+		userService.clearContext();
+		verify(dataContext).clear();
 	}
 	
 }
