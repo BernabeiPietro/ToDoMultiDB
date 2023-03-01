@@ -7,11 +7,14 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,6 +26,7 @@ import com.example.todoappmultidb.repository.ToDoRepository;
 import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.routing.config.DataSourceRoutingConfiguration;
 
+import io.restassured.RestAssured;
 import javassist.NotFoundException;
 
 @RunWith(SpringRunner.class)
@@ -41,7 +45,16 @@ public class ToDoServiceRepositoryIT {
 	@Autowired
 	private UserRepository userRepository;
 
-	
+	@Before
+	public void setup() {
+		userService.setContext(1);
+		userRepository.deleteAll();
+		userRepository.flush();
+		
+		userService.setContext(2);
+		userRepository.deleteAll();
+		userRepository.flush();
+	}
 	
 	@Test
 	public void findToDoUserWithinTransaction() throws NotFoundException {

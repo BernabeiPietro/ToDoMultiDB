@@ -35,9 +35,6 @@ public class UserRestController {
 
 			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
 		}
-		catch (NullPointerException e) {
-			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
-		}
 	}
 
 	@GetMapping("/{db}/id/{id}")

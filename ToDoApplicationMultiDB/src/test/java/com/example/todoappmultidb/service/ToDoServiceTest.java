@@ -122,7 +122,7 @@ public class ToDoServiceTest {
 		inOrder.verify(toUpdate).setId(1L);
 		inOrder.verify(toDoRepository).findById(toUpdate.getIdOfUser());
 		inOrder.verify(retrieve).setLocalDateTime(toUpdate.getDate());
-		inOrder.verify(retrieve).setToDo(toUpdate.getToDo());
+		inOrder.verify(retrieve).setToDo(toUpdate.getActions());
 		inOrder.verify(toDoRepository).save(retrieve);
 	}
 }

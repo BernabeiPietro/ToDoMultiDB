@@ -64,7 +64,7 @@ public class ToDo {
 	}
 
 	public ToDo(ToDoDTO td,User u) {
-		this(td.getId(),u, td.getToDo(),td.getDate());
+		this(td.getId(),u, td.getActions(),td.getDate());
 	}
 
 	public Map<String, Boolean> getToDo() {

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.routing.config.DataSourceRoutingConfiguration;
 
+import io.restassured.RestAssured;
 import javassist.NotFoundException;
 
 @RunWith(SpringRunner.class)
@@ -32,7 +34,16 @@ public class UserServiceRepositoryIT {
 	private UserService userService;
 	@Autowired
 	private UserRepository userRepository;
-
+	@Before
+	public void setup() {
+	// always start with an empty database
+	userService.setContext(1);
+	userRepository.deleteAll();
+	userRepository.flush();
+	userService.setContext(2);
+	userRepository.deleteAll();
+	userRepository.flush();
+	}
 	@Test
 	public void findToDoUserWithinTransaction() throws NotFoundException {
 

@@ -28,6 +28,7 @@ public class ToDoRestController {
 	private ToDoService todoService;
 	@Autowired
 	private UserService userService;
+
 	@GetMapping("/{db}")
 	public List<ToDoDTO> getToDo(@PathVariable int db) {
 		userService.setContext(db);
@@ -42,7 +43,7 @@ public class ToDoRestController {
 	}
 
 	@GetMapping("/{db}/id/{id}")
-	public ToDoDTO getToDoById(@PathVariable int db,@PathVariable long id) {
+	public ToDoDTO getToDoById(@PathVariable int db, @PathVariable long id) {
 		userService.setContext(db);
 		try {
 			return todoService.findByIdDTO(id);
@@ -52,7 +53,16 @@ public class ToDoRestController {
 
 	}
 
-	
+	@GetMapping("/{db}/ofuser/{id}")
+	public List<ToDoDTO> getToDoByUserId(@PathVariable int db,@PathVariable long id) {
+		try {
+			userService.setContext(db);
+			return userService.getToDoOfUser(id);
+		} catch (NotFoundException e) {
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
+		}
+
+	}
 
 	@PostMapping("/{db}/new")
 	@ResponseStatus(HttpStatus.CREATED)
@@ -66,7 +76,7 @@ public class ToDoRestController {
 	}
 
 	@PutMapping("/{db}/update/{id}")
-	public ToDoDTO updateToDo(@RequestBody ToDoDTO todo, @PathVariable int db,@PathVariable Long id) {
+	public ToDoDTO updateToDo(@RequestBody ToDoDTO todo, @PathVariable int db, @PathVariable Long id) {
 		userService.setContext(db);
 		try {
 			return todoService.updateById(id, todo);

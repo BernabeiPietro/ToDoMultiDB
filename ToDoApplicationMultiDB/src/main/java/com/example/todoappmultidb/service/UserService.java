@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.todoappmultidb.model.User;
+import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.routing.DataSourceContextHolder;
@@ -61,7 +62,11 @@ public class UserService {
 		retrieved.setName(userToUpdate.getName());
 		return toDTO(userRepository.save(retrieved));
 	}
-
+	@Transactional(rollbackFor = NotFoundException.class)
+	public List<ToDoDTO> getToDoOfUser(long id) throws NotFoundException {
+		User retrieved =getUser(id);
+		return retrieved.getToDo().stream().map(x->new ToDoDTO(x)).collect(Collectors.toList());
+	}
 	public DataSourceEnum setContext(int ctx) {
 		return dataContext.setContext(ctx);
 	}
