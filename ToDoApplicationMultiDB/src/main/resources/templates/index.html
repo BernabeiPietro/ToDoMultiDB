@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Users</title>
+</head>
+
+<body>
+	<div>
+		<a href="/">Home</a>
+	</div>
+	<div th:if="${param.db==null}">
+		<div th:with="name=''">
+		</div>
+		<button type="submit" name="db2" th:formation="@{/index?db=2}">DB 2</button>
+	</div>
+	<div th:unless="${param.db==null}">
+		<div th:with="name='?db='+param.db[0]">
+		</div>
+		<div th:if="${param.db[0]}==1">
+			<button type="submit" name="db2" th:formation="@{/index?db=2}">DB 2</button>
+		</div>
+		<div th:unless="${param.db[0]}==1">
+			<button type="submit" name="db1" th:formation="@{/index?db=1}">DB 1</button>
+		</div>
+	</div>
+	<div>
+		<a th:href="${param.db==null}?@{/user/new}:@{/user/new(db=${param.db})}">New user</a>
+	</div>
+
+	<div th:if="${users.empty}">
+		<div>No user</div>
+	</div>
+	<div th:unless="${users.empty}">
+		<table id="user_table">
+			<caption>Users</caption>
+			<thead>
+				<tr>
+					<th scope="col">ID</th>
+					<th scope="col">Name</th>
+					<th scope="col">Email</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="user : ${users}">
+					<td th:text="${user.id}"></td>
+					<td th:text="${user.name}"></td>
+					<td th:text="${user.email}"></td>
+					<td><a
+							th:href="${param.db==null}?@{'/user/edit/' + ${user.id}}:@{'/user/edit/' + ${user.id}(db=${param.db[0]})}">Edit</a>
+					</td>
+					<td><a
+							th:href="${param.db==null}?@{'/todo/ofuser/' + ${user.id}}:@{'/todo/ofuser/' + ${user.id}(db=${param.db[0]})}">Show-ToDo</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+</body>
+
+</html>

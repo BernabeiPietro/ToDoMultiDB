@@ -12,21 +12,30 @@ public class ToDoDTO {
 
 	private Map<String, Boolean> actions;
 	private LocalDateTime date;
+
 	private Long idOfUser;
 
-	public ToDoDTO(){
-		
+	public ToDoDTO() {
+
 	}
-	
-	public ToDoDTO(Long id, Long idOfUser, Map<String, Boolean> todo, LocalDateTime date) {
-		this.id=id;
-		this.idOfUser=idOfUser;
-		this.actions=todo;
-		this.date=date;
+
+	public ToDoDTO(Long id, Long idOfUser, Map<String, Boolean> actions, LocalDateTime date) {
+		this.id = id;
+		this.idOfUser = idOfUser;
+		this.actions = actions;
+		this.date = date;
 	}
-	public ToDoDTO(ToDo td)
-	{
-		this(td.getId(),td.getIdOfUser().getId(),td.getToDo(),td.getLocalDateTime());
+
+	public ToDoDTO(ToDo t) {
+		this(t.getId(),t.getIdOfUser().getId(),t.getToDo(),t.getLocalDateTime());
+	}
+
+	public Map<String, Boolean> getActions() {
+		return actions;
+	}
+
+	public void setActions(Map<String, Boolean> actions) {
+		this.actions = actions;
 	}
 
 	public Long getId() {
@@ -35,14 +44,6 @@ public class ToDoDTO {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Map<String, Boolean> getActions() {
-		return actions;
-	}
-
-	public void setToDo(Map<String, Boolean> actions) {
-		this.actions = actions;
 	}
 
 	public LocalDateTime getDate() {
@@ -60,11 +61,12 @@ public class ToDoDTO {
 	public void setIdOfUser(Long idOfUser) {
 		this.idOfUser = idOfUser;
 	}
-	public void addToDoAction(String action, Boolean doIt) {
 
-		this.actions.put(action, doIt);
-
+	@Override
+	public String toString() {
+		return "ToDoDTO [id=" + id + ", toDo=" + actions + ", date=" + date + ", idOfUser=" + idOfUser + "]";
 	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(date, id, idOfUser, actions);
@@ -83,12 +85,8 @@ public class ToDoDTO {
 				&& Objects.equals(idOfUser, other.idOfUser) && Objects.equals(actions, other.actions);
 	}
 
-	@Override
-	public String toString() {
-		return "ToDoDTO [id=" + id + ", actions=" + actions + ", date=" + date + ", idOfUser=" + idOfUser + "]";
+	public void addToDoAction(String action, Boolean doIt) {
+		this.actions.put(action, doIt);
 	}
 
-	
-
-	
 }

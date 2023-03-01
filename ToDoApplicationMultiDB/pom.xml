@@ -29,7 +29,7 @@
 		</sonar.coverage.jacoco.xmlReportPaths>
 		<!-- Also collects integration tests -->
 		<sonar.junit.reportPaths>
-			${project.build.directory}/surefire-reports,
+			${project.build.directory}/surefire-reports,maven
 			${project.build.directory}/failsafe-reports
 		</sonar.junit.reportPaths>
 		<!-- Also scans HTML files -->
@@ -47,16 +47,18 @@
 		<sonar.tests>
 			${project.build.testSourceDirectory},
 			${basedir}/src/it/java
+
 			<!-- ${basedir}/src/e2e/java -->
 		</sonar.tests>
 
 
 		<sonar.coverage.exclusions>
-
 			**/*Application.*,
-			**/model/**
+			**/model/**,
+			com/gargoylesoftware/htmlunit/*
 
 		</sonar.coverage.exclusions>
+
 		<sonar.projectKey>BernabeiPietro_todomultidb</sonar.projectKey>
 
 
@@ -71,6 +73,11 @@
 		<db.docker.psw>password</db.docker.psw>
 		<JDBC-URL1>jdbc:mysql://${db.docker.dns}:${db.docker.port1}/${db.docker.db1}?createDatabaseIfNotExist=true</JDBC-URL1>
 		<JDBC-URL2>jdbc:mysql://${db.docker.dns}:${db.docker.port2}/${db.docker.db2}?createDatabaseIfNotExist=true</JDBC-URL2>
+
+		<sonar.organization>bernabeipietro</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S5976</sonar.issue.ignore.multicriteria.e1.ruleKey>
+
 
 	</properties>
 
@@ -98,6 +105,7 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
@@ -105,6 +113,13 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<scope>runtime</scope>
+
+		</dependency>
+		<dependency>
+			<groupId>net.sourceforge.htmlunit</groupId>
+			<artifactId>htmlunit</artifactId>
+			<scope>test</scope>
+
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -141,6 +156,10 @@
 			<artifactId>rest-assured</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf.extras</groupId>
+			<artifactId>thymeleaf-extras-java8time</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -166,6 +185,8 @@
 						<excludes>
 							<exclude>**/ToDoApplicationMultiDbApplication.*</exclude>
 							<exclude>**/model/**</exclude>
+
+							<exclude>com/gargoylesoftware/htmlunit/*</exclude>
 
 						</excludes>
 					</configuration>

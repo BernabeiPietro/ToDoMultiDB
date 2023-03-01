@@ -10,16 +10,18 @@ public class UserDTO {
 	private String email;
 
 	public UserDTO(Long id, String name, String email) {
+		super();
 		this.id = id;
 		this.name = name;
 		this.email = email;
 	}
-	public UserDTO(User u) {
-		this(u.getId(),u.getName(),u.getEmail());
-	}
-	
+
 	public UserDTO() {
-		super();
+
+	}
+
+	public UserDTO(User user) {
+		this(user.getId(),user.getName(),user.getEmail());
 	}
 
 	public Long getId() {
@@ -67,7 +69,5 @@ public class UserDTO {
 	public String toString() {
 		return "UserDTO [id=" + id + ", name=" + name + ", email=" + email + "]";
 	}
-
-
 
 }
