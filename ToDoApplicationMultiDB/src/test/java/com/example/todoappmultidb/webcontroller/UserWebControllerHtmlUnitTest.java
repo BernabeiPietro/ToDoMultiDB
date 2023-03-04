@@ -173,7 +173,7 @@ public class UserWebControllerHtmlUnitTest {
 
 	@Test
 	public void testEditNonExistentUsers() throws Exception {
-		when(userService.getUserById(1L)).thenReturn(null);
+		when(userService.getUserById(1l)).thenThrow(new NotFoundException("No user found with id: 1"));
 		HtmlPage page = this.webClient.getPage("/user/edit/1");
 		assertThat(page.getBody().getTextContent()).contains("No user found with id: 1");
 	}
