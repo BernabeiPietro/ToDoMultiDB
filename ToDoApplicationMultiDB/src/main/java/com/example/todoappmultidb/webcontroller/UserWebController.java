@@ -28,7 +28,7 @@ public class UserWebController {
 		List<UserDTO> allUser;
 		try {
 			allUser = userService.getAllUser();
-			model.addAttribute("users", allUser);
+			model.addAttribute("users", allUser); 
 			model.addAttribute(MESSAGE, "");
 		} catch (NotFoundException e) {
 			model.addAttribute("users", Collections.EMPTY_LIST);

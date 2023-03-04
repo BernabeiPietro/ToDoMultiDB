@@ -34,7 +34,7 @@
 
 					</td>
 					<td th:text="${td.date}"></td>
-					<td><a th:href="${param.db==null}?@{'/todo/edit/'+ ${id}}:@{'/todo/edit/'+ ${id}(db=${param.db})}">Edit</a></td>
+					<td><a th:href="${param.db==null}?@{'/todo/edit/'+ ${td.id}}:@{'/todo/edit/'+ ${td.id}(db=${param.db})}">Edit</a></td>
 				</tr>
 			</tbody>
 		</table>

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.todoappmultidb.model.dto.ToDoDTO;
+import com.example.todoappmultidb.repository.ToDoRepository;
 import com.example.todoappmultidb.service.ToDoService;
 import com.example.todoappmultidb.service.UserService;
 
@@ -70,7 +71,7 @@ public class ToDoWebController {
 	}
 
 	@PostMapping("/addaction")
-	public String addAction(ToDoDTO todo, String key, boolean value, Model model) {
+	public String addAction(ToDoDTO todo, String key, boolean value, Model model) throws NotFoundException {
 		if (todo.getActions() == null)
 			todo.setActions(new HashMap<>());
 		if (!(key == null || key.isEmpty()))
