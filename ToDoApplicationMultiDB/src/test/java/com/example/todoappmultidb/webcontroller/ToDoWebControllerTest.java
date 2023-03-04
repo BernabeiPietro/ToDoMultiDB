@@ -227,13 +227,13 @@ public class ToDoWebControllerTest {
 
 //update
 	@Test
-	public void test_PostToDoWithId_emptyActions() throws Exception {
+	public void test_PostToDoWithId_emptyActionsString() throws Exception {
 		mvc.perform(post("/todo/save").param(ID, "1").param("idOfUser", "1").param("date", "2005-01-12 00:00:00")
 				.param("actions", "").param("key", "").param("value", ""))
 				.andExpect(view().name("redirect:/todo/ofuser/1"));
 		verify(todoService).updateById(1l, new ToDoDTO(1l, 1l, new HashMap<>(), LocalDateTime.of(2005, 1, 12, 0, 0)));
 	}
-
+	
 	@Test
 	public void test_PostToDoWithId_mapFull_emptyAdd() throws Exception {
 		HashMap<String, Boolean> actions = new HashMap<>();

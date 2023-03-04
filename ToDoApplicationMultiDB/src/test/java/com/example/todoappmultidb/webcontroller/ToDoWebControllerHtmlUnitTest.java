@@ -53,8 +53,9 @@ public class ToDoWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/todo/ofuser/1");
 		assertThat(page.getBody().getTextContent()).doesNotContain("Not found any Todo for You");
 		HtmlTable table = page.getHtmlElementById("todo_table");
-		assertThat(table.asText()).isEqualTo(
-				"ToDo\n" + "ID	Actions	Data\n" + "1	 	2005-05-01T00:00\n" + "2	 	2017-05-01T00:00");
+		assertThat(table.asText()).isEqualTo("ToDo\n" + "ID	Actions	Data\n" + "1	 	2005-05-01T00:00	Edit\n"
+				+ "2	 	2017-05-01T00:00	Edit");
+
 	}
 
 	@Test
@@ -68,9 +69,9 @@ public class ToDoWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/todo/ofuser/1");
 		assertThat(page.getBody().getTextContent()).doesNotContain("Not found any Todo for You");
 		HtmlTable table = page.getHtmlElementById("todo_table");
-		assertThat(table.asText())
-				.isEqualTo("ToDo\n" + "ID	Actions	Data\n" + "1	 first=true second=true 	2005-05-01T00:00\n"
-						+ "2	 first=true second=true 	2017-05-01T00:00");
+		assertThat(table.asText()).isEqualTo(
+				"ToDo\n" + "ID	Actions	Data\n" + "1	 first=true second=true 	2005-05-01T00:00	Edit\n"
+						+ "2	 first=true second=true 	2017-05-01T00:00	Edit");
 	}
 
 	// edit todo
@@ -101,7 +102,7 @@ public class ToDoWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/todo/edit/1");
 		final HtmlForm form = page.getFormByName("todo_form");
 		assertThat(form.getActionAttribute()).isEqualTo("/todo/save");
-		assertThat(form.getButtonByName("btn_add").getAttribute("formation")).isEqualTo("/todo/addaction");
+		assertThat(form.getButtonByName("btn_add").getAttribute("formaction")).isEqualTo("/todo/addaction");
 	}
 
 	@Test
@@ -111,7 +112,7 @@ public class ToDoWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/todo/edit/1?db=1");
 		final HtmlForm form = page.getFormByName("todo_form");
 		assertThat(form.getActionAttribute()).isEqualTo("/todo/save?db=1");
-		assertThat(form.getButtonByName("btn_add").getAttribute("formation")).isEqualTo("/todo/addaction?db=1");
+		assertThat(form.getButtonByName("btn_add").getAttribute("formaction")).isEqualTo("/todo/addaction?db=1");
 
 	}
 
@@ -122,7 +123,7 @@ public class ToDoWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/todo/edit/1?db=2");
 		final HtmlForm form = page.getFormByName("todo_form");
 		assertThat(form.getActionAttribute()).isEqualTo("/todo/save?db=2");
-		assertThat(form.getButtonByName("btn_add").getAttribute("formation")).isEqualTo("/todo/addaction?db=2");
+		assertThat(form.getButtonByName("btn_add").getAttribute("formaction")).isEqualTo("/todo/addaction?db=2");
 
 	}
 
@@ -178,7 +179,7 @@ public class ToDoWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/todo/new/1");
 		final HtmlForm form = page.getFormByName("todo_form");
 		assertThat(form.getActionAttribute()).isEqualTo("/todo/save");
-		assertThat(form.getButtonByName("btn_add").getAttribute("formation")).isEqualTo("/todo/addaction");
+		assertThat(form.getButtonByName("btn_add").getAttribute("formaction")).isEqualTo("/todo/addaction");
 
 	}
 
@@ -189,7 +190,7 @@ public class ToDoWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/todo/new/1?db=1");
 		final HtmlForm form = page.getFormByName("todo_form");
 		assertThat(form.getActionAttribute()).isEqualTo("/todo/save?db=1");
-		assertThat(form.getButtonByName("btn_add").getAttribute("formation")).isEqualTo("/todo/addaction?db=1");
+		assertThat(form.getButtonByName("btn_add").getAttribute("formaction")).isEqualTo("/todo/addaction?db=1");
 
 	}
 
@@ -200,11 +201,29 @@ public class ToDoWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/todo/new/1?db=2");
 		final HtmlForm form = page.getFormByName("todo_form");
 		assertThat(form.getActionAttribute()).isEqualTo("/todo/save?db=2");
-		assertThat(form.getButtonByName("btn_add").getAttribute("formation")).isEqualTo("/todo/addaction?db=2");
+		assertThat(form.getButtonByName("btn_add").getAttribute("formaction")).isEqualTo("/todo/addaction?db=2");
 
 	}
 
 	// Test link
+	@Test
+	public void test_ToDoShow_EditLink() throws Exception {
+		when(userService.getToDoOfUser(1l))
+				.thenReturn(asList(new ToDoDTO(1l, 1l, new HashMap<>(), LocalDateTime.of(2005, 5, 1, 0, 0))));
+		HtmlPage page = this.webClient.getPage("/todo/ofuser/1");
+		assertThat(page.getAnchorByText("Edit").getHrefAttribute()).isEqualTo("/todo/edit/1");
+
+
+	}
+	@Test
+	public void test_ToDoShow_EditLink_db2() throws Exception {
+		when(userService.getToDoOfUser(1l))
+				.thenReturn(asList(new ToDoDTO(1l, 1l, new HashMap<>(), LocalDateTime.of(2005, 5, 1, 0, 0))));
+		HtmlPage page = this.webClient.getPage("/todo/ofuser/1?db=2");
+		assertThat(page.getAnchorByText("Edit").getHrefAttribute()).isEqualTo("/todo/edit/1?db=2");
+
+
+	}
 	@Test
 	public void test_ToDoShow_NewToDoLink() throws Exception {
 		HtmlPage page = this.webClient.getPage("/todo/ofuser/1");
@@ -231,7 +250,8 @@ public class ToDoWebControllerHtmlUnitTest {
 
 	@Test
 	public void test_ToDoEdit_returnToHome() throws Exception {
-		when(todoService.findByIdDTO(1L)).thenReturn(new ToDoDTO(1l, 1l, new HashMap<>(), LocalDateTime.of(2005, 5, 1, 0, 0)));
+		when(todoService.findByIdDTO(1L))
+				.thenReturn(new ToDoDTO(1l, 1l, new HashMap<>(), LocalDateTime.of(2005, 5, 1, 0, 0)));
 		HtmlPage page = this.webClient.getPage("/todo/edit/1");
 		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
 	}

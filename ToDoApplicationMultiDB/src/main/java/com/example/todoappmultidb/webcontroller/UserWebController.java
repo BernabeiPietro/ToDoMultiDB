@@ -1,5 +1,6 @@
 package com.example.todoappmultidb.webcontroller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,21 +23,33 @@ public class UserWebController {
 	private UserService userService;
 
 	@GetMapping("/")
-	public String index(@RequestParam(required = false, defaultValue = "1") int db, Model model) throws NotFoundException {
+	public String index(@RequestParam(required = false, defaultValue = "1") int db, Model model) {
 		userService.setDatabase(db);
-		List<UserDTO> allUser = userService.getAllUser();
-		model.addAttribute("users", allUser);
-		model.addAttribute(MESSAGE, allUser.isEmpty() ? "No user" : "");
+		List<UserDTO> allUser;
+		try {
+			allUser = userService.getAllUser();
+			model.addAttribute("users", allUser);
+			model.addAttribute(MESSAGE, "");
+		} catch (NotFoundException e) {
+			model.addAttribute("users", Collections.EMPTY_LIST);
+			model.addAttribute(MESSAGE, e.getMessage());
+		}
 		return "index";
 	}
 
 	@GetMapping("/user/edit/{id}")
 	public String editUser(@RequestParam(required = false, defaultValue = "1") int db, @PathVariable long id,
-			Model model) throws NotFoundException {
+			Model model) {
 		userService.setDatabase(db);
-		UserDTO user = userService.getUserById(id);
-		model.addAttribute("user", user);
-		model.addAttribute(MESSAGE, user == null ? "No user found with id: " + id : "");
+
+		try {
+			UserDTO user = userService.getUserById(id);
+			model.addAttribute("user", user);
+			model.addAttribute(MESSAGE, "");
+		} catch (NotFoundException e) {
+			model.addAttribute("user", null);
+			model.addAttribute(MESSAGE, e.getMessage());
+		}
 		return "editUser";
 	}
 
@@ -48,7 +61,8 @@ public class UserWebController {
 	}
 
 	@PostMapping("/user/save")
-	public String saveUser(@RequestParam(required = false, defaultValue = "0") int db, UserDTO user) throws NotFoundException {
+	public String saveUser(@RequestParam(required = false, defaultValue = "0") int db, UserDTO user)
+			throws NotFoundException {
 		if (db == 0)
 			userService.setDatabase(1);
 		else

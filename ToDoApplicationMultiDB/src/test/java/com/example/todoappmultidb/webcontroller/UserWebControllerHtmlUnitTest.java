@@ -108,51 +108,68 @@ public class UserWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/?db=2");
 		assertThat(page.getAnchorByText("New user").getHrefAttribute()).isEqualTo("/user/new?db=2");
 	}
-
 	@Test
-	public void test_HomePage_dbDefault_db1_notDisplayed()
-			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-		HtmlPage page = this.webClient.getPage("/");
-		assertThat(page.getElementsByName("db1")).isEmpty();
-	}
-
-	@Test
-	public void test_HomePage_dbDefault_db2_displayed()
-			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-		HtmlPage page = this.webClient.getPage("/");
-		HtmlButton b2 = page.getElementByName("db2");
-		assertThat(b2.isDisplayed()).isTrue();
-	}
-
-	@Test
-	public void test_HomePage_db1_db1_notdisplayed()
-			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-		HtmlPage page = this.webClient.getPage("/?db=1");
-		assertThat(page.getElementsByName("db1")).isEmpty();
-	}
-
-	@Test
-	public void test_HomePage_db1_db2_displayed()
-			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-		HtmlPage page = this.webClient.getPage("/?db=1");
-		HtmlButton b2 = page.getElementByName("db2");
-		assertThat(b2.isDisplayed()).isTrue();
-	}
-
-	@Test
-	public void test_HomePage_db2_db1_displayed()
-			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+	public void test_HomePage_db2_display_db1() throws Exception {
 		HtmlPage page = this.webClient.getPage("/?db=2");
-		HtmlButton b1 = page.getElementByName("db1");
-		assertThat(b1.isDisplayed()).isTrue();
+		assertThat(page.getAnchorByText("Database 1").getHrefAttribute()).isEqualTo("/?db=1");
 	}
-
 	@Test
-	public void test_HomePage_db2_db2_notdisplayed()
-			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
-		HtmlPage page = this.webClient.getPage("/?db=2");
-		assertThat(page.getElementsByName("db2")).isEmpty();
+	public void test_HomePage_db1_display_db2() throws Exception {
+		HtmlPage page = this.webClient.getPage("/?db=1");
+		assertThat(page.getAnchorByText("Database 2").getHrefAttribute()).isEqualTo("/?db=2");
 	}
+	@Test
+	public void test_HomePage_dbDefault_display_db2() throws Exception {
+		HtmlPage page = this.webClient.getPage("/");
+		assertThat(page.getAnchorByText("Database 2").getHrefAttribute()).isEqualTo("/?db=2");
+	}
+//	@Test
+//	public void test_HomePage_dbDefault_db1_notDisplayed()
+//			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+//		HtmlPage page = this.webClient.getPage("/");
+//		assertThat(page.getElementsByName("db1")).isEmpty();
+//	}
+//
+//	@Test
+//	public void test_HomePage_dbDefault_db2_displayed()
+//			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+//		HtmlPage page = this.webClient.getPage("/");
+//		HtmlButton b2 = page.getElementByName("db2");
+//		assertThat(b2.isDisplayed()).isTrue();
+//		assertThat(b2.getAttribute("formaction")).isEqualTo("/?db=2");
+//	}
+//
+//	@Test
+//	public void test_HomePage_db1_db1_notdisplayed()
+//			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+//		HtmlPage page = this.webClient.getPage("/?db=1");
+//		assertThat(page.getElementsByName("db1")).isEmpty();
+//	}
+//
+//	@Test
+//	public void test_HomePage_db1_db2_displayed()
+//			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+//		HtmlPage page = this.webClient.getPage("/?db=1");
+//		HtmlButton b2 = page.getElementByName("db2");
+//		assertThat(b2.isDisplayed()).isTrue();
+//		assertThat(b2.getAttribute("formaction")).isEqualTo("/?db=2");
+//	}
+//
+//	@Test
+//	public void test_HomePage_db2_db1_displayed()
+//			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+//		HtmlPage page = this.webClient.getPage("/?db=2");
+//		HtmlButton b1 = page.getElementByName("db1");
+//		assertThat(b1.isDisplayed()).isTrue();
+//		assertThat(b1.getAttribute("formaction")).isEqualTo("/?db=1");
+//	}
+//
+//	@Test
+//	public void test_HomePage_db2_db2_notdisplayed()
+//			throws FailingHttpStatusCodeException, MalformedURLException, IOException {
+//		HtmlPage page = this.webClient.getPage("/?db=2");
+//		assertThat(page.getElementsByName("db2")).isEmpty();
+//	}
 
 	@Test
 	public void testEditNonExistentUsers() throws Exception {

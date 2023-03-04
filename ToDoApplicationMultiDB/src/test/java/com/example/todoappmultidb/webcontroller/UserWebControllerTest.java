@@ -26,6 +26,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.service.UserService;
 
+import javassist.NotFoundException;
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = UserWebController.class)
 public class UserWebControllerTest {
@@ -48,10 +50,10 @@ public class UserWebControllerTest {
 				.andExpect(model().attribute(MESSAGE, ""));
 
 	}
-
+ 
 	@Test
 	public void test_HomeView_ShowsMessageWhenThereAreNoUsers() throws Exception {
-		when(userService.getAllUser()).thenReturn(Collections.emptyList());
+		when(userService.getAllUser()).thenThrow(new NotFoundException("No user"));
 		mvc.perform(get("/")).andExpect(view().name("index"))
 				.andExpect(model().attribute("users", Collections.emptyList()))
 				.andExpect(model().attribute(MESSAGE, "No user"));
@@ -83,7 +85,7 @@ public class UserWebControllerTest {
 
 	@Test
 	public void test_EditUser_WhenUserIsNotFound() throws Exception {
-		when(userService.getUserById(1L)).thenReturn(null);
+		when(userService.getUserById(1L)).thenThrow(new NotFoundException("No user found with id: 1"));
 		mvc.perform(get("/user/edit/1")).andExpect(view().name("editUser"))
 				.andExpect(model().attribute("user", nullValue()))
 				.andExpect(model().attribute(MESSAGE, "No user found with id: 1"));
@@ -92,6 +94,7 @@ public class UserWebControllerTest {
 	@Test
 	public void test_EditUser_interaction_dbDefault() throws Exception {
 		InOrder inOrder = Mockito.inOrder(userService);
+		when(userService.getUserById(1l)).thenReturn(new UserDTO(1L, "prova", "prova"));
 		mvc.perform(get("/user/edit/1"));
 		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(userService).getUserById(1l);
@@ -100,6 +103,7 @@ public class UserWebControllerTest {
 	@Test
 	public void test_EditUser_interaction_db2() throws Exception {
 		InOrder inOrder = Mockito.inOrder(userService);
+		when(userService.getUserById(1l)).thenReturn(new UserDTO(1L, "prova", "prova"));
 		mvc.perform(get("/user/edit/1").param("db", "2"));
 		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(userService).getUserById(1l);

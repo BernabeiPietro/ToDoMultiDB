@@ -14,7 +14,7 @@ public class StringToMapConverter implements Converter<String, Map<String, Boole
 	public Map<String, Boolean> convert(String source) {
 
 		if (source == null || !source.startsWith("{") || !source.endsWith("}"))
-			return Collections.emptyMap();
+			return new HashMap<>();
 		source = source.substring(1, source.length() - 1);
 		HashMap<String, Boolean> result = new HashMap<>();
 		String[] pair = source.split(",");

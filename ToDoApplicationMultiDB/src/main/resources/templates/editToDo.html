@@ -41,7 +41,7 @@
 					<tr>
 						<td> <input type="text" th:name="key" th:id="key" th:value="NULL"></td>
 						<td> <input type="text" th:name="value" th:id="value" th:value="NULL"></td>
-						<td> <button type="submit" name="btn_add" th:formation="${param.db==null}?@{/todo/addaction}:@{/todo/addaction(db=${param.db})}" th:object="${todo}">Add
+						<td> <button type="submit" name="btn_add" th:formaction="${param.db==null}?@{/todo/addaction}:@{/todo/addaction(db=${param.db})}" th:object="${todo}">Add
 								action</button></td>
 					</tr>
 				</tbody>

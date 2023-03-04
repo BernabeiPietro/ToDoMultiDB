@@ -40,7 +40,7 @@ public class ToDoWebController {
 		} catch (NotFoundException e) {
 			model.addAttribute("todo", Collections.emptyMap());
 			model.addAttribute(MESSAGE, e.getMessage());
-		}
+		} 
 		model.addAttribute("id", id);
 
 		return LIST_TODO_PAGE;
