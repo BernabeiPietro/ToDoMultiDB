@@ -148,7 +148,9 @@ public class UserServiceTest {
 		User user = new User(1L,"first", "email1");
 		ToDo todo1 = new ToDo(1L, user, new HashMap<String, Boolean>(), LocalDateTime.of(2012, 3, 5, 0, 0));
 		ToDo todo2 = new ToDo(2L, user, new HashMap<String, Boolean>(), LocalDateTime.of(2013, 6, 7, 0, 0));
+		
 		user.addToDo(todo1);
+		user.addToDo(todo2);
 		user.addToDo(todo2);
 		when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 		assertThat(userService.getToDoOfUser(1L)).isEqualTo(asList(new ToDoDTO(todo1),new ToDoDTO(todo2)));

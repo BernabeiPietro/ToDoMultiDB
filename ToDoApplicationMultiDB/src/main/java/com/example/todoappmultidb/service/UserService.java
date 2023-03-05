@@ -62,11 +62,13 @@ public class UserService {
 		retrieved.setName(userToUpdate.getName());
 		return toDTO(userRepository.save(retrieved));
 	}
+
 	@Transactional(rollbackFor = NotFoundException.class)
 	public List<ToDoDTO> getToDoOfUser(long id) throws NotFoundException {
-		User retrieved =getUser(id);
-		return retrieved.getToDo().stream().map(ToDoDTO::new).collect(Collectors.toList());
+		User retrieved = getUser(id);
+		return retrieved.getToDo().stream().map(ToDoDTO::new).distinct().collect(Collectors.toList());
 	}
+
 	public DataSourceEnum setDatabase(int ctx) {
 		return dataContext.setDatabase(ctx);
 	}
