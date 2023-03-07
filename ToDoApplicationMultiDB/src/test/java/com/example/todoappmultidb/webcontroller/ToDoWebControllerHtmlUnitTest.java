@@ -54,8 +54,10 @@ public class ToDoWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/todo/ofuser/1");
 		assertThat(page.getBody().getTextContent()).doesNotContain("Not found any Todo for You");
 		HtmlTable table = page.getHtmlElementById("todo_table");
-		assertThat(table.asText()).isEqualTo("ToDo\n" + "ID	Actions	Data\n" + "1	 	2005-05-01T00:00	Edit\n"
-				+ "2	 	2017-05-01T00:00	Edit");
+		assertThat(table.asText()).isEqualTo("ToDo\n"+
+				"ID	Actions	Data\n"+
+				"1	 	2005-05-01T00:00	 Edit\n"+
+				"2	 	2017-05-01T00:00	 Edit");
 
 	}
 
@@ -70,12 +72,13 @@ public class ToDoWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/todo/ofuser/1");
 		assertThat(page.getBody().getTextContent()).doesNotContain("Not found any Todo for You");
 		HtmlTable table = page.getHtmlElementById("todo_table");
-		assertThat(table.asText()).isEqualTo(
-				"ToDo\n" + "ID	Actions	Data\n" + "1	 first=true second=true 	2005-05-01T00:00	Edit\n"
-						+ "2	 first=true second=true 	2017-05-01T00:00	Edit");
-	}
+		assertThat(table.asText()).isEqualTo("ToDo\n"+
+				"ID	Actions	Data\n"+
+				"1	 first=true second=true 	2005-05-01T00:00	 Edit\n"+
+				"2	 first=true second=true 	2017-05-01T00:00	 Edit");
+	} 
 
-	// edit todo
+	// edit todo 
 	@Test
 	public void test_EditToDoWhenNotExist() throws Exception {
 		when(todoService.findByIdDTO(1L)).thenThrow(new NotFoundException("Not found any Todo with id 1"));

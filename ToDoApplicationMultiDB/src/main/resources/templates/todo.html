@@ -34,7 +34,11 @@
 
 					</td>
 					<td th:text="${td.date}"></td>
-					<td><a th:href="${param.db==null}?@{'/todo/edit/'+ ${td.id}}:@{'/todo/edit/'+ ${td.id}(db=${param.db})}">Edit</a></td>
+					<td th:if="${param.db==null}">
+						<a th:href="@{'/todo/edit/'+ ${td.id}}">Edit</a></td>
+					<td th:unless="${param.db==null}">
+						<a th:href="@{'/todo/edit/'+ ${td.id}(db=${param.db})}">Edit</a></td>
+
 				</tr>
 			</tbody>
 		</table>
