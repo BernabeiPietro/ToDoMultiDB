@@ -10,8 +10,6 @@ public class DataSourceConfig {
 	private String password;
 	private String username;
 
-	
-
 	public String getUrl() {
 		return url;
 	}
@@ -38,7 +36,7 @@ public class DataSourceConfig {
 
 	public DataSource getDataSource() {
 		return new DriverManagerDataSource(url, username, password);
-		
+
 	}
-	
+
 }

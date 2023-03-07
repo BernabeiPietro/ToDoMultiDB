@@ -42,7 +42,6 @@ public class UserRestController {
 		userService.setDatabase(db);
 		try {
 			return userService.getUserById(id);
-			
 
 		} catch (NotFoundException e) {
 

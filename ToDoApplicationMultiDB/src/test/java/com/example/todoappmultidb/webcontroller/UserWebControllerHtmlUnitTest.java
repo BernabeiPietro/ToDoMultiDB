@@ -20,7 +20,6 @@ import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.service.UserService;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlButton;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlTable;
@@ -108,22 +107,24 @@ public class UserWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/?db=2");
 		assertThat(page.getAnchorByText("New user").getHrefAttribute()).isEqualTo("/user/new?db=2");
 	}
+
 	@Test
 	public void test_HomePage_db2_display_db1() throws Exception {
 		HtmlPage page = this.webClient.getPage("/?db=2");
 		assertThat(page.getAnchorByText("Database 1").getHrefAttribute()).isEqualTo("/?db=1");
 	}
+
 	@Test
 	public void test_HomePage_db1_display_db2() throws Exception {
 		HtmlPage page = this.webClient.getPage("/?db=1");
 		assertThat(page.getAnchorByText("Database 2").getHrefAttribute()).isEqualTo("/?db=2");
 	}
+
 	@Test
 	public void test_HomePage_dbDefault_display_db2() throws Exception {
 		HtmlPage page = this.webClient.getPage("/");
 		assertThat(page.getAnchorByText("Database 2").getHrefAttribute()).isEqualTo("/?db=2");
 	}
-
 
 	@Test
 	public void testEditNonExistentUsers() throws Exception {
@@ -144,7 +145,8 @@ public class UserWebControllerHtmlUnitTest {
 	}
 
 	@Test
-	public void testEditUser_db_1() throws FailingHttpStatusCodeException, MalformedURLException, IOException, NotFoundException {
+	public void testEditUser_db_1()
+			throws FailingHttpStatusCodeException, MalformedURLException, IOException, NotFoundException {
 		when(userService.getUserById(1)).thenReturn(new UserDTO(1L, "original name", "original email"));
 		HtmlPage page = this.webClient.getPage("/user/edit/1?db=1");
 		final HtmlForm form = page.getFormByName("user_form");
@@ -153,7 +155,8 @@ public class UserWebControllerHtmlUnitTest {
 	}
 
 	@Test
-	public void testEditUser_db_2() throws FailingHttpStatusCodeException, MalformedURLException, IOException, NotFoundException {
+	public void testEditUser_db_2()
+			throws FailingHttpStatusCodeException, MalformedURLException, IOException, NotFoundException {
 		when(userService.getUserById(1)).thenReturn(new UserDTO(1L, "original name", "original email"));
 		HtmlPage page = this.webClient.getPage("/user/edit/1?db=2");
 		final HtmlForm form = page.getFormByName("user_form");
@@ -162,7 +165,8 @@ public class UserWebControllerHtmlUnitTest {
 	}
 
 	@Test
-	public void testEditUser_db_default() throws FailingHttpStatusCodeException, MalformedURLException, IOException, NotFoundException {
+	public void testEditUser_db_default()
+			throws FailingHttpStatusCodeException, MalformedURLException, IOException, NotFoundException {
 		when(userService.getUserById(1)).thenReturn(new UserDTO(1L, "original name", "original email"));
 		HtmlPage page = this.webClient.getPage("/user/edit/1");
 		final HtmlForm form = page.getFormByName("user_form");
@@ -179,6 +183,7 @@ public class UserWebControllerHtmlUnitTest {
 		form.getButtonByName("btn_submit").click();
 		verify(userService).insertNewUser(new UserDTO(null, "new name", "new email"));
 	}
+
 //test link
 	@Test
 	public void test_UserEdit_returnToHome() throws Exception {
@@ -186,6 +191,7 @@ public class UserWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/user/edit/1");
 		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
 	}
+
 	@Test
 	public void test_UserNew_returnToHome() throws Exception {
 		HtmlPage page = this.webClient.getPage("/user/new");

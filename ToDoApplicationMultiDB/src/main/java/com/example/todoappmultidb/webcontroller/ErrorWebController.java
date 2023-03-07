@@ -6,7 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class ErrorWebController implements ErrorController{
+public class ErrorWebController implements ErrorController {
 
 	private static final String MESSAGE = "message";
 
@@ -19,7 +19,5 @@ public class ErrorWebController implements ErrorController{
 	public String getErrorPath() {
 		return "/error";
 	}
-
-	
 
 }

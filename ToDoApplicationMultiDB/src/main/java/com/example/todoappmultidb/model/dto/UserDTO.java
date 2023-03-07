@@ -21,7 +21,7 @@ public class UserDTO {
 	}
 
 	public UserDTO(User user) {
-		this(user.getId(),user.getName(),user.getEmail());
+		this(user.getId(), user.getName(), user.getEmail());
 	}
 
 	public Long getId() {

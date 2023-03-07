@@ -27,7 +27,7 @@ public class ToDoDTO {
 	}
 
 	public ToDoDTO(ToDo t) {
-		this(t.getId(),t.getIdOfUser().getId(),t.getToDo(),t.getLocalDateTime());
+		this(t.getId(), t.getIdOfUser().getId(), t.getToDo(), t.getLocalDateTime());
 	}
 
 	public Map<String, Boolean> getActions() {

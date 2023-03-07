@@ -11,13 +11,10 @@ import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.transaction.BeforeTransaction;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.todoappmultidb.model.ToDo;
 import com.example.todoappmultidb.model.User;
@@ -38,36 +35,35 @@ public class RepositoryDataSourceIT {
 	private ToDo savedTodo1;
 	private User savedUser2;
 	private ToDo savedTodo2;
-	
+
 	@Before
 	public void setup() {
 		User toSaveUser = new User(null, new ArrayList<>(), "db1", "db1");
 		ToDo toSaveTodo = new ToDo(null, toSaveUser, new HashMap<>(), LocalDateTime.of(2005, 1, 1, 0, 0));
 		toSaveTodo.addToDoAction("prova", false);
 		toSaveUser.addToDo(toSaveTodo);
-		
 
 		dataContext.set(DataSourceEnum.DATASOURCE_ONE);
 		savedUser1 = userRepository.save(toSaveUser);
 		savedTodo1 = todoRepository.save(toSaveTodo);
-		
+
 		dataContext.set(DataSourceEnum.DATASOURCE_TWO);
-	
+
 		User toSaveUser2 = new User(null, new ArrayList<>(), "db2", "db2");
 		ToDo toSaveTodo2 = new ToDo(null, toSaveUser2, new HashMap<>(), LocalDateTime.of(2015, 2, 2, 0, 0));
 		toSaveTodo2.addToDoAction("avorp", false);
 		toSaveUser2.addToDo(toSaveTodo);
 		savedUser2 = userRepository.save(toSaveUser2);
 		savedTodo2 = todoRepository.save(toSaveTodo2);
-		
+
 	}
-	
+
 	@Test
 	public void saveUserAndToDoFirstDB_test() {
 		dataContext.set(DataSourceEnum.DATASOURCE_ONE);
-		
+
 		Optional<User> findByIdUser = userRepository.findById(savedUser1.getId());
-		 List<ToDo> findToDoByUserId = todoRepository.findToDoByUserId(savedUser1);
+		List<ToDo> findToDoByUserId = todoRepository.findToDoByUserId(savedUser1);
 		assertTrue(findByIdUser.isPresent());
 		assertThat(findToDoByUserId).isNotEmpty();
 		assertThat(findByIdUser.get()).hasFieldOrPropertyWithValue("id", savedUser1.getId())

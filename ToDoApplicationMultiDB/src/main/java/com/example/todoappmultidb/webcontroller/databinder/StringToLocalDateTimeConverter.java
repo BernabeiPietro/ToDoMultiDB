@@ -14,9 +14,9 @@ public class StringToLocalDateTimeConverter implements Converter<String, LocalDa
 
 		if (source.startsWith("["))
 			source = source.substring(1, source.length());
-		if(source.endsWith("]"))
+		if (source.endsWith("]"))
 
-			source = source.substring(0, source.length()-1);
+			source = source.substring(0, source.length() - 1);
 		if (source.contains("T"))
 			return LocalDateTime.parse(source, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 		else {

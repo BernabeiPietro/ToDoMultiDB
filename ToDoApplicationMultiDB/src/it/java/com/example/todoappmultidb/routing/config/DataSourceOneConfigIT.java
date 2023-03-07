@@ -18,12 +18,14 @@ public class DataSourceOneConfigIT {
 
 	@Autowired
 	DataSourceOneConfig data;
+
 	@Test
 	public void bindigProperty_test() {
 		assertThat(data.getUrl()).isEqualTo("jdbc:mysql://localhost:28011/db_example_1?createDatabaseIfNotExist=true");
 		assertThat(data.getPassword()).isEqualTo("password");
 		assertThat(data.getUsername()).isEqualTo("administrator");
 	}
+
 	@Test
 	public void connectionDataSource_test() throws SQLException {
 		assertThat(data.getDataSource().getConnection().isValid(10)).isTrue();

@@ -140,7 +140,8 @@ public class ToDoWebControllerTest {
 	@Test
 	public void test_EditNewToDo_db_default() throws Exception {
 		mvc.perform(get("/todo/new/1")).andExpect(view().name("editToDo"))
-				.andExpect(model().attribute("todo", new ToDoDTO(-1l, 1L, new HashMap<>(), LocalDateTime.now().truncatedTo(ChronoUnit.DAYS))))
+				.andExpect(model().attribute("todo",
+						new ToDoDTO(-1l, 1L, new HashMap<>(), LocalDateTime.now().truncatedTo(ChronoUnit.DAYS))))
 				.andExpect(model().attribute(MESSAGE, ""));
 		verifyNoInteractions(todoService);
 	}
@@ -148,7 +149,8 @@ public class ToDoWebControllerTest {
 	@Test
 	public void test_EditNewToDo_db_2() throws Exception {
 		mvc.perform(get("/todo/new/1").param("db", "2")).andExpect(view().name("editToDo"))
-				.andExpect(model().attribute("todo", new ToDoDTO(-1l, 1L, new HashMap<>(), LocalDateTime.now().truncatedTo(ChronoUnit.DAYS))))
+				.andExpect(model().attribute("todo",
+						new ToDoDTO(-1l, 1L, new HashMap<>(), LocalDateTime.now().truncatedTo(ChronoUnit.DAYS))))
 				.andExpect(model().attribute(MESSAGE, ""));
 		verifyNoInteractions(todoService);
 	}
@@ -234,7 +236,7 @@ public class ToDoWebControllerTest {
 				.andExpect(view().name("redirect:/todo/ofuser/1"));
 		verify(todoService).updateById(1l, new ToDoDTO(1l, 1l, new HashMap<>(), LocalDateTime.of(2005, 1, 12, 0, 0)));
 	}
-	
+
 	@Test
 	public void test_PostToDoWithId_mapFull_emptyAdd() throws Exception {
 		HashMap<String, Boolean> actions = new HashMap<>();

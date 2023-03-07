@@ -50,7 +50,7 @@ public class UserWebControllerTest {
 				.andExpect(model().attribute(MESSAGE, ""));
 
 	}
- 
+
 	@Test
 	public void test_HomeView_ShowsMessageWhenThereAreNoUsers() throws Exception {
 		when(userService.getAllUser()).thenThrow(new NotFoundException("No user"));

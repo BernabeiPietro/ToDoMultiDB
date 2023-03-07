@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -157,6 +158,9 @@ public class ToDoWebControllerHtmlUnitTest {
 		form.getInputByName("key").setValueAttribute("third");
 		form.getInputByName("value").setValueAttribute("false");
 		form.getButtonByName("btn_add").click();
+		verify(todoService).findByIdDTO(1l);
+		verifyNoMoreInteractions(todoService);
+
 	}
 
 	// new todo
@@ -170,6 +174,9 @@ public class ToDoWebControllerHtmlUnitTest {
 		form.getInputByName("key").setValueAttribute("first");
 		form.getInputByName("value").setValueAttribute("false");
 		form.getButtonByName("btn_add").click();
+		verifyNoInteractions(todoService);
+		verifyNoInteractions(userService);
+
 	}
 
 	@Test
@@ -213,8 +220,8 @@ public class ToDoWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/todo/ofuser/1");
 		assertThat(page.getAnchorByText("Edit").getHrefAttribute()).isEqualTo("/todo/edit/1");
 
-
 	}
+
 	@Test
 	public void test_ToDoShow_EditLink_db2() throws Exception {
 		when(userService.getToDoOfUser(1l))
@@ -222,8 +229,8 @@ public class ToDoWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/todo/ofuser/1?db=2");
 		assertThat(page.getAnchorByText("Edit").getHrefAttribute()).isEqualTo("/todo/edit/1?db=2");
 
-
 	}
+
 	@Test
 	public void test_ToDoShow_NewToDoLink() throws Exception {
 		HtmlPage page = this.webClient.getPage("/todo/ofuser/1");

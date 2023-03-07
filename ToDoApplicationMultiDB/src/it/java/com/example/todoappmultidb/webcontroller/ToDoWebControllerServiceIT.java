@@ -1,20 +1,16 @@
 package com.example.todoappmultidb.webcontroller;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 import org.jboss.logging.Logger;
-import org.jboss.logging.Logger.Level;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
@@ -100,7 +96,7 @@ public class ToDoWebControllerServiceIT {
 		User user = userRepository.save(new User(null, "test", "test"));
 		HashMap<String, Boolean> actions = new HashMap<>();
 		actions.put("prova", true);
-		actions.put("prova2",false);
+		actions.put("prova2", false);
 		ToDo todo = todoRepository.save(new ToDo(null, user, actions, LocalDateTime.of(2020, 4, 12, 1, 1, 1)));
 		driver.get(baseUrl + "/edit/" + todo.getId() + "?db=1");
 

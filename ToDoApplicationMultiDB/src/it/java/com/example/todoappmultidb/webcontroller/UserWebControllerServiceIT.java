@@ -2,11 +2,6 @@ package com.example.todoappmultidb.webcontroller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,7 +70,7 @@ public class UserWebControllerServiceIT {
 		driver.findElement(By.name("email")).sendKeys("prova");
 		driver.findElement(By.name("btn_submit")).click();
 		userService.setDatabase(1);
-		assertThat(userRepository.findAll().size()).isEqualTo(1);
+		assertThat(userRepository.findAll()).hasSize(1);
 		assertThat(userRepository.findAll().get(0).getEmail()).isEqualTo("prova");
 		assertThat(userRepository.findAll().get(0).getName()).isEqualTo("prova");
 

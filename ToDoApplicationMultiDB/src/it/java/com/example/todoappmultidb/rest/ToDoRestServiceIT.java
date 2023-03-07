@@ -4,12 +4,8 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import org.jboss.logging.Logger;
-import org.jboss.logging.Logger.Level;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +19,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.example.todoappmultidb.model.ToDo;
 import com.example.todoappmultidb.model.User;
 import com.example.todoappmultidb.model.dto.ToDoDTO;
-import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.repository.ToDoRepository;
 import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.service.UserService;

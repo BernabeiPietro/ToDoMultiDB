@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.todoappmultidb.model.dto.ToDoDTO;
-import com.example.todoappmultidb.repository.ToDoRepository;
 import com.example.todoappmultidb.service.ToDoService;
 import com.example.todoappmultidb.service.UserService;
 
@@ -43,7 +42,7 @@ public class ToDoWebController {
 		} catch (NotFoundException e) {
 			model.addAttribute("todo", Collections.emptyMap());
 			model.addAttribute(MESSAGE, e.getMessage());
-		} 
+		}
 		model.addAttribute("id", id);
 
 		return LIST_TODO_PAGE;
@@ -67,13 +66,14 @@ public class ToDoWebController {
 
 	@GetMapping("/new/{id}")
 	public String newToDo(@PathVariable long id, Model model) {
-		model.addAttribute("todo", new ToDoDTO(-1L, id, new HashMap<>(), LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)));
+		model.addAttribute("todo",
+				new ToDoDTO(-1L, id, new HashMap<>(), LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)));
 		model.addAttribute(MESSAGE, "");
 		return EDIT_TODO_PAGE;
 	}
 
 	@PostMapping("/addaction")
-	public String addAction(ToDoDTO todo, String key, boolean value, Model model) throws NotFoundException {
+	public String addAction(ToDoDTO todo, String key, boolean value, Model model) {
 		if (todo.getActions() == null)
 			todo.setActions(new HashMap<>());
 		if (!(key == null || key.isEmpty()))

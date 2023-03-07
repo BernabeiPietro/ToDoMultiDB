@@ -20,7 +20,6 @@ import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.routing.config.DataSourceRoutingConfiguration;
 
-import io.restassured.RestAssured;
 import javassist.NotFoundException;
 
 @RunWith(SpringRunner.class)
@@ -34,16 +33,18 @@ public class UserServiceRepositoryIT {
 	private UserService userService;
 	@Autowired
 	private UserRepository userRepository;
+
 	@Before
 	public void setup() {
-	// always start with an empty database
-	userService.setDatabase(1);
-	userRepository.deleteAll();
-	userRepository.flush();
-	userService.setDatabase(2);
-	userRepository.deleteAll();
-	userRepository.flush();
+		// always start with an empty database
+		userService.setDatabase(1);
+		userRepository.deleteAll();
+		userRepository.flush();
+		userService.setDatabase(2);
+		userRepository.deleteAll();
+		userRepository.flush();
 	}
+
 	@Test
 	public void findToDoUserWithinTransaction() throws NotFoundException {
 
@@ -66,7 +67,6 @@ public class UserServiceRepositoryIT {
 		assertThat(userService.getAllUser()).doesNotContain(new UserDTO(savedUser1));
 
 	}
-
 
 	@Test
 	public void insertToDoUserWithinTransaction_db1() throws NotFoundException {
