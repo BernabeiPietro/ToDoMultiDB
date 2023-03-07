@@ -16,7 +16,7 @@
 		    <input type="hidden" th:field="*{id}" />
 			<input type="hidden" th:field="*{idOfUser}" />
 			<p>
-				Date: <input type="datetime-local" th:field="*{date}" />
+				Date: <input type="datetime-local" th:field="*{date}"/>
 			</p>
 			<th:block th:if="*{actions.isEmpty}">
 				<input type="hidden" th:name="actions" th:id="actions" th:value="NULL" />

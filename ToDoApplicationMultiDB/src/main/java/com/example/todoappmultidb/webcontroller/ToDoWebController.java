@@ -1,5 +1,7 @@
 package com.example.todoappmultidb.webcontroller;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -65,7 +67,7 @@ public class ToDoWebController {
 
 	@GetMapping("/new/{id}")
 	public String newToDo(@PathVariable long id, Model model) {
-		model.addAttribute("todo", new ToDoDTO(-1L, id, new HashMap<>(), null));
+		model.addAttribute("todo", new ToDoDTO(-1L, id, new HashMap<>(), LocalDateTime.now().truncatedTo(ChronoUnit.DAYS)));
 		model.addAttribute(MESSAGE, "");
 		return EDIT_TODO_PAGE;
 	}

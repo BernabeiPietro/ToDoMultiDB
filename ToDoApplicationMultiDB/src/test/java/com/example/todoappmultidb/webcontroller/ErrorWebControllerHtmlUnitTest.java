@@ -19,19 +19,13 @@ public class ErrorWebControllerHtmlUnitTest {
 
 	@Test
 	public void testErrorPage_emptyMessage() throws Exception {
-		HtmlPage page = this.webClient.getPage("/error/");
+		HtmlPage page = this.webClient.getPage("/error");
 		assertThat(page.getBody().getTextContent()).contains("Generic Error");
 	}
 
 	@Test
-	public void testErrorPage_fullMessage() throws Exception {
-		HtmlPage page = this.webClient.getPage("/error/Error");
-		assertThat(page.getBody().getTextContent()).contains("Error");
-	}
-
-	@Test
 	public void test_ErrorPage_redirectToHome() throws Exception {
-		HtmlPage page = this.webClient.getPage("/error/");
+		HtmlPage page = this.webClient.getPage("/error");
 		assertThat(page.getAnchorByText("Turn to Home").getHrefAttribute()).isEqualTo("/");
 	}
 }

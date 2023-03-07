@@ -68,11 +68,14 @@ public class UserWebControllerServiceIT {
 		driver.findElement(By.cssSelector("a[href*='/?db=2']"));
 	}
 
+	@Test
 	public void testEditPageNewUser() throws Exception {
-		driver.get(baseUrl + "/new");
+		driver.get(baseUrl + "/user/new");
 		driver.findElement(By.name("name")).sendKeys("prova");
 		driver.findElement(By.name("email")).sendKeys("prova");
 		driver.findElement(By.name("btn_submit")).click();
+		userService.setDatabase(1);
+		assertThat(userRepository.findAll().size()).isEqualTo(1);
 		assertThat(userRepository.findAll().get(0).getEmail()).isEqualTo("prova");
 		assertThat(userRepository.findAll().get(0).getName()).isEqualTo("prova");
 
@@ -86,9 +89,9 @@ public class UserWebControllerServiceIT {
 		final WebElement nameField = driver.findElement(By.name("name"));
 		nameField.clear();
 		nameField.sendKeys("new name");
-		final WebElement salaryField = driver.findElement(By.name("email"));
-		salaryField.clear();
-		salaryField.sendKeys("new email");
+		final WebElement emailField = driver.findElement(By.name("email"));
+		emailField.clear();
+		emailField.sendKeys("new email");
 		driver.findElement(By.name("btn_submit")).click();
 		assertThat(userRepository.findById(user.getId()).get().getName()).isEqualTo("new name");
 		assertThat(userRepository.findById(user.getId()).get().getEmail()).isEqualTo("new email");

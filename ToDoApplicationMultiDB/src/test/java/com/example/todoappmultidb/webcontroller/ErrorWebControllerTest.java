@@ -21,14 +21,9 @@ public class ErrorWebControllerTest {
 
 	@Test
 	public void test_getError_emptyMessage() throws Exception {
-		mvc.perform(get("/error/")).andExpect(view().name("errorPage"))
+		mvc.perform(get("/error")).andExpect(view().name("errorPage"))
 				.andExpect(model().attribute(MESSAGE, "Generic Error"));
 	}
 
-	@Test
-	public void test_getError_fullMessage() throws Exception {
-		mvc.perform(get("/error/Error NotFound")).andExpect(view().name("errorPage"))
-				.andExpect(model().attribute(MESSAGE, "Error NotFound"));
-	}
 
 }

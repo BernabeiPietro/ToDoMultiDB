@@ -1,22 +1,23 @@
 package com.example.todoappmultidb.webcontroller;
 
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class ErrorWebController{
+public class ErrorWebController implements ErrorController{
 
 	private static final String MESSAGE = "message";
 
-	@GetMapping(value = { "/error/", "/error/{error}" })
-	public String getErrorPath(@PathVariable(name = "error", required = false) String message, Model model) {
-		if (message == null)
-			message = "Generic Error";
-		model.addAttribute(MESSAGE, message);
+	@GetMapping(value = { "/error" })
+	public String getErrorPath(Model model) {
+		model.addAttribute(MESSAGE, "Generic Error");
 		return "errorPage";
+	}
+
+	public String getErrorPath() {
+		return "/error";
 	}
 
 	
