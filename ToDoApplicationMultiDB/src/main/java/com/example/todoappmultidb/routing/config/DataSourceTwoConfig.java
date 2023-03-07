@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties("datasourcetwo.datasource")
-public class DataSourceTwoConfig extends DataSourceConfig{
-	
+public class DataSourceTwoConfig extends DataSourceConfig {
+
 	public DataSourceTwoConfig() {
 		super();
 	}

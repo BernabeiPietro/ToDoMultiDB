@@ -18,7 +18,6 @@ public class DataSourceRouterTest {
 	DataSourceContextHolder dataContext;
 	@InjectMocks
 	DataSourceRouter data;
-	
 
 	@Test
 	public void determineCurrentLookupKey_test() {
@@ -26,5 +25,5 @@ public class DataSourceRouterTest {
 		assertThat(data.determineCurrentLookupKey()).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
 
 	}
-	
+
 }

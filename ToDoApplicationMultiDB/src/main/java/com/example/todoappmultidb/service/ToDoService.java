@@ -41,21 +41,23 @@ public class ToDoService {
 		return toDoRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found any ToDo"));
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = {IllegalArgumentException.class,NotFoundException.class})
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = {
+			IllegalArgumentException.class, NotFoundException.class })
 	public ToDoDTO save(ToDoDTO toDoDTO) throws NotFoundException {
 		verifyNullElement(toDoDTO);
-		
+
 		User retrieved = userService.getUser(toDoDTO.getIdOfUser());
-		ToDo toSave=new ToDo(toDoDTO,retrieved);
+		ToDo toSave = new ToDo(toDoDTO, retrieved);
 		return toDTO(toDoRepository.save(toSave));
 
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = {IllegalArgumentException.class,NotFoundException.class})
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = {
+			IllegalArgumentException.class, NotFoundException.class })
 	public ToDoDTO updateById(long id, ToDoDTO toUpdate) throws NotFoundException {
 		verifyNullElement(toUpdate);
 		toUpdate.setId(id);
-		ToDo retrieve=findById(toUpdate.getId());
+		ToDo retrieve = findById(toUpdate.getId());
 		retrieve.setLocalDateTime(toUpdate.getDate());
 		retrieve.setToDo(toUpdate.getActions());
 		return toDTO(toDoRepository.save(retrieve));
@@ -65,11 +67,8 @@ public class ToDoService {
 		if (toDoDTO.equals(new ToDoDTO(null, null, null, null)))
 			throw new IllegalArgumentException("ToDo with null property");
 	}
-	
-	public ToDoDTO toDTO(ToDo t)
-	{
+
+	public ToDoDTO toDTO(ToDo t) {
 		return new ToDoDTO(t);
 	}
-	
-	
 }

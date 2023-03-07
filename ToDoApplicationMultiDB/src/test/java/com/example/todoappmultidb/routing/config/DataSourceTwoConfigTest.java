@@ -9,19 +9,19 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class )
+@RunWith(SpringJUnit4ClassRunner.class)
 @EnableConfigurationProperties(value = DataSourceTwoConfig.class)
 @TestPropertySource("classpath:server.properties")
 public class DataSourceTwoConfigTest {
-	
+
 	@Autowired
 	private DataSourceTwoConfig data;
+
 	@Test
 	public void datasourceOneConfigBindingValue_test() {
 		assertThat(data.getUrl()).isEqualTo("localhost");
 		assertThat(data.getPassword()).isEqualTo("password");
 		assertThat(data.getUsername()).isEqualTo("root");
-		}
+	}
 
 }
-

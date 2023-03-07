@@ -32,22 +32,20 @@ public class ToDo {
 			@JoinColumn(name = "todo_map_id", referencedColumnName = "id") })
 	@MapKeyColumn(name = "todo_action") /* where keys are stored */
 	@Column(name = "doit") // where value are stored
-    @Fetch(value = FetchMode.JOIN)
+	@Fetch(value = FetchMode.JOIN)
 	private Map<String, Boolean> actionList;
-	
+
 	@Column(name = "local_date_time", columnDefinition = "TIMESTAMP")
 	private LocalDateTime date;
-	
-	@ManyToOne
-	@JoinColumn(name = "idUser",nullable=false)
-	private User idOfUser;
 
+	@ManyToOne
+	@JoinColumn(name = "idUser", nullable = false)
+	private User idOfUser;
 
 	public ToDo() {
 		super();
 	}
 
-	
 	public ToDo(Long id, User idOfUser, Map<String, Boolean> toDo, LocalDateTime date) {
 		super();
 		this.id = id;
@@ -55,6 +53,7 @@ public class ToDo {
 		this.date = date;
 		this.idOfUser = idOfUser;
 	}
+
 	public ToDo(Long id, User idOfUser, LocalDateTime date) {
 		super();
 		this.id = id;
@@ -63,8 +62,8 @@ public class ToDo {
 		this.idOfUser = idOfUser;
 	}
 
-	public ToDo(ToDoDTO td,User u) {
-		this(td.getId(),u, td.getActions(),td.getDate());
+	public ToDo(ToDoDTO td, User u) {
+		this(td.getId(), u, td.getActions(), td.getDate());
 	}
 
 	public Map<String, Boolean> getToDo() {
@@ -131,9 +130,8 @@ public class ToDo {
 
 	@Override
 	public String toString() {
-		return "ToDo [id=" + id + ", actionList=" + actionList + ", date=" + date + ", idOfUser=" + idOfUser.getId() + "]";
+		return "ToDo [id=" + id + ", actionList=" + actionList + ", date=" + date + ", idOfUser=" + idOfUser.getId()
+				+ "]";
 	}
-
-
 
 }

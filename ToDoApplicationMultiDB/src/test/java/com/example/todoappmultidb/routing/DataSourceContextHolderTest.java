@@ -10,7 +10,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.todoappmultidb.routing.config.DataSourceEnum;
 
@@ -53,32 +52,30 @@ public class DataSourceContextHolderTest {
 		assertThat(dataContext.getDataSource()).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
 	}
 
-
 	@Test
-	public void test_setContext_one()
-	{
+	public void test_setContext_one() {
 		assertThat(dataContext.setDatabase(1)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
 	}
+
 	@Test
-	public void test_setContext_two()
-	{
+	public void test_setContext_two() {
 		assertThat(dataContext.setDatabase(2)).isEqualTo(DataSourceEnum.DATASOURCE_TWO);
 	}
+
 	@Test
-	public void test_setContext_callDataContext()
-	{
+	public void test_setContext_callDataContext() {
 		dataContext.setDatabase(1);
 		verify(CONTEXT).set(any(DataSourceEnum.class));
 	}
+
 	@Test
-	public void test_setContext_outside_range()
-	{
+	public void test_setContext_outside_range() {
 		assertThat(dataContext.setDatabase(3)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
 
 	}
+
 	@Test
-	public void test_setContext_under_range()
-	{
+	public void test_setContext_under_range() {
 		assertThat(dataContext.setDatabase(0)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
 
 	}

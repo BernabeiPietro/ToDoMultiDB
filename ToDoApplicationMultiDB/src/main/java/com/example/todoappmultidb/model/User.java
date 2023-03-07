@@ -22,7 +22,7 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@OneToMany(mappedBy = "idOfUser",orphanRemoval = true)
+	@OneToMany(mappedBy = "idOfUser", orphanRemoval = true)
 	@Fetch(value = FetchMode.JOIN)
 	private List<ToDo> todo;
 	private String name;
@@ -44,7 +44,7 @@ public class User {
 	}
 
 	public User(UserDTO u, List<ToDo> listToDo) {
-		this(u.getId(),listToDo,u.getName(),u.getEmail());
+		this(u.getId(), listToDo, u.getName(), u.getEmail());
 	}
 
 	public Long getId() {

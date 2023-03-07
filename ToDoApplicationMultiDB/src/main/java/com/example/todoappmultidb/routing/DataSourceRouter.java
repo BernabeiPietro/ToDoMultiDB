@@ -7,9 +7,9 @@ public class DataSourceRouter extends AbstractRoutingDataSource {
 
 	@Autowired
 	DataSourceContextHolder dataContext;
-	
+
 	protected Object determineCurrentLookupKey() {
 		return dataContext.getDataSource();
 	}
-	
+
 }

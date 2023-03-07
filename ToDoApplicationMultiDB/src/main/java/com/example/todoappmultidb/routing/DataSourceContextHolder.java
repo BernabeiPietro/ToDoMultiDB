@@ -10,8 +10,9 @@ public class DataSourceContextHolder {
 	private static ThreadLocal<DataSourceEnum> context = new ThreadLocal<>();
 
 	private DataSourceContextHolder() {
-		
+
 	}
+
 	public void set(DataSourceEnum data) {
 		context.set(data);
 
@@ -24,16 +25,16 @@ public class DataSourceContextHolder {
 	public void clear() {
 		context.remove();
 	}
-	
+
 	protected static void setCONTEXT(ThreadLocal<DataSourceEnum> cont) {
 		context = cont;
 	}
-	
+
 	public DataSourceEnum setDatabase(int ctx) {
 		if (ctx <= 1)
 			this.set(DataSourceEnum.values()[0]);
 		else
-			this.set(DataSourceEnum.values()[(ctx-1) % 2]);
+			this.set(DataSourceEnum.values()[(ctx - 1) % 2]);
 		return this.getDataSource();
 	}
 }

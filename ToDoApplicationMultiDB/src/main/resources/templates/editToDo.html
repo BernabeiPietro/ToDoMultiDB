@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>ToDo</title>
+</head>
+
+<body>
+	<h1>Edit ToDo</h1>
+	<div>
+		<a href="/">Home</a>
+	</div>
+	<div th:if="${#strings.isEmpty(message)}">
+		<form name="todo_form" action="#" th:action="${param.db==null}?@{/todo/save}:@{/todo/save(db=${param.db})}" th:object="${todo}" method="post">
+		    <input type="hidden" th:field="*{id}" />
+			<input type="hidden" th:field="*{idOfUser}" />
+			<p>
+				Date: <input type="datetime-local" th:field="*{date}"/>
+			</p>
+			<th:block th:if="*{actions.isEmpty}">
+				<input type="hidden" th:name="actions" th:id="actions" th:value="NULL" />
+			</th:block>
+			<table>
+				<caption>ToDo</caption>
+				<thead>
+					<tr>
+						<th scope="col">Item</th>
+						<th scope="col">Status</th>
+					</tr>
+				</thead>
+				<tbody>
+					<th:block th:unless="*{actions.isEmpty}">
+						<tr th:each="act, stat : *{actions}">
+							<td th:text=${act.key}></td>
+							<td> <input type="text" th:field="*{actions[__${act.key}__]}">
+							</td>
+						</tr>
+					</th:block>
+
+					<tr>
+						<td> <input type="text" th:name="key" th:id="key" th:value="NULL"></td>
+						<td> <input type="text" th:name="value" th:id="value" th:value="NULL"></td>
+						<td> <button type="submit" name="btn_add" th:formaction="${param.db==null}?@{/todo/addaction}:@{/todo/addaction(db=${param.db})}" th:object="${todo}">Add
+								action</button></td>
+					</tr>
+				</tbody>
+			</table>
+
+	</div>
+	<div th:unless="${#strings.isEmpty(message)}">
+		<span th:text="${message}"></span>
+	</div>
+	<button type="submit" name="btn_submit">Save</button>
+	</form>
+	</div>
+</body>
+
+</html>

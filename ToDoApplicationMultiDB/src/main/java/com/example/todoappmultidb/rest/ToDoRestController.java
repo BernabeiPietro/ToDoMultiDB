@@ -54,7 +54,7 @@ public class ToDoRestController {
 	}
 
 	@GetMapping("/{db}/ofuser/{id}")
-	public List<ToDoDTO> getToDoByUserId(@PathVariable int db,@PathVariable long id) {
+	public List<ToDoDTO> getToDoByUserId(@PathVariable int db, @PathVariable long id) {
 		try {
 			userService.setDatabase(db);
 			return userService.getToDoOfUser(id);

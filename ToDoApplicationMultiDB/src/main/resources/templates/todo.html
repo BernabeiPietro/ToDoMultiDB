@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Your ToDo</title>
+</head>
+
+<body>
+	<div>
+		<a href="/">Home</a>
+	</div>
+	<div th:if="${todo.empty}">
+		<div>Not found any Todo for You</div>
+	</div>
+	<div th:unless="${todo.empty}">
+		<table id="todo_table">
+			<caption>ToDo</caption>
+			<thead>
+				<tr>
+					<th scope="col">ID</th>
+					<th scope="col">Actions</th>
+					<th scope="col">Data</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="td : ${todo}">
+					<td th:text="${td.id}"></td>
+					<td>
+
+						<th:block th:each="entry: ${td.actions}">
+							<span th:text="${entry.key}"></span>=<span th:text="${entry.value}"></span>
+						</th:block>
+
+					</td>
+					<td th:text="${td.date}"></td>
+					<td th:if="${param.db==null}">
+						<a th:href="@{'/todo/edit/'+ ${td.id}}">Edit</a></td>
+					<td th:unless="${param.db==null}">
+						<a th:href="@{'/todo/edit/'+ ${td.id}(db=${param.db})}">Edit</a></td>
+
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<a th:href="${param.db==null}?@{'/todo/new/'+ ${id}}:@{'/todo/new/'+ ${id}(db=${param.db})}">New ToDo</a>
+
+</body>
+
+</html>

@@ -59,7 +59,7 @@ public class DataSourceRoutingConfiguration {
 	public DataSourceInitializer dataSourceTwoInitializer() {
 		ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
 		resourceDatabasePopulator.addScript(new ClassPathResource(SCHEMA_MYSQL_SQL));
-		
+
 		DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
 		dataSourceInitializer.setDataSource(dataSourceTwo.getDataSource());
 		dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
