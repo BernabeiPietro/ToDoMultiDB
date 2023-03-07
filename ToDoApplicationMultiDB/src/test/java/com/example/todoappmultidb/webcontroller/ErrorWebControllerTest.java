@@ -1,5 +1,6 @@
 package com.example.todoappmultidb.webcontroller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -18,6 +19,8 @@ public class ErrorWebControllerTest {
 
 	@Autowired
 	private MockMvc mvc;
+	@Autowired
+	private ErrorWebController errorWeb;
 
 	@Test
 	public void test_getError_emptyMessage() throws Exception {
@@ -25,5 +28,9 @@ public class ErrorWebControllerTest {
 				.andExpect(model().attribute(MESSAGE, "Generic Error"));
 	}
 
+	@Test
+	public void test_getErrorPath() {
+		assertThat(errorWeb.getErrorPath()).isEqualTo("/error");
+	}
 
 }
