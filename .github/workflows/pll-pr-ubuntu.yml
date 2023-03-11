@@ -11,13 +11,7 @@ jobs:
       matrix:
         include:
         - java: 11
-          additional-maven-args:
-            -Pcoveralls sonar:sonar
-            -DrepoToken=$COVERALLS_REPO_TOKEN 
-            -DpullRequest=${{ github.event.pull_request.number }} 
-            coveralls:report
-            -Dsonar.projectKey=BernabeiPietro_todomultidb
-            
+             
     name: Build with Java ${{ matrix.java }} on Linux
     steps:
     - uses: actions/checkout@v3
@@ -34,22 +28,21 @@ jobs:
           ~/.sonar/cache
         key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml','**/*.yml') }}
         restore-keys: ${{ runner.os }}-m2-
-    - name: Build with Maven and SonarCloud
-      run: 
-        xvfb-run mvn verify ${{ matrix.additional-maven-args }}
-      working-directory: ${{env.workdir}}
-      env:
+    - name: Unit and Integration Tests
+      run: mvn verify -Pjacoco
+    - name: Coveralls Report
+      run: >
+        mvn coveralls:report
+        -DrepoToken=$COVERALLS_REPO_TOKEN
+        -DpullRequest=${{ github.event.pull_request.number }}
+      env: 
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    - name: End-to-end tests
+      run: xvfb-run mvn verify -Pe2e-tests
+    - name: SonarCloud
+      run: >
+        mvn sonar:sonar
+          -Dsonar.projectKey=BernabeiPietro_todomultidb
+      env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Generate JUnit Report
-      run: 
-        mvn surefire-report:report-only site:site -DgenerateReports=false #create reports as for test
-      working-directory: ${{env.workdir}}
-      if: ${{failure()}}
-    - name: Archive Junit Report
-      uses: actions/upload-artifact@v2
-      if: ${{failure()}}
-      with:
-        name: surefire-report-jdk-${{ matrix.java}}
-        path: '**/target/site'
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

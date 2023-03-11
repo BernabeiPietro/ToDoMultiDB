@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 
-import org.jboss.logging.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +44,7 @@ public class ToDoWebControllerServiceIT {
 	@Before
 	public void setUp() throws Exception {
 		baseUrl = "http://localhost:" + port + "/todo";
-		driver = new HtmlUnitDriver();
+		driver = new HtmlUnitDriver(true);
 
 		userService.setDatabase(1);
 		userRepository.deleteAll();
@@ -75,7 +74,6 @@ public class ToDoWebControllerServiceIT {
 
 	@Test
 	public void testEditPageNewToDo_db2() throws Exception {
-		Logger logger = Logger.getLogger(ToDoWebControllerServiceIT.class.toString());
 		userService.setDatabase(2);
 		User user = userRepository.save(new User(null, "prova", "prova"));
 		driver.get(baseUrl + "/new/" + user.getId() + "?db=2");

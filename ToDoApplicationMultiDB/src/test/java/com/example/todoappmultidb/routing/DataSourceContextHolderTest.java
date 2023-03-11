@@ -23,7 +23,7 @@ public class DataSourceContextHolderTest {
 
 	@Before
 	public void setup() {
-		dataContext.setCONTEXT(CONTEXT);
+		DataSourceContextHolder.setCONTEXT(CONTEXT);
 	}
 
 	@Test

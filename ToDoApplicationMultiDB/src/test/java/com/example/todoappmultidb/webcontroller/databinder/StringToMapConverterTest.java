@@ -39,14 +39,14 @@ public class StringToMapConverterTest {
 
 	@Test
 	public void test_convert_OnePair() {
-		HashMap<String, Boolean> result = new HashMap<String, Boolean>();
+		HashMap<String, Boolean> result = new HashMap<>();
 		result.put("first", true);
 		assertThat(toMap.convert("{first=true}")).isEqualTo(result);
 	}
 
 	@Test
 	public void test_convert_OnePair_BadDefined() {
-		HashMap<String, Boolean> result = new HashMap<String, Boolean>();
+		HashMap<String, Boolean> result = new HashMap<>();
 		result.put("first", false);
 		assertThat(toMap.convert("{first=Pippo}")).isEqualTo(result);
 	}
@@ -63,7 +63,7 @@ public class StringToMapConverterTest {
 
 	@Test
 	public void test_convert_TwoPair() {
-		HashMap<String, Boolean> result = new HashMap<String, Boolean>();
+		HashMap<String, Boolean> result = new HashMap<>();
 		result.put("first", false);
 		result.put("second", true);
 		assertThat(toMap.convert("{first=false,second=true}")).isEqualTo(result);
@@ -71,7 +71,7 @@ public class StringToMapConverterTest {
 
 	@Test
 	public void test_convert_TwoPair_oneBadFormed() {
-		HashMap<String, Boolean> result = new HashMap<String, Boolean>();
+		HashMap<String, Boolean> result = new HashMap<>();
 		result.put("first", false);
 		assertThat(toMap.convert("{first=false,second true}")).isEqualTo(result);
 	}

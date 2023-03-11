@@ -19,10 +19,10 @@ public class ToDoDTO {
 
 	}
 
-	public ToDoDTO(Long id, Long idOfUser, Map<String, Boolean> actions, LocalDateTime date) {
+	public ToDoDTO(Long id, Long idOfUser, Map<String, Boolean> map, LocalDateTime date) {
 		this.id = id;
 		this.idOfUser = idOfUser;
-		this.actions = actions;
+		this.actions = map;
 		this.date = date;
 	}
 
@@ -76,9 +76,7 @@ public class ToDoDTO {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
+		if ((obj == null) || (getClass() != obj.getClass()))
 			return false;
 		ToDoDTO other = (ToDoDTO) obj;
 		return Objects.equals(date, other.date) && Objects.equals(id, other.id)

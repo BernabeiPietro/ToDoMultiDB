@@ -47,8 +47,7 @@
 		<sonar.tests>
 			${project.build.testSourceDirectory},
 			${basedir}/src/it/java
-
-			<!-- ${basedir}/src/e2e/java -->
+			${basedir}/src/e2e/java
 		</sonar.tests>
 
 
@@ -61,7 +60,8 @@
 
 		<sonar.projectKey>BernabeiPietro_todomultidb</sonar.projectKey>
 
-
+		<show.log>false</show.log>
+		<docker.time-to-wait>100000</docker.time-to-wait>
 		<db.docker.dns>localhost</db.docker.dns>
 		<db.docker.port1>28011</db.docker.port1>
 		<db.docker.port2>28012</db.docker.port2>
@@ -76,8 +76,11 @@
 
 		<sonar.organization>bernabeipietro</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.issue.ignore.multicriteria>e11</sonar.issue.ignore.multicriteria>
 		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S5976</sonar.issue.ignore.multicriteria.e1.ruleKey>
-
+		<sonar.issue.ignore.multicriteria.e1.resourceKey>
+			**/*IT.java
+		</sonar.issue.ignore.multicriteria.e1.resourceKey>
 
 	</properties>
 
@@ -159,6 +162,17 @@
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
 			<artifactId>thymeleaf-extras-java8time</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.github.bonigarcia</groupId>
+			<artifactId>webdrivermanager</artifactId>
+			<version>3.5.0</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
@@ -266,6 +280,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
+					<skipTests>${skip.unit-tests}</skipTests>
 					<includes>
 						<include>**/*Test.java</include>
 					</includes>
@@ -283,28 +298,14 @@
 							<goal>verify</goal>
 						</goals>
 						<configuration>
+							<skipTests>${skip.integration-tests}</skipTests>
+
 							<includes>
 								<include>**/*ApplicationTests.java</include>
 								<include>**/*IT.java</include>
 							</includes>
 						</configuration>
 
-					</execution>
-					<execution>
-						<id>e2e-tests</id>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-						<configuration>
-							<excludes>
-								<exclude>**/*IT.java</exclude>
-								<exclude>**/*ApplicationTests.java</exclude>
-							</excludes>
-							<includes>
-								<include>**/*E2E.java</include>
-							</includes>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -313,7 +314,7 @@
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.34.1</version>
 				<configuration>
-					<showLogs>true</showLogs>
+					<showLogs>${show-log}</showLogs>
 					<verbose>build</verbose>
 					<images>
 						<image>
@@ -326,7 +327,7 @@
 											<port>${db.docker.port}</port>
 										</ports>
 									</tcp>
-									<time>100000</time>
+									<time>${docker.time-to-wait}</time>
 								</wait>
 								<env>
 									<MYSQL_ROOT_PASSWORD>${db.docker.rootpsw}</MYSQL_ROOT_PASSWORD>
@@ -349,7 +350,7 @@
 											<port>${db.docker.port}</port>
 										</ports>
 									</tcp>
-									<time>100000</time>
+									<time>${docker.time-to-wait}</time>
 								</wait>
 								<env>
 									<MYSQL_ROOT_PASSWORD>${db.docker.rootpsw}</MYSQL_ROOT_PASSWORD>
@@ -420,6 +421,103 @@
 							</execution>
 						</executions>
 					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>e2e-tests</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<skip.unit-tests>true</skip.unit-tests>
+				<skip.integration-tests>true</skip.integration-tests>
+				<show.log>false</show.log>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<version>0.34.1</version>
+						<executions>
+							<execution>
+								<phase>process-resources</phase>
+
+								<id>docker-start</id>
+								<goals>
+									<goal>start</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>reserve-tomcat-port</id>
+								<goals>
+									<goal>reserve-network-port</goal>
+								</goals>
+								<phase>process-resources</phase>
+								<configuration>
+									<portNames>
+										<portName>tomcat.http.port</portName>
+									</portNames>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.springframework.boot</groupId>
+						<artifactId>spring-boot-maven-plugin</artifactId>
+						<executions>
+							<execution>
+
+								<id>spring-start</id>
+								<goals>
+									<goal>start</goal>
+								</goals>
+								<configuration>
+									<arguments>
+										<argument>--server.port=${tomcat.http.port}</argument>
+									</arguments>
+								</configuration>
+							</execution>
+							<execution>
+								<id>spring-stop</id>
+								<goals>
+									<goal>stop</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>e2e-tests</id>
+								<configuration>
+									<includes>
+										<include>**/*E2E.java</include>
+									</includes>
+								</configuration>
+								<goals>
+									<goal>integration-test</goal>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<systemPropertyVariables>
+								<server.port>${tomcat.http.port}</server.port>
+							</systemPropertyVariables>
+						</configuration>
+					</plugin>
+
 				</plugins>
 			</build>
 		</profile>
