@@ -30,19 +30,24 @@ jobs:
         restore-keys: ${{ runner.os }}-m2-
     - name: Unit and Integration Tests
       run: mvn verify -Pjacoco
+      working-directory: ${{env.workdir}}
+      
     - name: Coveralls Report
       run: >
         mvn coveralls:report
         -DrepoToken=$COVERALLS_REPO_TOKEN
         -DpullRequest=${{ github.event.pull_request.number }}
+      working-directory: ${{env.workdir}}
       env: 
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_TOKEN }}
     - name: End-to-end tests
       run: xvfb-run mvn verify -Pe2e-tests
+      working-directory: ${{env.workdir}}
     - name: SonarCloud
       run: >
         mvn sonar:sonar
           -Dsonar.projectKey=BernabeiPietro_todomultidb
+      working-directory: ${{env.workdir}}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
