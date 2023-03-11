@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -56,7 +57,7 @@ public class UserServiceTest {
 	@Test
 	public void test_getAllUser_null() {
 		when(userRepository.findAll()).thenReturn(null);
-		Exception thrown = assertThrows(NullPointerException.class, () -> userService.getAllUser());
+		assertThrows(NullPointerException.class, () -> userService.getAllUser());
 
 	}
 
@@ -85,7 +86,7 @@ public class UserServiceTest {
 	@Test
 	public void test_getUserById_null() {
 		when(userRepository.findById(1L)).thenReturn(null);
-		Exception thrown = assertThrows(NullPointerException.class, () -> userService.getUserById(1L));
+		assertThrows(NullPointerException.class, () -> userService.getUserById(1L));
 	}
 
 	@Test
@@ -129,7 +130,8 @@ public class UserServiceTest {
 		inOrder.verify(inputDTO).setId(any(Long.class));
 		inOrder.verify(retrieved).setEmail("changed");
 		inOrder.verify(retrieved).setName("changed");
-		inOrder.verify(retrieved, never()).setTodo(any(ArrayList.class));
+
+		inOrder.verify(retrieved, never()).setTodo(ArgumentMatchers.<ToDo>anyList());
 		inOrder.verify(userRepository).save(retrieved);
 	}
 
@@ -174,7 +176,7 @@ public class UserServiceTest {
 	@Test
 	public void test_getToDoOfUser_null() {
 		when(userRepository.findById(1L)).thenReturn(null);
-		Exception thrown = assertThrows(NullPointerException.class, () -> userService.getToDoOfUser(1L));
+		assertThrows(NullPointerException.class, () -> userService.getToDoOfUser(1L));
 	}
 
 	@Test

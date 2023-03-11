@@ -69,7 +69,7 @@ public class ToDoRestControllerTest {
 	@Test
 	public void testGetAllToDo_db1() throws Exception {
 		InOrder inOrder = Mockito.inOrder(todoService, userService);
-		HashMap<String, Boolean> actions = new HashMap<String, Boolean>();
+		HashMap<String, Boolean> actions = new HashMap<>();
 		actions.put("first", false);
 		actions.put("second", true);
 		when(todoService.findAll()).thenReturn(
@@ -100,7 +100,7 @@ public class ToDoRestControllerTest {
 	@Test
 	public void testGetAllToDo_db2() throws Exception {
 		InOrder inOrder = Mockito.inOrder(todoService, userService);
-		HashMap<String, Boolean> actions = new HashMap<String, Boolean>();
+		HashMap<String, Boolean> actions = new HashMap<>();
 		actions.put("first", false);
 		actions.put("second", true);
 		when(todoService.findAll()).thenReturn(
@@ -247,7 +247,7 @@ public class ToDoRestControllerTest {
 	@Test
 	public void testPostNewToDo_FullMap_db1() throws Exception {
 		InOrder inOrder = Mockito.inOrder(todoService, userService);
-		HashMap<String, Boolean> actions = new HashMap<String, Boolean>();
+		HashMap<String, Boolean> actions = new HashMap<>();
 		actions.put("first", false);
 		actions.put("second", true);
 		ToDoDTO todo = new ToDoDTO(null, 1l, actions, LocalDateTime.of(2000, 5, 13, 1, 1, 1));
@@ -292,7 +292,7 @@ public class ToDoRestControllerTest {
 	@Test
 	public void testPostNewToDo_FullMap_db2() throws Exception {
 		InOrder inOrder = Mockito.inOrder(todoService, userService);
-		HashMap<String, Boolean> actions = new HashMap<String, Boolean>();
+		HashMap<String, Boolean> actions = new HashMap<>();
 		actions.put("first", false);
 		actions.put("second", true);
 		ToDoDTO todo = new ToDoDTO(null, 1l, actions, LocalDateTime.of(2000, 5, 13, 1, 1, 1));
@@ -337,7 +337,7 @@ public class ToDoRestControllerTest {
 	@Test
 	public void testPutUpdateToDo_populatedMaps_db1() throws Exception {
 		InOrder inOrder = Mockito.inOrder(todoService, userService);
-		HashMap<String, Boolean> actions = new HashMap<String, Boolean>();
+		HashMap<String, Boolean> actions = new HashMap<>();
 		actions.put("first", false);
 		actions.put("second", true);
 		ToDoDTO todo = new ToDoDTO(null, 1l, actions, LocalDateTime.of(2000, 5, 13, 1, 1, 1));
@@ -396,7 +396,7 @@ public class ToDoRestControllerTest {
 	@Test
 	public void testPutUpdateToDo_populatedMaps_db2() throws Exception {
 		InOrder inOrder = Mockito.inOrder(todoService, userService);
-		HashMap<String, Boolean> actions = new HashMap<String, Boolean>();
+		HashMap<String, Boolean> actions = new HashMap<>();
 		actions.put("first", false);
 		actions.put("second", true);
 		ToDoDTO todo = new ToDoDTO(null, 1l, actions, LocalDateTime.of(2000, 5, 13, 1, 1, 1));

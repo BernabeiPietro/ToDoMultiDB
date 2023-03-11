@@ -39,9 +39,9 @@ public class ToDoRepositoryTest {
 
 	@Before
 	public void setup() {
-		Map<String, Boolean> m1 = new HashMap<String, Boolean>();
+		Map<String, Boolean> m1 = new HashMap<>();
 		m1.put("todo1", false);
-		Map<String, Boolean> m2 = new HashMap<String, Boolean>();
+		Map<String, Boolean> m2 = new HashMap<>();
 		m2.put("todo2", true);
 		u = new User(null, new ArrayList<>(), "nome1", "email1");
 		todo1 = new ToDo(null, u, m1, LocalDateTime.of(2012, Month.DECEMBER, 12, 0, 0));
@@ -65,7 +65,7 @@ public class ToDoRepositoryTest {
 
 	@Test
 	public void test_findToDoWithUserId() {
-		User user = entityManager.persistAndFlush(u);
+		entityManager.persistAndFlush(u);
 		ToDo result1 = entityManager.persistAndFlush(todo1);
 		ToDo result2 = entityManager.persistAndFlush(todo2);
 		assertThat(toDoRepository.findToDoByUserId(u)).isEqualTo(asList(result1, result2));
@@ -100,7 +100,7 @@ public class ToDoRepositoryTest {
 
 	@Test
 	public void test_updateUserAndTodo() {
-		Map<String, Boolean> mapToUpdate = new HashMap<String, Boolean>();
+		Map<String, Boolean> mapToUpdate = new HashMap<>();
 		mapToUpdate.put("todo1", false);
 		User userToUpdate = entityManager.persistAndFlush(new User(null, new ArrayList<>(), "nome1", "email1"));
 		User userUpdated = entityManager.persistAndFlush(new User(null, null, null, null));
@@ -117,7 +117,7 @@ public class ToDoRepositoryTest {
 
 	@Test
 	public void test_updateLimitedInformationOfUser() {
-		Map<String, Boolean> mapToUpdate = new HashMap<String, Boolean>();
+		Map<String, Boolean> mapToUpdate = new HashMap<>();
 		mapToUpdate.put("todo1", false);
 		User userToUpdate = entityManager.persistAndFlush(new User(null, new ArrayList<>(), "nome1", "email1"));
 		ToDo result = entityManager.persistFlushFind(
@@ -143,8 +143,8 @@ public class ToDoRepositoryTest {
 	@Test
 	public void test_retrieveUserListOfToDo_UserNotExist() {
 		User user = entityManager.persistAndFlush(u);
-		ToDo result1 = entityManager.persistAndFlush(todo1);
-		ToDo result2 = entityManager.persistAndFlush(todo2);
+		entityManager.persistAndFlush(todo1);
+		entityManager.persistAndFlush(todo2);
 		User u2 = new User(user.getId() + 1, null, null, null);
 		assertThat(entityManager.find(User.class, u2.getId())).isNull();
 		assertThat(toDoRepository.findToDoByUserId(u2)).isEqualTo(Collections.emptyList());

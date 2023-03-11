@@ -103,8 +103,8 @@ public class ToDoServiceTest {
 	@Test
 	public void test_updateById() throws NotFoundException {
 		User u = new User(1L, "prova", "prova");
-		HashMap<String, Boolean> todoUpdate = new HashMap<String, Boolean>();
-		HashMap<String, Boolean> todoToUpdate = new HashMap<String, Boolean>();
+		HashMap<String, Boolean> todoUpdate = new HashMap<>();
+		HashMap<String, Boolean> todoToUpdate = new HashMap<>();
 		todoToUpdate.put("prova1", true);
 		todoUpdate.put("prova1", false);
 		todoUpdate.put("prova2", false);

@@ -100,7 +100,7 @@ public class UserRestControllerTest {
 		inOrder.verify(userService).getAllUser();
 	}
 
-/////////////////////	
+/////////////////////
 
 	@Test
 	public void testGetOneUserByIdWithNoExistingUser_db1() throws Exception {
