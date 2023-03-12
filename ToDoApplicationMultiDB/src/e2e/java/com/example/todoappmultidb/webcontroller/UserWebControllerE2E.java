@@ -47,7 +47,7 @@ public class UserWebControllerE2E {// NOSONAR
 	@Test
 	public void testHomePage() {
 		driver.get(baseUrl);
-		assertThat(driver.findElement(By.cssSelector("a[href*='/user/new")));
+		driver.findElement(By.cssSelector("a[href*='/user/new"));
 	}
 
 	@Test

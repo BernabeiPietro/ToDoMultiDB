@@ -189,5 +189,14 @@ public class UserServiceTest {
 		userService.clearContext();
 		verify(dataContext).clear();
 	}
-
+	@Test
+	public void test_setDatabase_1() {
+		userService.setDatabase(1);
+		verify(dataContext).setDatabase(1);
+	}
+	@Test
+	public void test_setDatabase_2() {
+		userService.setDatabase(2);
+		verify(dataContext).setDatabase(2);
+	}
 }
