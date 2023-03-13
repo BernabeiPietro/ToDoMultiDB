@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +57,16 @@ public class RepositoryDataSourceIT {
 		savedUser2 = userRepository.save(toSaveUser2);
 		savedTodo2 = todoRepository.save(toSaveTodo2);
 
+	}
+
+	@After
+	public void tearDown() {
+		dataContext.set(DataSourceEnum.DATASOURCE_ONE);
+		userRepository.deleteAll();
+		userRepository.flush();
+		dataContext.set(DataSourceEnum.DATASOURCE_TWO);
+		userRepository.deleteAll();
+		userRepository.flush();
 	}
 
 	@Test

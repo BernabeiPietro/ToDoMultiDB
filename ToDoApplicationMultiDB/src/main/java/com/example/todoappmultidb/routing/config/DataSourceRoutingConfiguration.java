@@ -28,6 +28,10 @@ public class DataSourceRoutingConfiguration {
 	private DataSourceOneConfig dataSourceOne;
 	@Autowired
 	private DataSourceTwoConfig dataSourceTwo;
+
+	@Autowired
+	private ResourceDatabasePopulator resourceDatabasePopulator;
+
 	private DataSourceRouter dataRouter = new DataSourceRouter();
 
 	private Map<Object, Object> generetaTargetDataSources() {
@@ -46,24 +50,29 @@ public class DataSourceRoutingConfiguration {
 
 	@Bean
 	public DataSourceInitializer dataSourceOneInitializer() {
-		ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
-		resourceDatabasePopulator.addScript(new ClassPathResource(SCHEMA_MYSQL_SQL));
 
 		DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
-		dataSourceInitializer.setDataSource(dataSourceOne.getDataSource());
+		resourceDatabasePopulator.addScript(new ClassPathResource(SCHEMA_MYSQL_SQL));
 		dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
+		dataSourceInitializer.setDataSource(dataSourceOne.getDataSource());
 		return dataSourceInitializer;
+
 	}
 
 	@Bean
 	public DataSourceInitializer dataSourceTwoInitializer() {
-		ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
-		resourceDatabasePopulator.addScript(new ClassPathResource(SCHEMA_MYSQL_SQL));
-
 		DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
-		dataSourceInitializer.setDataSource(dataSourceTwo.getDataSource());
+		resourceDatabasePopulator.addScript(new ClassPathResource(SCHEMA_MYSQL_SQL));
 		dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
+		dataSourceInitializer.setDataSource(dataSourceTwo.getDataSource());
 		return dataSourceInitializer;
+
+	}
+
+	@Bean
+	public ResourceDatabasePopulator plainResourceDataPopulator() {
+		return new ResourceDatabasePopulator();
+
 	}
 
 }
