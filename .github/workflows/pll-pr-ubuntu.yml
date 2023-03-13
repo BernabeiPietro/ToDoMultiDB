@@ -46,7 +46,7 @@ jobs:
     - name: SonarCloud
       run: >
         mvn sonar:sonar
-          -Dsonar.projectKey=BernabeiPietro_todomultidb
+        -Dsonar.projectKey=BernabeiPietro_todomultidb
       working-directory: ${{env.workdir}}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
