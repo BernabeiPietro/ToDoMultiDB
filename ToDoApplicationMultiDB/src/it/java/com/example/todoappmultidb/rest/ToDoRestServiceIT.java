@@ -61,7 +61,7 @@ public class ToDoRestServiceIT {
 		userService.setDatabase(1);
 		assertThat(new ToDoDTO(todoRepository.findById(todoSaved.getId()).get())).isEqualTo(todoSaved);
 		userService.setDatabase(2);
-		assertThat(todoRepository.findById(todoSaved.getId()).isPresent()).isFalse();
+		assertThat(todoRepository.findById(todoSaved.getId())).isNotPresent();
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class ToDoRestServiceIT {
 		userService.setDatabase(2);
 		assertThat(new ToDoDTO(todoRepository.findById(todoSaved.getId()).get())).isEqualTo(todoSaved);
 		userService.setDatabase(1);
-		assertThat(todoRepository.findById(todoSaved.getId()).isPresent()).isFalse();
+		assertThat(todoRepository.findById(todoSaved.getId())).isNotPresent();
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class ToDoRestServiceIT {
 		userService.setDatabase(2);
 		assertThat(new ToDoDTO(todoRepository.findById(todoSaved.getId()).get())).isEqualTo(todo);
 		userService.setDatabase(1);
-		assertThat(todoRepository.findById(todoSaved.getId()).isPresent()).isFalse();
+		assertThat(todoRepository.findById(todoSaved.getId())).isNotPresent();
 	}
 
 	@Test
@@ -105,6 +105,6 @@ public class ToDoRestServiceIT {
 		userService.setDatabase(1);
 		assertThat(new ToDoDTO(todoRepository.findById(todoSaved.getId()).get())).isEqualTo(todo);
 		userService.setDatabase(2);
-		assertThat(todoRepository.findById(todoSaved.getId()).isPresent()).isFalse();
+		assertThat(todoRepository.findById(todoSaved.getId())).isNotPresent();
 	}
 }

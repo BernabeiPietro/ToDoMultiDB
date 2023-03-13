@@ -52,7 +52,7 @@ public class UserRestServiceIT {
 		userService.setDatabase(1);
 		assertThat(new UserDTO(userRepository.findById(userSaved.getId()).get())).isEqualTo(userSaved);
 		userService.setDatabase(2);
-		assertThat(userRepository.findById(userSaved.getId()).isPresent()).isFalse();
+		assertThat(userRepository.findById(userSaved.getId())).isNotPresent();
 	}
 
 	@Test
