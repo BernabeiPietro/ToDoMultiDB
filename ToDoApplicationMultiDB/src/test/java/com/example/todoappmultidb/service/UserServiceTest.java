@@ -32,6 +32,7 @@ import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.routing.DataSourceContextHolder;
+import com.example.todoappmultidb.routing.config.DataSourceEnum;
 
 import javassist.NotFoundException;
 
@@ -116,7 +117,7 @@ public class UserServiceTest {
 
 		User retrieved = spy(new User(1L, new ArrayList<>(), "changeIt", "changeIt"));
 		retrieved.addToDo(new ToDo(1L, retrieved, LocalDateTime.of(1, 2, 3, 1, 2, 12)));
-		when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(retrieved));
+		when(userRepository.findById(1L)).thenReturn(Optional.of(retrieved));
 
 		User userUpdated = new User(1L, new ArrayList<>(), "changed", "changed");
 		userUpdated.addToDo(new ToDo(1L, userUpdated, LocalDateTime.of(1, 2, 3, 1, 2, 12)));
@@ -192,13 +193,13 @@ public class UserServiceTest {
 
 	@Test
 	public void test_setDatabase_1() {
-		userService.setDatabase(1);
+		assertThat(userService.setDatabase(1)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
 		verify(dataContext).setDatabase(1);
 	}
 
 	@Test
 	public void test_setDatabase_2() {
-		userService.setDatabase(2);
+		assertThat(userService.setDatabase(2)).isEqualTo(DataSourceEnum.DATASOURCE_TWO);
 		verify(dataContext).setDatabase(2);
 	}
 }

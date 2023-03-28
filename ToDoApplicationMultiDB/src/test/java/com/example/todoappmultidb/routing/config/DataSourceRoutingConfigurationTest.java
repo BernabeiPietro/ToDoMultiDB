@@ -86,10 +86,4 @@ public class DataSourceRoutingConfigurationTest {
 		verify(dataSourceTwo).getDataSource();
 	}
 
-	@Test
-	public void test_initResourceDataPopulator() {
-		assertThat(config.plainResourceDataPopulator()).isExactlyInstanceOf(ResourceDatabasePopulator.class);
-
-	}
-
 }

@@ -1,6 +1,5 @@
 package com.example.todoappmultidb.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +48,7 @@ public class UserService {
 	public UserDTO insertNewUser(UserDTO userToSave) {
 		userToSave.setId(null);
 		verifyNullField(userToSave);
-		return toDTO(userRepository.save(new User(userToSave, new ArrayList<>())));
+		return toDTO(userRepository.save(new User(userToSave)));
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = {

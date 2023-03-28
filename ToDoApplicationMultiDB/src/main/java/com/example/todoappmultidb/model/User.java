@@ -43,6 +43,10 @@ public class User {
 		this(id, new ArrayList<>(), name, email);
 	}
 
+	public User(UserDTO u) {
+		this(u.getId(), u.getName(), u.getEmail());
+	}
+
 	public User(UserDTO u, List<ToDo> listToDo) {
 		this(u.getId(), listToDo, u.getName(), u.getEmail());
 	}

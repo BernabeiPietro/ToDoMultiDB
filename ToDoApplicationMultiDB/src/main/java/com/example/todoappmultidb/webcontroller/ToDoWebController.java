@@ -90,7 +90,7 @@ public class ToDoWebController {
 			userService.setDatabase(1);
 		else
 			userService.setDatabase(db);
-		if (todo.getActions() == null || todo.getActions().isEmpty()) {
+		if (todo.getActions() == null) {
 			todo.setActions(new HashMap<>());
 		}
 		if (!(key == null || key.isEmpty()))
