@@ -124,12 +124,21 @@ public class UserWebControllerTest {
 	}
 
 	@Test
-	public void test_PostUserWithoutId_ShouldInsertNewUser() throws Exception {
+	public void test_PostUserWithoutId_fullValues() throws Exception {
 		InOrder inOrder = Mockito.inOrder(userService);
 		mvc.perform(post("/user/save").param("name", "test name").param("email", "test email"))
 				.andExpect(view().name("redirect:/"));
 		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(userService).insertNewUser(new UserDTO(null, "test name", "test email"));
+
+	}
+
+	@Test
+	public void test_PostUserWithoutId_emptyValues() throws Exception {
+		InOrder inOrder = Mockito.inOrder(userService);
+		mvc.perform(post("/user/save").param("name", "").param("email", "")).andExpect(view().name("redirect:/"));
+		inOrder.verify(userService).setDatabase(1);
+		inOrder.verify(userService).insertNewUser(new UserDTO(null, "", ""));
 
 	}
 

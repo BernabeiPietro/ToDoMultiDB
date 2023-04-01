@@ -2,11 +2,16 @@ package com.example.todoappmultidb.model.dto;
 
 import java.util.Objects;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 import com.example.todoappmultidb.model.User;
 
 public class UserDTO {
 	private Long id;
+	@NotBlank(message = "Not a valid name")
 	private String name;
+	@Email
 	private String email;
 
 	public UserDTO(Long id, String name, String email) {

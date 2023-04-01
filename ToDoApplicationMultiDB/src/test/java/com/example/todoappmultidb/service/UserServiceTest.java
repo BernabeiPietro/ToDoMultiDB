@@ -105,10 +105,33 @@ public class UserServiceTest {
 	@Test
 	public void test_save_nullvalue() {
 		UserDTO nullUser = new UserDTO(null, null, null);
-		Exception thrown = assertThrows(IllegalArgumentException.class, () -> userService.insertNewUser(nullUser));
+		Exception thrown = assertThrows(NullPointerException.class, () -> userService.insertNewUser(nullUser));
 		verify(userRepository, never()).save(any(User.class));
-		assertThat(thrown.getMessage()).isEqualTo("User with null property");
 
+	}
+
+	@Test
+	public void test_save_allEmptyFields() {
+		UserDTO emptyUser = new UserDTO(null, "", "");
+		Exception thrown = assertThrows(IllegalArgumentException.class, () -> userService.insertNewUser(emptyUser));
+		verify(userRepository, never()).save(any(User.class));
+		assertThat(thrown.getMessage()).isEqualTo("User with empty fields");
+	}
+
+	@Test
+	public void test_save_emailFieldEmpty() {
+		UserDTO emptyUser = new UserDTO(null, "prova", "");
+		Exception thrown = assertThrows(IllegalArgumentException.class, () -> userService.insertNewUser(emptyUser));
+		verify(userRepository, never()).save(any(User.class));
+		assertThat(thrown.getMessage()).isEqualTo("User with empty fields");
+	}
+
+	@Test
+	public void test_save_userFieldEmpty() {
+		UserDTO emptyUser = new UserDTO(null, "", "prova");
+		Exception thrown = assertThrows(IllegalArgumentException.class, () -> userService.insertNewUser(emptyUser));
+		verify(userRepository, never()).save(any(User.class));
+		assertThat(thrown.getMessage()).isEqualTo("User with empty fields");
 	}
 
 	@Test
@@ -139,10 +162,35 @@ public class UserServiceTest {
 	@Test
 	public void test_updateUserById_nullvalue() {
 		UserDTO nullUser = new UserDTO(null, null, null);
-		Exception thrown = assertThrows(IllegalArgumentException.class, () -> userService.updateUserById(1L, nullUser));
+		Exception thrown = assertThrows(NullPointerException.class, () -> userService.updateUserById(1L, nullUser));
 		verify(userRepository, never()).save(any(User.class));
-		assertThat(thrown.getMessage()).isEqualTo("User with null property");
+	}
 
+	@Test
+	public void test_updateUserById_allEmptyFields() {
+		UserDTO emptyUser = new UserDTO(null, "", "");
+		Exception thrown = assertThrows(IllegalArgumentException.class,
+				() -> userService.updateUserById(1L, emptyUser));
+		verify(userRepository, never()).save(any(User.class));
+		assertThat(thrown.getMessage()).isEqualTo("User with empty fields");
+	}
+
+	@Test
+	public void test_updateUserById_emailFieldEmpty() {
+		UserDTO emptyUser = new UserDTO(null, "prova", "");
+		Exception thrown = assertThrows(IllegalArgumentException.class,
+				() -> userService.updateUserById(1L, emptyUser));
+		verify(userRepository, never()).save(any(User.class));
+		assertThat(thrown.getMessage()).isEqualTo("User with empty fields");
+	}
+
+	@Test
+	public void test_updateUserById_userFieldEmpty() {
+		UserDTO emptyUser = new UserDTO(null, "", "prova");
+		Exception thrown = assertThrows(IllegalArgumentException.class,
+				() -> userService.updateUserById(1L, emptyUser));
+		verify(userRepository, never()).save(any(User.class));
+		assertThat(thrown.getMessage()).isEqualTo("User with empty fields");
 	}
 
 	@Test

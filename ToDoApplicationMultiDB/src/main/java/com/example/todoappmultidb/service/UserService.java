@@ -44,17 +44,18 @@ public class UserService {
 		return userRepository.findById(id).orElseThrow(() -> new NotFoundException("Not found any User"));
 	}
 
-	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = IllegalArgumentException.class)
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = {
+			IllegalArgumentException.class, NullPointerException.class })
 	public UserDTO insertNewUser(UserDTO userToSave) {
 		userToSave.setId(null);
-		verifyNullField(userToSave);
+		verifyEmptyField(userToSave);
 		return toDTO(userRepository.save(new User(userToSave)));
 	}
 
 	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, rollbackFor = {
-			IllegalArgumentException.class, NotFoundException.class })
+			IllegalArgumentException.class, NotFoundException.class, NullPointerException.class })
 	public UserDTO updateUserById(long id, UserDTO userToUpdate) throws NotFoundException {
-		verifyNullField(userToUpdate);
+		verifyEmptyField(userToUpdate);
 		userToUpdate.setId(id);
 		User retrieved = this.getUser(id);
 		retrieved.setEmail(userToUpdate.getEmail());
@@ -76,9 +77,9 @@ public class UserService {
 		dataContext.clear();
 	}
 
-	private void verifyNullField(UserDTO userToSave) {
-		if (userToSave.equals(new UserDTO(null, null, null)))
-			throw new IllegalArgumentException("User with null property");
+	private void verifyEmptyField(UserDTO userToSave) {
+		if (userToSave.getEmail().isEmpty() || userToSave.getName().isEmpty())
+			throw new IllegalArgumentException("User with empty fields");
 	}
 
 	public UserDTO toDTO(User user) {
