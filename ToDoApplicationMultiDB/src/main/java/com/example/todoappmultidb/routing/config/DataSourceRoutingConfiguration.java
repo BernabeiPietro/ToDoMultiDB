@@ -5,7 +5,6 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -55,7 +54,6 @@ public class DataSourceRoutingConfiguration {
 		resourceDatabasePopulator.addScript(new ClassPathResource(SCHEMA_MYSQL_SQL));
 		dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
 		dataSourceInitializer.setDataSource(dataSourceOne.getDataSource());
-		org.slf4j.Logger logger = LoggerFactory.getLogger(DataSourceRoutingConfiguration.class);
 		return dataSourceInitializer;
 
 	}
@@ -66,7 +64,6 @@ public class DataSourceRoutingConfiguration {
 		resourceDatabasePopulator.addScript(new ClassPathResource(SCHEMA_MYSQL_SQL));
 		dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
 		dataSourceInitializer.setDataSource(dataSourceTwo.getDataSource());
-		org.slf4j.Logger logger = LoggerFactory.getLogger(DataSourceRoutingConfiguration.class);
 		return dataSourceInitializer;
 
 	}

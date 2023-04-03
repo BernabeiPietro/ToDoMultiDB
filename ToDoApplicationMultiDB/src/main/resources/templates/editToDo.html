@@ -39,7 +39,6 @@
 								<input type="radio" th:field="*{actions[__${act.key}__]}" th:value="FALSE">
 								<label for="FALSE">FALSE</label><br>
 							</td>
-							<!--<td> <input type="text" th:field="*{actions[__${act.key}__]}"> -->
 						</tr>
 					</th:block>
 
@@ -51,7 +50,6 @@
 							<input type="radio" th:name="value" th:id="value" th:value="FALSE">
 							<label for="FALSE">FALSE</label><br>
 						</td>
-				<!--	<td> <input type="text" th:name="value" th:id="value" th:value="NULL"></td>-->
 						<td> <button type="submit" name="btn_add" th:formaction="${param.db==null}?@{/todo/addaction}:@{/todo/addaction(db=${param.db})}" th:object="${todo}">Add
 								action</button></td>
 					</tr>

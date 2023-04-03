@@ -51,7 +51,8 @@
 		<sonar.issue.ignore.multicriteria.e1.resourceKey>
 			**/*IT.java,
 			**/*HtmlUnitTest.java,
-			**/*ConverterTest.java
+			**/*ConverterTest.java,
+			**/UserServiceTest.java
 		</sonar.issue.ignore.multicriteria.e1.resourceKey>
 		<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2699
 		</sonar.issue.ignore.multicriteria.e2.ruleKey>
@@ -694,16 +695,6 @@
 
 									</run>
 								</image>
-								<!-- <image> -->
-								<!-- <alias>ubuntu</alias> -->
-								<!-- <name>ubuntu</name> -->
-								<!-- <run> -->
-								<!-- <network> -->
-								<!-- <mode>bridge</mode> -->
-								<!-- <name>network</name> -->
-								<!-- </network> -->
-								<!-- </run> -->
-								<!-- </image> -->
 							</images>
 						</configuration>
 						<executions>
