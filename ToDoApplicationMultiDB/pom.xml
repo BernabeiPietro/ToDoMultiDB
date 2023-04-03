@@ -50,9 +50,7 @@
 		</sonar.issue.ignore.multicriteria.e1.ruleKey>
 		<sonar.issue.ignore.multicriteria.e1.resourceKey>
 			**/*IT.java,
-			**/*HtmlUnitTest.java,
-			**/*ConverterTest.java,
-			**/UserServiceTest.java
+			**/*Test.java
 		</sonar.issue.ignore.multicriteria.e1.resourceKey>
 		<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2699
 		</sonar.issue.ignore.multicriteria.e2.ruleKey>
