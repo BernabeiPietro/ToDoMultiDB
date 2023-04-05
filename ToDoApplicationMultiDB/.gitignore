@@ -34,3 +34,5 @@ build/
 
 **/src/main/java/**/UserDTOService.java
 **/src/main/java/**/ToDoDTOService.java
+**.log
+/logs/**.gz

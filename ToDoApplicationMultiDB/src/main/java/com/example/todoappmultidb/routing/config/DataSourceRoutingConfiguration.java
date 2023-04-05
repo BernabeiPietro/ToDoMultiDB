@@ -29,8 +29,7 @@ public class DataSourceRoutingConfiguration {
 	@Autowired
 	private DataSourceTwoConfig dataSourceTwo;
 
-	@Autowired
-	private ResourceDatabasePopulator resourceDatabasePopulator;
+	private ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();
 
 	private DataSourceRouter dataRouter = new DataSourceRouter();
 
@@ -66,12 +65,6 @@ public class DataSourceRoutingConfiguration {
 		dataSourceInitializer.setDatabasePopulator(resourceDatabasePopulator);
 		dataSourceInitializer.setDataSource(dataSourceTwo.getDataSource());
 		return dataSourceInitializer;
-
-	}
-
-	@Bean
-	public ResourceDatabasePopulator plainResourceDataPopulator() {
-		return new ResourceDatabasePopulator();
 
 	}
 

@@ -61,18 +61,23 @@ public class UserWebController {
 	}
 
 	@PostMapping("/user/save")
-	public String saveUser(@RequestParam(required = false, defaultValue = "0") int db, UserDTO user)
-			throws NotFoundException {
+	public String saveUser(@RequestParam(required = false, defaultValue = "0") int db, UserDTO user) {
 		if (db == 0)
 			userService.setDatabase(1);
 		else
 			userService.setDatabase(db);
 
 		final Long id = user.getId();
-		if (id == null) {
-			userService.insertNewUser(user);
-		} else {
-			userService.updateUserById(id, user);
+		try {
+			if (id == null) {
+				userService.insertNewUser(user);
+			} else {
+				userService.updateUserById(id, user);
+			}
+		} catch (IllegalArgumentException | NotFoundException e) {
+
+			return "redirect:/error/" + e.getMessage();
+
 		}
 		return db == 0 ? "redirect:/" : "redirect:/?db=" + db;
 	}

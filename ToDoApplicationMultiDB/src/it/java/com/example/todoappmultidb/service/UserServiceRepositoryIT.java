@@ -99,7 +99,7 @@ public class UserServiceRepositoryIT {
 		int userQta1 = userRepository.findAll().size();
 
 		userService.setDatabase(1);
-		assertThrows(IllegalArgumentException.class, () -> userService.insertNewUser(nullUser));
+		assertThrows(NullPointerException.class, () -> userService.insertNewUser(nullUser));
 		assertThat(userRepository.findAll()).hasSize(userQta1);
 
 	}
@@ -112,7 +112,7 @@ public class UserServiceRepositoryIT {
 		int userQta2 = userRepository.findAll().size();
 
 		userService.setDatabase(2);
-		assertThrows(IllegalArgumentException.class, () -> userService.insertNewUser(nullUser));
+		assertThrows(NullPointerException.class, () -> userService.insertNewUser(nullUser));
 		assertThat(userRepository.findAll()).hasSize(userQta2);
 	}
 

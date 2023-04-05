@@ -139,9 +139,9 @@ public class UserWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/user/edit/1");
 		final HtmlForm form = page.getFormByName("user_form");
 		form.getInputByValue("original name").setValueAttribute("modified name");
-		form.getInputByValue("original email").setValueAttribute("modified email");
+		form.getInputByValue("original email").setValueAttribute("test@email.com");
 		form.getButtonByName("btn_submit").click();
-		verify(userService).updateUserById(1L, new UserDTO(1L, "modified name", "modified email"));
+		verify(userService).updateUserById(1L, new UserDTO(1L, "modified name", "test@email.com"));
 	}
 
 	@Test
@@ -179,9 +179,9 @@ public class UserWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/user/new");
 		final HtmlForm form = page.getFormByName("user_form");
 		form.getInputByName("name").setValueAttribute("new name");
-		form.getInputByName("email").setValueAttribute("new email");
+		form.getInputByName("email").setValueAttribute("test@email.com");
 		form.getButtonByName("btn_submit").click();
-		verify(userService).insertNewUser(new UserDTO(null, "new name", "new email"));
+		verify(userService).insertNewUser(new UserDTO(null, "new name", "test@email.com"));
 	}
 
 //test link

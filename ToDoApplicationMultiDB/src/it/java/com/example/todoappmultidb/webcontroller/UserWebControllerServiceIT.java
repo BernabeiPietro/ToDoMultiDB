@@ -77,6 +77,18 @@ public class UserWebControllerServiceIT {
 	}
 
 	@Test
+	public void testEditPageNewEmptyUser() throws Exception {
+		driver.get(baseUrl + "/user/new");
+		driver.findElement(By.name("name")).sendKeys("");
+		driver.findElement(By.name("email")).sendKeys("");
+		driver.findElement(By.name("btn_submit")).click();
+		userService.setDatabase(1);
+		assertThat(userRepository.findAll()).isEmpty();
+		assertThat(driver.getPageSource()).contains("User with empty fields");
+
+	}
+
+	@Test
 	public void testEditPageUpdateUser() throws Exception {
 		userService.setDatabase(1);
 		User user = userRepository.save(new User(null, "test", "test"));

@@ -1,0 +1,47 @@
+version: '2.2'
+services:
+  db1:
+    image: mysql:5.6
+    container_name: db1
+    hostname: db1
+    ports:
+    - 28011:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: db_example_1
+      MYSQL_USER: administrator
+      MYSQL_PASSWORD: password
+
+    networks:
+      default:
+       aliases:
+          - db1
+    
+  db2:
+    image: mysql:5.6
+    container_name: db2
+    hostname: db2
+    ports:
+    - 28012:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: db_example_2
+      MYSQL_USER: administrator
+      MYSQL_PASSWORD: password
+    networks:
+      default:
+       aliases:
+         - db2
+
+  application:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+      - jarToCopy=ToDoApplicationMultiDB-0.0.1-SNAPSHOT.jar
+    ports:
+    - 8080:8080
+    depends_on:
+    - db1
+    - db2
