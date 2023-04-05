@@ -66,6 +66,9 @@
 			${project.build.directory}/failsafe-reports
 		</sonar.junit.reportPaths>
 		<!-- Also scans HTML files -->
+		<sonar.exclusions>
+		**/model/**
+		</sonar.exclusions>
 		<sonar.sources>
 			pom.xml,
 			${project.build.sourceDirectory},
@@ -87,7 +90,6 @@
 		<sonar.coverage.exclusions>
 			**/*Application.*,
 			**/model/**,
-			**/model/*,
 			com/gargoylesoftware/htmlunit/*
 		</sonar.coverage.exclusions>
 
