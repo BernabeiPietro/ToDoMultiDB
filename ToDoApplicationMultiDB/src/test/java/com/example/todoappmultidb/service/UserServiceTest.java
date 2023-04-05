@@ -105,7 +105,7 @@ public class UserServiceTest {
 	@Test
 	public void test_save_nullvalue() {
 		UserDTO nullUser = new UserDTO(null, null, null);
-		Exception thrown = assertThrows(NullPointerException.class, () -> userService.insertNewUser(nullUser));
+		assertThrows(NullPointerException.class, () -> userService.insertNewUser(nullUser));
 		verify(userRepository, never()).save(any(User.class));
 
 	}
@@ -162,7 +162,7 @@ public class UserServiceTest {
 	@Test
 	public void test_updateUserById_nullvalue() {
 		UserDTO nullUser = new UserDTO(null, null, null);
-		Exception thrown = assertThrows(NullPointerException.class, () -> userService.updateUserById(1L, nullUser));
+		assertThrows(NullPointerException.class, () -> userService.updateUserById(1L, nullUser));
 		verify(userRepository, never()).save(any(User.class));
 	}
 

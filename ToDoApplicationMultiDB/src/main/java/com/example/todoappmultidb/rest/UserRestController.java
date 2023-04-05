@@ -33,7 +33,7 @@ public class UserRestController {
 
 		} catch (NotFoundException e) {
 
-			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage(), e);
 		}
 	}
 
@@ -45,7 +45,7 @@ public class UserRestController {
 
 		} catch (NotFoundException e) {
 
-			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage());
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT, e.getMessage(), e);
 		}
 	}
 
@@ -56,7 +56,7 @@ public class UserRestController {
 		try {
 			return userService.insertNewUser(newUser);
 		} catch (Exception e) {
-			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
 		}
 	}
 
@@ -67,9 +67,9 @@ public class UserRestController {
 			return userService.updateUserById(id, newUser);
 		} catch (IllegalArgumentException e) {
 
-			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+			throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage(), e);
 		} catch (NotFoundException e) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e);
 		}
 	}
 }

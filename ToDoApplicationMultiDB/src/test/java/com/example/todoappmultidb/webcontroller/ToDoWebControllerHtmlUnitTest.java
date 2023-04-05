@@ -221,7 +221,6 @@ public class ToDoWebControllerHtmlUnitTest {
 	// new todo
 	@Test
 	public void test_EditNewToDo_addAction() throws Exception {
-		HashMap<String, Boolean> actions;
 		HtmlPage page = this.webClient.getPage("/todo/new/1");
 		final HtmlForm form = page.getFormByName("todo_form");
 		form.getInputByName("date").setValueAttribute(LocalDateTime.of(2007, 06, 01, 00, 00).toString());

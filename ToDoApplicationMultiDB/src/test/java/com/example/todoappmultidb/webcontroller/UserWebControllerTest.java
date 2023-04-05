@@ -42,9 +42,11 @@ public class UserWebControllerTest {
 		mvc.perform(get("/")).andExpect(status().is2xxSuccessful());
 	}
 
+//index
 	@Test
 	public void test_HomeView_ShowsUsers() throws Exception {
-		List<UserDTO> users = asList(new UserDTO(1L, "test_1", "test_1"), new UserDTO(2L, "test_2", "test_2"));
+		List<UserDTO> users = asList(new UserDTO(1L, "test_1", "test1@email.com"),
+				new UserDTO(2L, "test_2", "test2@email.com"));
 		when(userService.getAllUser()).thenReturn(users);
 		mvc.perform(get("/")).andExpect(view().name("index")).andExpect(model().attribute("users", users))
 				.andExpect(model().attribute(MESSAGE, ""));
@@ -75,9 +77,10 @@ public class UserWebControllerTest {
 		inOrder.verify(userService).getAllUser();
 	}
 
+//edit
 	@Test
 	public void test_EditUser_WhenUserIsFound() throws Exception {
-		UserDTO user = new UserDTO(1L, "test", "test");
+		UserDTO user = new UserDTO(1L, "test", "test@email.com");
 		when(userService.getUserById(1L)).thenReturn(user);
 		mvc.perform(get("/user/edit/1")).andExpect(view().name("editUser")).andExpect(model().attribute("user", user))
 				.andExpect(model().attribute(MESSAGE, ""));
@@ -94,7 +97,7 @@ public class UserWebControllerTest {
 	@Test
 	public void test_EditUser_interaction_dbDefault() throws Exception {
 		InOrder inOrder = Mockito.inOrder(userService);
-		when(userService.getUserById(1l)).thenReturn(new UserDTO(1L, "prova", "prova"));
+		when(userService.getUserById(1l)).thenReturn(new UserDTO(1L, "prova", "test@email.com"));
 		mvc.perform(get("/user/edit/1"));
 		inOrder.verify(userService).setDatabase(1);
 		inOrder.verify(userService).getUserById(1l);
@@ -103,12 +106,13 @@ public class UserWebControllerTest {
 	@Test
 	public void test_EditUser_interaction_db2() throws Exception {
 		InOrder inOrder = Mockito.inOrder(userService);
-		when(userService.getUserById(1l)).thenReturn(new UserDTO(1L, "prova", "prova"));
+		when(userService.getUserById(1l)).thenReturn(new UserDTO(1L, "prova", "test@email.com"));
 		mvc.perform(get("/user/edit/1").param("db", "2"));
 		inOrder.verify(userService).setDatabase(2);
 		inOrder.verify(userService).getUserById(1l);
 	}
 
+//new
 	@Test
 	public void test_EditNewUser() throws Exception {
 		mvc.perform(get("/user/new")).andExpect(view().name("editUser"))
@@ -123,70 +127,85 @@ public class UserWebControllerTest {
 		verifyNoInteractions(userService);
 	}
 
+//save
 	@Test
 	public void test_PostUserWithoutId_fullValues() throws Exception {
 		InOrder inOrder = Mockito.inOrder(userService);
-		mvc.perform(post("/user/save").param("name", "test name").param("email", "test email"))
+		mvc.perform(post("/user/save").param("name", "test name").param("email", "test@email.com"))
 				.andExpect(view().name("redirect:/"));
 		inOrder.verify(userService).setDatabase(1);
-		inOrder.verify(userService).insertNewUser(new UserDTO(null, "test name", "test email"));
+		inOrder.verify(userService).insertNewUser(new UserDTO(null, "test name", "test@email.com"));
 
 	}
 
 	@Test
 	public void test_PostUserWithoutId_emptyValues() throws Exception {
-		InOrder inOrder = Mockito.inOrder(userService);
-		mvc.perform(post("/user/save").param("name", "").param("email", "")).andExpect(view().name("redirect:/"));
-		inOrder.verify(userService).setDatabase(1);
-		inOrder.verify(userService).insertNewUser(new UserDTO(null, "", ""));
+		when(userService.insertNewUser(new UserDTO(null, "", ""))).thenThrow(new IllegalArgumentException("bad_value"));
+		mvc.perform(post("/user/save").param("name", "").param("email", "")).andExpect(status().is(302))
+				.andExpect(view().name("redirect:/error/bad_value"));
+	}
 
+	@Test
+	public void test_PostUserWithoutId_emptyName() throws Exception {
+		when(userService.insertNewUser(new UserDTO(null, "", "test@email.com")))
+				.thenThrow(new IllegalArgumentException("bad_value"));
+		mvc.perform(post("/user/save").param("name", "").param("email", "test@email.com")).andExpect(status().is(302))
+				.andExpect(view().name("redirect:/error/bad_value"));
+	}
+
+	@Test
+	public void test_PostUserWithoutId_emptyEmail() throws Exception {
+		when(userService.insertNewUser(new UserDTO(null, "test name", "")))
+				.thenThrow(new IllegalArgumentException("bad_value"));
+		mvc.perform(post("/user/save").param("name", "test name").param("email", "")).andExpect(status().is(302))
+				.andExpect(view().name("redirect:/error/bad_value"));
 	}
 
 	@Test
 	public void test_Save_db2_insert() throws Exception {
 		InOrder inOrder = Mockito.inOrder(userService);
-		mvc.perform(post("/user/save").param("name", "test name").param("email", "test email").param("db", "2"))
+		mvc.perform(post("/user/save").param("name", "test name").param("email", "test@email.com").param("db", "2"))
 				.andExpect(view().name("redirect:/?db=2"));
 		inOrder.verify(userService).setDatabase(2);
-		inOrder.verify(userService).insertNewUser(new UserDTO(null, "test name", "test email"));
+		inOrder.verify(userService).insertNewUser(new UserDTO(null, "test name", "test@email.com"));
 	}
 
 	@Test
 	public void test_Save_db1_insert() throws Exception {
 		InOrder inOrder = Mockito.inOrder(userService);
-		mvc.perform(post("/user/save").param("name", "test name").param("email", "test email").param("db", "1"))
+		mvc.perform(post("/user/save").param("name", "test name").param("email", "test@email.com").param("db", "1"))
 				.andExpect(view().name("redirect:/?db=1"));
 		inOrder.verify(userService).setDatabase(1);
-		inOrder.verify(userService).insertNewUser(new UserDTO(null, "test name", "test email"));
+		inOrder.verify(userService).insertNewUser(new UserDTO(null, "test name", "test@email.com"));
 	}
 
 	@Test
 	public void test_PostUserWithId_ShouldUpdateExistingUser() throws Exception {
 		InOrder inOrder = Mockito.inOrder(userService);
-		mvc.perform(post("/user/save").param("id", "1").param("name", "test name").param("email", "test email"))
+		mvc.perform(post("/user/save").param("id", "1").param("name", "test name").param("email", "test@email.com"))
 				.andExpect(view().name("redirect:/"));
 		inOrder.verify(userService).setDatabase(1);
-		inOrder.verify(userService).updateUserById(1L, new UserDTO(1L, "test name", "test email"));
+		inOrder.verify(userService).updateUserById(1L, new UserDTO(1L, "test name", "test@email.com"));
 
 	}
 
 	@Test
 	public void test_Save_db1_update() throws Exception {
 		InOrder inOrder = Mockito.inOrder(userService);
-		mvc.perform(post("/user/save").param("id", "1").param("name", "test name").param("email", "test email")
+		mvc.perform(post("/user/save").param("id", "1").param("name", "test name").param("email", "test@email.com")
 				.param("db", "1")).andExpect(view().name("redirect:/?db=1"));
 		inOrder.verify(userService).setDatabase(1);
-		inOrder.verify(userService).updateUserById(1L, new UserDTO(1L, "test name", "test email"));
+		inOrder.verify(userService).updateUserById(1L, new UserDTO(1L, "test name", "test@email.com"));
 
 	}
 
 	@Test
 	public void test_Save_db2_update() throws Exception {
 		InOrder inOrder = Mockito.inOrder(userService);
-		mvc.perform(post("/user/save").param("id", "1").param("name", "test name").param("email", "test email")
+		mvc.perform(post("/user/save").param("id", "1").param("name", "test name").param("email", "test@email.com")
 				.param("db", "2")).andExpect(view().name("redirect:/?db=2"));
 		inOrder.verify(userService).setDatabase(2);
-		inOrder.verify(userService).updateUserById(1L, new UserDTO(1L, "test name", "test email"));
+		inOrder.verify(userService).updateUserById(1L, new UserDTO(1L, "test name", "test@email.com"));
 
 	}
 }
