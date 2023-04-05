@@ -49,9 +49,7 @@
 		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S5976
 		</sonar.issue.ignore.multicriteria.e1.ruleKey>
 		<sonar.issue.ignore.multicriteria.e1.resourceKey>
-			**/*IT.java,
-			**/*Test.java,
-			**/UserServiceTest.java
+			**/*.java
 		</sonar.issue.ignore.multicriteria.e1.resourceKey>
 		<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2699
 		</sonar.issue.ignore.multicriteria.e2.ruleKey>

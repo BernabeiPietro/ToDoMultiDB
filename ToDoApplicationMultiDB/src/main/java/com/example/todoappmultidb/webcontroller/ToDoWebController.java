@@ -85,19 +85,21 @@ public class ToDoWebController {
 	@PostMapping("/save")
 	public String saveToDo(@RequestParam(required = false, defaultValue = "0") int db, ToDoDTO todo, String key,
 			Boolean value) {
-		if (db == 0)
+		if (db == 0) {
 			userService.setDatabase(1);
-		else
+		} else {
 			userService.setDatabase(db);
+		}
 		if (todo.getActions() == null) {
 			todo.setActions(new HashMap<>());
 		}
-		if (!(key == null || key.isEmpty()))
+		if (!(key == null || key.isEmpty())) {
 			if (value != null) {
 				todo.addToDoAction(key, value);
 			} else {
 				todo.addToDoAction(key, false);
 			}
+		}
 		try {
 			if (todo.getId() != -1)
 				todoService.updateById(todo.getId(), todo);

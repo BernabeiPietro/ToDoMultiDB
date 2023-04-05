@@ -15,7 +15,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -31,7 +30,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
-public class ToDoWebControllerE2E2 {// NOSONAR
+public class ToDoWebControllerE2E {// NOSONAR
 	private static int port = Integer.parseInt(System.getProperty("server.port", "8080"));
 	private static String baseUrl = "http://localhost:" + port;
 	private WebDriver driver;
@@ -62,39 +61,15 @@ public class ToDoWebControllerE2E2 {// NOSONAR
 		driver.findElement(By.name("date")).sendKeys("08102008");
 
 		driver.findElement(By.name("key")).sendKeys("pippo");
-		driver.findElement(By.name("value")).sendKeys("false");
-
+		driver.findElements(By.name("value")).stream().filter(x -> x.getAttribute("value").contains("false"))
+				.findFirst().get().click();
 		driver.findElement(By.name("btn_add")).click();
 		driver.findElement(By.name("key")).sendKeys("pluto");
-		driver.findElement(By.name("value")).sendKeys("true");
+		driver.findElements(By.name("value")).stream().filter(x -> x.getAttribute("value").contains("true")).findFirst()
+				.get().click();
 		driver.findElement(By.name("btn_submit")).click();
 		assertThat(driver.findElement(By.id("todo_table")).getText()).contains("pippo=false", "pluto=true",
 				"2008-10-08T00:00");
-	}
-
-	private String postUser(String name, String email, int db) throws JSONException {
-		JSONObject body = new JSONObject();
-		body.put("name", name);
-		body.put("email", email);
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
-		ResponseEntity<String> answer = new RestTemplate().postForEntity(baseUrl + "/api/users/" + db + "/new", entity,
-				String.class);
-		Logger logger = Logger.getLogger(ToDoWebControllerE2E2.class.toString());
-		logger.log(Level.INFO, "answer for POST: " + answer);
-		return new JSONObject(answer.getBody()).get("id").toString();
-	}
-
-	private String postToDo(String body, int db) throws JSONException {
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-		HttpEntity<String> entity = new HttpEntity<>(body, headers);
-		ResponseEntity<String> answer = new RestTemplate().postForEntity(baseUrl + "/api/todo/" + db + "/new", entity,
-				String.class);
-		Logger logger = Logger.getLogger(ToDoWebControllerE2E2.class.toString());
-		logger.log(Level.INFO, "answer for POST: " + answer);
-		return new JSONObject(answer.getBody()).get("id").toString();
 	}
 
 	@Test
@@ -113,16 +88,41 @@ public class ToDoWebControllerE2E2 {// NOSONAR
 		driver.findElement(By.cssSelector("a[href*='/todo/edit/" + idTodo + "']")).click();
 		driver.findElement(By.name("date")).sendKeys("08102008");
 
-		final WebElement actprovaField = driver.findElement(By.id("actionsprova"));
-		actprovaField.clear();
-		actprovaField.sendKeys("false");
-		final WebElement actprova2Field = driver.findElement(By.id("actionsprova2"));
-		actprova2Field.clear();
-		actprova2Field.sendKeys("true");
+		driver.findElements(By.name("actions[prova]")).stream().filter(x -> x.getAttribute("value").contains("false"))
+				.findFirst().get().click();
+		driver.findElements(By.name("actions[prova2]")).stream().filter(x -> x.getAttribute("value").contains("true"))
+				.findFirst().get().click();
 		driver.findElement(By.name("key")).sendKeys("pluto");
-		driver.findElement(By.name("value")).sendKeys("true");
+		driver.findElements(By.name("value")).stream().filter(x -> x.getAttribute("value").contains("true")).findFirst()
+				.get().click();
 		driver.findElement(By.name("btn_submit")).click();
 		assertThat(driver.findElement(By.id("todo_table")).getText()).contains("prova=false", "prova2=true",
 				"pluto=true", "2008-10-08T01:01:01");
 	}
+
+	private String postUser(String name, String email, int db) throws JSONException {
+		JSONObject body = new JSONObject();
+		body.put("name", name);
+		body.put("email", email);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> entity = new HttpEntity<>(body.toString(), headers);
+		ResponseEntity<String> answer = new RestTemplate().postForEntity(baseUrl + "/api/users/" + db + "/new", entity,
+				String.class);
+		Logger logger = Logger.getLogger(ToDoWebControllerE2E.class.toString());
+		logger.log(Level.INFO, "answer for POST: " + answer);
+		return new JSONObject(answer.getBody()).get("id").toString();
+	}
+
+	private String postToDo(String body, int db) throws JSONException {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<String> entity = new HttpEntity<>(body, headers);
+		ResponseEntity<String> answer = new RestTemplate().postForEntity(baseUrl + "/api/todo/" + db + "/new", entity,
+				String.class);
+		Logger logger = Logger.getLogger(ToDoWebControllerE2E.class.toString());
+		logger.log(Level.INFO, "answer for POST: " + answer);
+		return new JSONObject(answer.getBody()).get("id").toString();
+	}
+
 }
