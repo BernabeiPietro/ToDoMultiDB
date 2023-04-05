@@ -86,6 +86,7 @@
 
 		<sonar.coverage.exclusions>
 			**/*Application.*,
+			**/model/**,
 			**/model/*,
 			com/gargoylesoftware/htmlunit/*
 		</sonar.coverage.exclusions>
