@@ -22,7 +22,40 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
+		<!-- Docker configuration -->
+		<show.log>false</show.log>
+		<docker.time-to-wait>100000</docker.time-to-wait>
+		<db.docker.dns1>localhost</db.docker.dns1>
+		<db.docker.dns2>localhost</db.docker.dns2>
+		<db.docker.port1>28011</db.docker.port1>
+		<db.docker.port2>28012</db.docker.port2>
+		<db.docker.port>3306</db.docker.port>
+		<db.docker.db1>db_example_1</db.docker.db1>
+		<db.docker.db2>db_example_2</db.docker.db2>
+		<db.docker.user>administrator</db.docker.user>
+		<db.docker.rootpsw>rootpassword</db.docker.rootpsw>
+		<db.docker.psw>password</db.docker.psw>
+		<JDBC-URL1>jdbc:mysql://${db.docker.dns1}:${db.docker.port1}/${db.docker.db1}?createDatabaseIfNotExist=true
+		</JDBC-URL1>
+		<JDBC-URL2>jdbc:mysql://${db.docker.dns2}:${db.docker.port2}/${db.docker.db2}?createDatabaseIfNotExist=true
+		</JDBC-URL2>
+
 		<!-- For SonarQube -->
+		<sonar.organization>bernabeipietro</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
+		<sonar.issue.ignore.multicriteria>e1,e2
+		</sonar.issue.ignore.multicriteria>
+		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S5976
+		</sonar.issue.ignore.multicriteria.e1.ruleKey>
+		<sonar.issue.ignore.multicriteria.e1.resourceKey>
+			**/*.java
+		</sonar.issue.ignore.multicriteria.e1.resourceKey>
+		<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2699
+		</sonar.issue.ignore.multicriteria.e2.ruleKey>
+		<sonar.issue.ignore.multicriteria.e2.resourceKey>
+			**/ToDoApplicationMultiDbApplicationTests.java
+		</sonar.issue.ignore.multicriteria.e2.resourceKey>
 
 		<sonar.coverage.jacoco.xmlReportPaths>
 			${project.reporting.outputDirectory}/jacoco/jacoco.xml
@@ -55,39 +88,9 @@
 			**/*Application.*,
 			**/model/**,
 			com/gargoylesoftware/htmlunit/*
-
 		</sonar.coverage.exclusions>
 
 		<sonar.projectKey>BernabeiPietro_todomultidb</sonar.projectKey>
-
-		<show.log>false</show.log>
-		<docker.time-to-wait>100000</docker.time-to-wait>
-		<db.docker.dns>localhost</db.docker.dns>
-		<db.docker.port1>28011</db.docker.port1>
-		<db.docker.port2>28012</db.docker.port2>
-		<db.docker.port>3306</db.docker.port>
-		<db.docker.db1>db_example_1</db.docker.db1>
-		<db.docker.db2>db_example_2</db.docker.db2>
-		<db.docker.user>administrator</db.docker.user>
-		<db.docker.rootpsw>rootpassword</db.docker.rootpsw>
-		<db.docker.psw>password</db.docker.psw>
-		<JDBC-URL1>jdbc:mysql://${db.docker.dns}:${db.docker.port1}/${db.docker.db1}?createDatabaseIfNotExist=true</JDBC-URL1>
-		<JDBC-URL2>jdbc:mysql://${db.docker.dns}:${db.docker.port2}/${db.docker.db2}?createDatabaseIfNotExist=true</JDBC-URL2>
-
-		<sonar.organization>bernabeipietro</sonar.organization>
-		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-
-		<sonar.issue.ignore.multicriteria>e1,e2</sonar.issue.ignore.multicriteria>
-		<sonar.issue.ignore.multicriteria.e1.ruleKey>java:S5976</sonar.issue.ignore.multicriteria.e1.ruleKey>
-		<sonar.issue.ignore.multicriteria.e1.resourceKey>
-			**/*IT.java,
-			**/*HtmlUnitTest.java,
-			**/*ConverterTest.java
-		</sonar.issue.ignore.multicriteria.e1.resourceKey>
-		<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2699</sonar.issue.ignore.multicriteria.e2.ruleKey>
-		<sonar.issue.ignore.multicriteria.e2.resourceKey>
-			**/ToDoApplicationMultiDbApplicationTests.java
-		</sonar.issue.ignore.multicriteria.e2.resourceKey>
 
 	</properties>
 
@@ -107,6 +110,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -234,6 +241,30 @@
 
 					</executions>
 				</plugin>
+				<plugin>
+					<groupId>org.pitest</groupId>
+					<artifactId>pitest-maven</artifactId>
+					<version>1.5.2</version>
+
+					<configuration>
+
+						<targetClasses>
+							<param>com.example.todoappmultidb.service.*Service</param>
+							<param>com.example.todoappmultidb.rest.*RestController</param>
+							<param>com.example.todoappmultidb.webcontroller.*WebController
+							</param>
+						</targetClasses>
+						<targetTests>
+							<param>com.example.todoappmultidb.service.*Test</param>
+							<param>com.example.todoappmultidb.rest.*Test</param>
+							<param>com.example.todoappmultidb.webcontroller.*Test</param>
+						</targetTests>
+						<mutators>
+							<mutator>STRONGER</mutator>
+						</mutators>
+						<mutationThreshold>100</mutationThreshold>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -343,7 +374,7 @@
 									<MYSQL_PASSWORD>${db.docker.psw}</MYSQL_PASSWORD>
 								</env>
 								<ports>
-									<port>${db.docker.port1}:${db.docker.port}</port>
+									<port>28011:${db.docker.port}</port>
 								</ports>
 							</run>
 						</image>
@@ -366,7 +397,7 @@
 									<MYSQL_PASSWORD>${db.docker.psw}</MYSQL_PASSWORD>
 								</env>
 								<ports>
-									<port>${db.docker.port2}:${db.docker.port}</port>
+									<port>28012:${db.docker.port}</port>
 								</ports>
 							</run>
 						</image>
@@ -537,6 +568,161 @@
 				</plugins>
 			</build>
 		</profile>
-	</profiles>
 
+		<profile>
+			<id>docker</id>
+			<properties>
+				<db.docker.dns1>db1</db.docker.dns1>
+				<db.docker.dns2>db2</db.docker.dns2>
+				<db.docker.port1>3306</db.docker.port1>
+				<db.docker.port2>3306</db.docker.port2>
+				<db.docker.port>3306</db.docker.port>
+				<db.docker.db1>db_example_1</db.docker.db1>
+				<db.docker.db2>db_example_2</db.docker.db2>
+				<docker.time-to-wait>100000</docker.time-to-wait>
+
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<version>0.34.1</version>
+						<configuration>
+							<showLogs>true</showLogs>
+							<verbose>build</verbose>
+							<autoCreateCustomNetworks>true</autoCreateCustomNetworks>
+							<images>
+
+								<image>
+									<alias>db1</alias>
+									<name>mysql:5.6</name>
+									<run>
+
+										<namingStrategy>alias</namingStrategy>
+										<hostname>db1</hostname>
+										<wait>
+											<tcp>
+												<host>localhost</host>
+												<ports>
+													<port>3306</port>
+												</ports>
+											</tcp>
+											<time>${docker.time-to-wait}</time>
+										</wait>
+										<env>
+											<MYSQL_ROOT_PASSWORD>${db.docker.rootpsw}
+											</MYSQL_ROOT_PASSWORD>
+											<MYSQL_DATABASE>${db.docker.db1}</MYSQL_DATABASE>
+											<MYSQL_USER>${db.docker.user}</MYSQL_USER>
+											<MYSQL_PASSWORD>${db.docker.psw}</MYSQL_PASSWORD>
+										</env>
+										<ports>
+											<port>28011:${db.docker.port}</port>
+										</ports>
+
+										<restartPolicy>
+											<name>always</name>
+										</restartPolicy>
+										<network>
+											<mode>bridge</mode>
+											<name>network</name>
+											<alias>db1</alias>
+										</network>
+									</run>
+								</image>
+								<image>
+									<alias>db2</alias>
+									<name>mysql:5.6</name>
+									<run>
+										<namingStrategy>alias</namingStrategy>
+										<hostname>db2</hostname>
+										<wait>
+											<tcp>
+												<host>localhost</host>
+												<ports>
+													<port>3306</port>
+												</ports>
+											</tcp>
+											<time>${docker.time-to-wait}</time>
+										</wait>
+										<env>
+											<MYSQL_ROOT_PASSWORD>${db.docker.rootpsw}
+											</MYSQL_ROOT_PASSWORD>
+											<MYSQL_DATABASE>${db.docker.db2}</MYSQL_DATABASE>
+											<MYSQL_USER>${db.docker.user}</MYSQL_USER>
+											<MYSQL_PASSWORD>${db.docker.psw}</MYSQL_PASSWORD>
+										</env>
+										<ports>
+											<port>28012:${db.docker.port}</port>
+										</ports>
+										<restartPolicy>
+											<name>always</name>
+										</restartPolicy>
+										<network>
+											<mode>bridge</mode>
+											<name>network</name>
+											<alias>db2</alias>
+										</network>
+									</run>
+								</image>
+								<image>
+									<alias>todomultidb</alias>
+									<name>todomultidb</name>
+									<build>
+										<contextDir>${project.basedir}</contextDir>
+									</build>
+									<run>
+										<dependsOn>
+											<container>db1</container>
+											<container>db2</container>
+										</dependsOn>
+										<restartPolicy>
+											<name>always</name>
+										</restartPolicy>
+										<ports>
+											<port>8080:8080</port>
+										</ports>
+										<network>
+											<mode>bridge</mode>
+											<name>network</name>
+											<alias>multidb</alias>
+										</network>
+
+									</run>
+								</image>
+							</images>
+						</configuration>
+						<executions>
+							<execution>
+								<id>docker-build-image</id>
+								<phase>package</phase>
+								<goals>
+									<goal>build</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>docker-verify</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>start</goal>
+									<goal>stop</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>local-prod</id>
+			<properties>
+				<db.docker.dns1>db1</db.docker.dns1>
+				<db.docker.dns2>db2</db.docker.dns2>
+				<db.docker.port1>3306</db.docker.port1>
+				<db.docker.port2>3306</db.docker.port2>
+				<db.docker.port>3306</db.docker.port>
+			</properties>
+		</profile>
+	</profiles>
 </project>

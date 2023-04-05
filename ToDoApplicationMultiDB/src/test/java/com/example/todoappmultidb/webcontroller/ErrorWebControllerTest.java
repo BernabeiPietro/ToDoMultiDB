@@ -29,6 +29,12 @@ public class ErrorWebControllerTest {
 	}
 
 	@Test
+	public void test_getError_fullMessage() throws Exception {
+		mvc.perform(get("/error/Not found any User")).andExpect(view().name("errorPage"))
+				.andExpect(model().attribute(MESSAGE, "Not found any User"));
+	}
+
+	@Test
 	public void test_getErrorPath() {
 		assertThat(errorWeb.getErrorPath()).isEqualTo("/error");
 	}

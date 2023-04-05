@@ -32,6 +32,7 @@ import com.example.todoappmultidb.model.dto.ToDoDTO;
 import com.example.todoappmultidb.model.dto.UserDTO;
 import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.routing.DataSourceContextHolder;
+import com.example.todoappmultidb.routing.config.DataSourceEnum;
 
 import javassist.NotFoundException;
 
@@ -104,10 +105,33 @@ public class UserServiceTest {
 	@Test
 	public void test_save_nullvalue() {
 		UserDTO nullUser = new UserDTO(null, null, null);
-		Exception thrown = assertThrows(IllegalArgumentException.class, () -> userService.insertNewUser(nullUser));
+		assertThrows(NullPointerException.class, () -> userService.insertNewUser(nullUser));
 		verify(userRepository, never()).save(any(User.class));
-		assertThat(thrown.getMessage()).isEqualTo("User with null property");
 
+	}
+
+	@Test
+	public void test_save_allEmptyFields() {
+		UserDTO emptyUser = new UserDTO(null, "", "");
+		Exception thrown = assertThrows(IllegalArgumentException.class, () -> userService.insertNewUser(emptyUser));
+		verify(userRepository, never()).save(any(User.class));
+		assertThat(thrown.getMessage()).isEqualTo("User with empty fields");
+	}
+
+	@Test
+	public void test_save_emailFieldEmpty() {
+		UserDTO emptyUser = new UserDTO(null, "prova", "");
+		Exception thrown = assertThrows(IllegalArgumentException.class, () -> userService.insertNewUser(emptyUser));
+		verify(userRepository, never()).save(any(User.class));
+		assertThat(thrown.getMessage()).isEqualTo("User with empty fields");
+	}
+
+	@Test
+	public void test_save_userFieldEmpty() {
+		UserDTO emptyUser = new UserDTO(null, "", "prova");
+		Exception thrown = assertThrows(IllegalArgumentException.class, () -> userService.insertNewUser(emptyUser));
+		verify(userRepository, never()).save(any(User.class));
+		assertThat(thrown.getMessage()).isEqualTo("User with empty fields");
 	}
 
 	@Test
@@ -116,7 +140,7 @@ public class UserServiceTest {
 
 		User retrieved = spy(new User(1L, new ArrayList<>(), "changeIt", "changeIt"));
 		retrieved.addToDo(new ToDo(1L, retrieved, LocalDateTime.of(1, 2, 3, 1, 2, 12)));
-		when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(retrieved));
+		when(userRepository.findById(1L)).thenReturn(Optional.of(retrieved));
 
 		User userUpdated = new User(1L, new ArrayList<>(), "changed", "changed");
 		userUpdated.addToDo(new ToDo(1L, userUpdated, LocalDateTime.of(1, 2, 3, 1, 2, 12)));
@@ -138,10 +162,35 @@ public class UserServiceTest {
 	@Test
 	public void test_updateUserById_nullvalue() {
 		UserDTO nullUser = new UserDTO(null, null, null);
-		Exception thrown = assertThrows(IllegalArgumentException.class, () -> userService.updateUserById(1L, nullUser));
+		assertThrows(NullPointerException.class, () -> userService.updateUserById(1L, nullUser));
 		verify(userRepository, never()).save(any(User.class));
-		assertThat(thrown.getMessage()).isEqualTo("User with null property");
+	}
 
+	@Test
+	public void test_updateUserById_allEmptyFields() {
+		UserDTO emptyUser = new UserDTO(null, "", "");
+		Exception thrown = assertThrows(IllegalArgumentException.class,
+				() -> userService.updateUserById(1L, emptyUser));
+		verify(userRepository, never()).save(any(User.class));
+		assertThat(thrown.getMessage()).isEqualTo("User with empty fields");
+	}
+
+	@Test
+	public void test_updateUserById_emailFieldEmpty() {
+		UserDTO emptyUser = new UserDTO(null, "prova", "");
+		Exception thrown = assertThrows(IllegalArgumentException.class,
+				() -> userService.updateUserById(1L, emptyUser));
+		verify(userRepository, never()).save(any(User.class));
+		assertThat(thrown.getMessage()).isEqualTo("User with empty fields");
+	}
+
+	@Test
+	public void test_updateUserById_userFieldEmpty() {
+		UserDTO emptyUser = new UserDTO(null, "", "prova");
+		Exception thrown = assertThrows(IllegalArgumentException.class,
+				() -> userService.updateUserById(1L, emptyUser));
+		verify(userRepository, never()).save(any(User.class));
+		assertThat(thrown.getMessage()).isEqualTo("User with empty fields");
 	}
 
 	@Test
@@ -192,13 +241,13 @@ public class UserServiceTest {
 
 	@Test
 	public void test_setDatabase_1() {
-		userService.setDatabase(1);
+		assertThat(userService.setDatabase(1)).isEqualTo(DataSourceEnum.DATASOURCE_ONE);
 		verify(dataContext).setDatabase(1);
 	}
 
 	@Test
 	public void test_setDatabase_2() {
-		userService.setDatabase(2);
+		assertThat(userService.setDatabase(2)).isEqualTo(DataSourceEnum.DATASOURCE_TWO);
 		verify(dataContext).setDatabase(2);
 	}
 }

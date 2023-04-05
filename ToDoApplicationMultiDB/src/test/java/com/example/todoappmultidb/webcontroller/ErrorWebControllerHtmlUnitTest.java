@@ -24,6 +24,12 @@ public class ErrorWebControllerHtmlUnitTest {
 	}
 
 	@Test
+	public void testErrorPage_fullMessage() throws Exception {
+		HtmlPage page = this.webClient.getPage("/error/Not_found_any_User");
+		assertThat(page.getBody().getTextContent()).contains("Not_found_any_User");
+	}
+
+	@Test
 	public void test_ErrorPage_redirectToHome() throws Exception {
 		HtmlPage page = this.webClient.getPage("/error");
 		assertThat(page.getAnchorByText("Turn to Home").getHrefAttribute()).isEqualTo("/");

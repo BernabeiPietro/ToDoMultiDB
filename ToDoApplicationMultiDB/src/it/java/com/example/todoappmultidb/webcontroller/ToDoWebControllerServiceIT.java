@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -78,10 +77,13 @@ public class ToDoWebControllerServiceIT {
 		User user = userRepository.save(new User(null, "prova", "prova"));
 		driver.get(baseUrl + "/new/" + user.getId() + "?db=2");
 		driver.findElement(By.name("key")).sendKeys("prova");
-		driver.findElement(By.name("value")).sendKeys("false");
+		driver.findElements(By.name("value")).stream().filter(x -> x.getAttribute("value").contains("false"))
+				.findFirst().get().click();
 		driver.findElement(By.name("btn_add")).click();
 		driver.findElement(By.name("key")).sendKeys("prova2");
-		driver.findElement(By.name("value")).sendKeys("true");
+		driver.findElements(By.name("value")).stream().filter(x -> x.getAttribute("value").contains("true")).findFirst()
+				.get().click();
+
 		driver.findElement(By.name("btn_submit")).click();
 		userService.setDatabase(2);
 		assertThat(todoRepository.findToDoByUserId(user).get(0).getToDo().get("prova")).isFalse();
@@ -97,16 +99,19 @@ public class ToDoWebControllerServiceIT {
 		actions.put("prova2", false);
 		ToDo todo = todoRepository.save(new ToDo(null, user, actions, LocalDateTime.of(2020, 4, 12, 1, 1, 1)));
 		driver.get(baseUrl + "/edit/" + todo.getId() + "?db=1");
-
-		final WebElement provaField = driver.findElement(By.id("actionsprova"));
-		provaField.clear();
-		provaField.sendKeys("false");
-		final WebElement emailField = driver.findElement(By.id("actionsprova2"));
-		emailField.clear();
-		emailField.sendKeys("true");
+		driver.getPageSource();
+		driver.findElements(By.name("actions[prova]")).stream().filter(x -> x.getAttribute("value").contains("false"))
+				.findFirst().get().click();
+		driver.findElements(By.name("actions[prova2]")).stream().filter(x -> x.getAttribute("value").contains("true"))
+				.findFirst().get().click();
+		driver.findElement(By.name("key")).sendKeys("prova3");
+		driver.findElements(By.name("value")).stream().filter(x -> x.getAttribute("value").contains("false"))
+				.findFirst().get().click();
 		driver.findElement(By.name("btn_submit")).click();
+
 		assertThat(todoRepository.findToDoByUserId(user).get(0).getToDo().get("prova")).isFalse();
 		assertThat(todoRepository.findToDoByUserId(user).get(0).getToDo().get("prova2")).isTrue();
+		assertThat(todoRepository.findToDoByUserId(user).get(0).getToDo().get("prova3")).isFalse();
 		assertThat(todoRepository.findToDoByUserId(user).get(0).getLocalDateTime())
 				.isEqualTo(LocalDateTime.of(2020, 4, 12, 1, 1, 1));
 	}
