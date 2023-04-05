@@ -95,9 +95,9 @@ public class ToDoWebController {
 		if (!(key == null || key.isEmpty()))
 			if (value != null)
 				todo.addToDoAction(key, value);
-			else
+			else {
 				todo.addToDoAction(key, false);
-
+			}
 		try {
 			if (todo.getId() != -1)
 				todoService.updateById(todo.getId(), todo);

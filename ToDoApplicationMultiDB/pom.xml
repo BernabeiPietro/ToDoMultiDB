@@ -50,7 +50,8 @@
 		</sonar.issue.ignore.multicriteria.e1.ruleKey>
 		<sonar.issue.ignore.multicriteria.e1.resourceKey>
 			**/*IT.java,
-			**/*Test.java
+			**/*Test.java,
+			**/UserServiceTest.java
 		</sonar.issue.ignore.multicriteria.e1.resourceKey>
 		<sonar.issue.ignore.multicriteria.e2.ruleKey>java:S2699
 		</sonar.issue.ignore.multicriteria.e2.ruleKey>
@@ -89,7 +90,6 @@
 			**/*Application.*,
 			**/model/**,
 			com/gargoylesoftware/htmlunit/*
-
 		</sonar.coverage.exclusions>
 
 		<sonar.projectKey>BernabeiPietro_todomultidb</sonar.projectKey>
