@@ -93,9 +93,9 @@ public class ToDoWebController {
 			todo.setActions(new HashMap<>());
 		}
 		if (!(key == null || key.isEmpty()))
-			if (value != null)
+			if (value != null) {
 				todo.addToDoAction(key, value);
-			else {
+			} else {
 				todo.addToDoAction(key, false);
 			}
 		try {
