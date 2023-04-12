@@ -32,6 +32,6 @@ public class ErrorWebControllerHtmlUnitTest {
 	@Test
 	public void test_ErrorPage_redirectToHome() throws Exception {
 		HtmlPage page = this.webClient.getPage("/error");
-		assertThat(page.getAnchorByText("Turn to Home").getHrefAttribute()).isEqualTo("/");
+		assertThat(page.getAnchorByText("Home").getHrefAttribute()).isEqualTo("/");
 	}
 }

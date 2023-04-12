@@ -54,7 +54,7 @@ public class UserWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/");
 		assertThat(page.getBody().getTextContent()).doesNotContain("No user");
 		HtmlTable table = page.getHtmlElementById("user_table");
-		assertThat(table.asText()).isEqualTo("Users\n" + "ID	Name	Email\n"
+		assertThat(table.asText()).isEqualTo("ID	Name	Email\n"
 				+ "1	nome1	email1	Edit 	Show-ToDo\n" + "2	nome2	email2	Edit 	Show-ToDo");
 		page.getAnchorByHref("/user/edit/1");
 		page.getAnchorByHref("/user/edit/2");
@@ -68,7 +68,7 @@ public class UserWebControllerHtmlUnitTest {
 				.thenReturn(asList(new UserDTO(1L, "nome1", "email1"), new UserDTO(2L, "nome2", "email2")));
 		HtmlPage page = this.webClient.getPage("/?db=1");
 		HtmlTable table = page.getHtmlElementById("user_table");
-		assertThat(table.asText()).isEqualTo("Users\n" + "ID	Name	Email\n"
+		assertThat(table.asText()).isEqualTo( "ID	Name	Email\n"
 				+ "1	nome1	email1	Edit 	Show-ToDo\n" + "2	nome2	email2	Edit 	Show-ToDo");
 		page.getAnchorByHref("/user/edit/1?db=1");
 		page.getAnchorByHref("/user/edit/2?db=1");
@@ -82,7 +82,7 @@ public class UserWebControllerHtmlUnitTest {
 				.thenReturn(asList(new UserDTO(1L, "nome1", "email1"), new UserDTO(2L, "nome2", "email2")));
 		HtmlPage page = this.webClient.getPage("/?db=2");
 		HtmlTable table = page.getHtmlElementById("user_table");
-		assertThat(table.asText()).isEqualTo("Users\n" + "ID	Name	Email\n"
+		assertThat(table.asText()).isEqualTo( "ID	Name	Email\n"
 				+ "1	nome1	email1	Edit 	Show-ToDo\n" + "2	nome2	email2	Edit 	Show-ToDo");
 		page.getAnchorByHref("/user/edit/1?db=2");
 		page.getAnchorByHref("/user/edit/2?db=2");

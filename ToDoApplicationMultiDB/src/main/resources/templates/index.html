@@ -3,59 +3,84 @@
 
 <head>
 	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Users</title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 </head>
 
 <body>
-	<div>
-		<a href="/">Home</a>
-	</div>
-	<div th:if="${param.db==null}">
-		<div th:with="name=''">
+	<div class=container-fluid>
+		<div class="row">
+			<div class="col">
+			</div>
+			<div class="col-8">
+				<h1>Home</h1>
+				<div class="row row-cols-auto">
+					<div class="col">
+						<a href="/"><button type="button" class="btn btn-primary">Home</button></a>
+					</div>
+					<div th:if="${param.db==null}" class="col">
+						<div th:with="name=''">
+						</div>
+						<a th:href="@{/?db=2}"><button type="button" class="btn btn-danger">Database 2</button></a>
+					</div>
+					<div th:unless="${param.db==null}" class="col">
+						<div th:with="name='?db='+param.db[0]">
+						</div>
+						<div th:if="${param.db[0]}==1">
+							<a th:href="@{/?db=2}"><button type="button" class="btn btn-danger">Database 2</button></a>
+						</div>
+						<div th:unless="${param.db[0]}==1">
+							<a th:href="@{/?db=1}"><button type="button" class="btn btn-danger">Database 1</button></a>
+						</div>
+					</div>
+				</div>
+				<div>
+					<div th:if="${users.empty}">
+						<div>No user</div>
+					</div>
+					<div th:unless="${users.empty}">
+						<table id="user_table" class="table">
+							<thead>
+								<tr>
+									<th scope="col">ID</th>
+									<th scope="col">Name</th>
+									<th scope="col">Email</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="user : ${users}">
+									<th th:text="${user.id}" scope="row">
+										</td>
+									<td th:text="${user.name}"></td>
+									<td th:text="${user.email}"></td>
+									<td><a
+											th:href="${param.db==null}?@{'/user/edit/' + ${user.id}}:@{'/user/edit/' + ${user.id}(db=${param.db[0]})}"><button
+												type="button" class="btn btn-secondary">Edit</button></a>
+									</td>
+
+									<td><a
+											th:href="${param.db==null}?@{'/todo/ofuser/' + ${user.id}}:@{'/todo/ofuser/' + ${user.id}(db=${param.db[0]})}"><button
+												type="button" class="btn btn-warning">Show-ToDo</button></a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div>
+					<a th:href="${param.db==null}?@{/user/new}:@{/user/new(db=${param.db})}"><button type="button"
+							class="btn btn-success">New
+							user</button></a>
+				</div>
+			</div>
+			<div class="col">
+			</div>
 		</div>
-		<a th:href="@{/?db=2}">Database 2</a>
-	</div>
-	<div th:unless="${param.db==null}">
-		<div th:with="name='?db='+param.db[0]">
-		</div>
-		<div th:if="${param.db[0]}==1">
-			<a th:href="@{/?db=2}">Database 2</button>
-		</div>
-		<div th:unless="${param.db[0]}==1">
-			<a th:href="@{/?db=1}">Database 1</button>
-		</div>
-	</div>
-	<div>
-		<a th:href="${param.db==null}?@{/user/new}:@{/user/new(db=${param.db})}">New user</a>
 	</div>
 
-	<div th:if="${users.empty}">
-		<div>No user</div>
-	</div>
-	<div th:unless="${users.empty}">
-		<table id="user_table">
-			<caption>Users</caption>
-			<thead>
-				<tr>
-					<th scope="col">ID</th>
-					<th scope="col">Name</th>
-					<th scope="col">Email</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="user : ${users}">
-					<td th:text="${user.id}"></td>
-					<td th:text="${user.name}"></td>
-					<td th:text="${user.email}"></td>
-					<td><a
-							th:href="${param.db==null}?@{'/user/edit/' + ${user.id}}:@{'/user/edit/' + ${user.id}(db=${param.db[0]})}">Edit</a>
-					</td>
-					<td><a
-							th:href="${param.db==null}?@{'/todo/ofuser/' + ${user.id}}:@{'/todo/ofuser/' + ${user.id}(db=${param.db[0]})}">Show-ToDo</a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
 </body>
 
 </html>
