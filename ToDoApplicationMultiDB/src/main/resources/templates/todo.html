@@ -24,6 +24,7 @@
 				</div>
 				<div th:unless="${todo.empty}">
 					<table id="todo_table" class="table">
+						<caption>Your ToDo</caption>
 						<thead>
 							<tr>
 								<th scope="col">ID</th>
@@ -33,8 +34,7 @@
 						</thead>
 						<tbody>
 							<tr th:each="td : ${todo}">
-								<th th:text="${td.id}">
-									</td>
+								<td th:text="${td.id}"></td>
 								<td>
 
 									<th:block th:each="entry: ${td.actions}">
