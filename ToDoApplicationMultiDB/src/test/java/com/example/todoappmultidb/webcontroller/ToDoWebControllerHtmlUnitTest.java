@@ -62,7 +62,7 @@ public class ToDoWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/todo/ofuser/1");
 		assertThat(page.getBody().getTextContent()).doesNotContain("Not found any Todo for You");
 		HtmlTable table = page.getHtmlElementById("todo_table");
-		assertThat(table.asText()).isEqualTo("ID	Actions	Data\n"
+		assertThat(table.asText()).isEqualTo("Your ToDo\n" + "ID	Actions	Data\n"
 				+ "1	 prova2=true prova=false 	2005-05-01T00:00	 Edit\n" + "2	 	2017-05-01T00:00	 Edit");
 
 	}
@@ -77,8 +77,8 @@ public class ToDoWebControllerHtmlUnitTest {
 		HtmlPage page = this.webClient.getPage("/todo/ofuser/1");
 		assertThat(page.getBody().getTextContent()).doesNotContain("Not found any Todo for You");
 		HtmlTable table = page.getHtmlElementById("todo_table");
-		assertThat(table.asText())
-				.isEqualTo("ID	Actions	Data\n" + "1	 prova2=true prova=false 	2005-05-01T00:00	 Edit\n"
+		assertThat(table.asText()).isEqualTo(
+				"Your ToDo\n" + "ID	Actions	Data\n" + "1	 prova2=true prova=false 	2005-05-01T00:00	 Edit\n"
 						+ "2	 first=true second=true 	2017-05-01T00:00	 Edit");
 	}
 
