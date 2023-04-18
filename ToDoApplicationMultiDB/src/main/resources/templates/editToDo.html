@@ -23,7 +23,7 @@
 				</div>
 				<div th:if="${#strings.isEmpty(message)}">
 					<form name="todo_form" action="#" th:action="${param.db==null}?@{/todo/save}:@{/todo/save(db=${param.db})}" th:object="${todo}" method="post">
-					    <input type="hidden" th:field="*{id}" />
+						<input type="hidden" th:field="*{id}" />
 						<input type="hidden" th:field="*{idOfUser}" />
 						<div class="row mb-3">			
 							<label for="date" class="col-sm-2 col-form-label">Date:</label>
@@ -49,7 +49,7 @@
 										<td>
 											<div>
 												<input type="radio" th:field="*{actions[__${act.key}__]}" th:value="TRUE">
-					  							<label for="TRUE">TRUE</label>
+												<label for="TRUE">TRUE</label>
 												<br>
 											</div>
 											<div>
@@ -65,7 +65,7 @@
 									<td> <input type="text" th:name="key" th:id="key" th:value="NULL"></td>
 									<td>
 										<input type="radio" th:name="value" th:id="value" th:value="TRUE">
-			  							<label for="TRUE">TRUE</label><br>
+										<label for="TRUE">TRUE</label><br>
 										<input type="radio" th:name="value" th:id="value" th:value="FALSE">
 										<label for="FALSE">FALSE</label><br>
 									</td>
