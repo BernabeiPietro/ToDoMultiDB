@@ -58,7 +58,7 @@ public class ToDoWebControllerE2E {// NOSONAR
 		driver.findElement(By.cssSelector("a[href*='/?db=2']")).click();
 		driver.findElement(By.cssSelector("a[href*='/todo/ofuser/" + id + "?db=2']")).click();
 		driver.findElement(By.cssSelector("a[href*='/todo/new/" + id + "?db=2']")).click();
-		driver.findElement(By.name("date")).sendKeys("08102008");
+		driver.findElement(By.name("date")).sendKeys("10102008");
 
 		driver.findElement(By.name("key")).sendKeys("pippo");
 		driver.findElements(By.name("value")).stream().filter(x -> x.getAttribute("value").contains("false"))
@@ -69,7 +69,7 @@ public class ToDoWebControllerE2E {// NOSONAR
 				.get().click();
 		driver.findElement(By.name("btn_submit")).click();
 		assertThat(driver.findElement(By.id("todo_table")).getText()).contains("pippo=false", "pluto=true",
-				"2008-08-10T00:00");
+				"2008-10-10T00:00");
 	}
 
 	@Test
@@ -86,7 +86,7 @@ public class ToDoWebControllerE2E {// NOSONAR
 		driver.get(baseUrl);
 		driver.findElement(By.cssSelector("a[href*='/todo/ofuser/" + idOfUser + "']")).click();
 		driver.findElement(By.cssSelector("a[href*='/todo/edit/" + idTodo + "']")).click();
-		driver.findElement(By.name("date")).sendKeys("08102008");
+		driver.findElement(By.name("date")).sendKeys("10102008");
 
 		driver.findElements(By.name("actions[prova]")).stream().filter(x -> x.getAttribute("value").contains("false"))
 				.findFirst().get().click();
@@ -97,7 +97,7 @@ public class ToDoWebControllerE2E {// NOSONAR
 				.get().click();
 		driver.findElement(By.name("btn_submit")).click();
 		assertThat(driver.findElement(By.id("todo_table")).getText()).contains("prova=false", "prova2=true",
-				"pluto=true", "2008-08-10T01:01:01");
+				"pluto=true", "2008-10-10T01:01:01");
 	}
 
 	private String postUser(String name, String email, int db) throws JSONException {

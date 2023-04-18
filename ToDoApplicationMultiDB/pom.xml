@@ -86,7 +86,9 @@
 			${basedir}/src/e2e/java
 		</sonar.tests>
 
-
+		<sonar.exclusions>
+			**/model/**
+		</sonar.exclusions>
 		<sonar.coverage.exclusions>
 			**/*Application.*,
 			**/model/**,
