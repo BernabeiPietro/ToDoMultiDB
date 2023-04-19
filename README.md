@@ -107,5 +107,4 @@ mvn clean package -Ddb.docker.dns1=DB1_DNS_NAME -Ddb.docker.dns2=DB2_DNS_NAME -D
 ```
 
 # More information
-[Report_of_ToDoMultiDB_Project_(italian_version).pdf](https://github.com/BernabeiPietro/todomultidb/files/11274808/ATTSW.Exam.pdf)
-
+[Report_of_ToDoMultiDB_Project.pdf_(italian_version)](https://github.com/BernabeiPietro/todomultidb/files/11276051/Report_of_ToDoMultiDB_Project.pdf)
