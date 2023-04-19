@@ -94,7 +94,7 @@ docker-compose up
 ## Try the test
 ```
 Unit e IT Test:
-    mvn clear verify
+    mvn clean verify
 E2E Test:
     mvn clean verify -PE2E-test
 ```
