@@ -67,7 +67,7 @@
 		</sonar.junit.reportPaths>
 		<!-- Also scans HTML files -->
 		<sonar.exclusions>
-		**/model/**
+			**/model/**
 		</sonar.exclusions>
 		<sonar.sources>
 			pom.xml,
@@ -230,7 +230,7 @@
 							<exclude>**/model/**</exclude>
 
 							<exclude>com/gargoylesoftware/htmlunit/*</exclude>
-
+							<exclude>com/gargoylesoftware/css/*</exclude>
 						</excludes>
 					</configuration>
 
@@ -242,6 +242,7 @@
 								<!-- binds by default to the phase "verify" -->
 								<goal>report</goal>
 							</goals>
+
 						</execution>
 
 					</executions>
@@ -527,7 +528,6 @@
 						<artifactId>spring-boot-maven-plugin</artifactId>
 						<executions>
 							<execution>
-
 								<id>spring-start</id>
 								<goals>
 									<goal>start</goal>
@@ -568,153 +568,6 @@
 								<server.port>${tomcat.http.port}</server.port>
 							</systemPropertyVariables>
 						</configuration>
-					</plugin>
-
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>docker</id>
-			<properties>
-				<db.docker.dns1>db1</db.docker.dns1>
-				<db.docker.dns2>db2</db.docker.dns2>
-				<db.docker.port1>3306</db.docker.port1>
-				<db.docker.port2>3306</db.docker.port2>
-				<db.docker.port>3306</db.docker.port>
-				<db.docker.db1>db_example_1</db.docker.db1>
-				<db.docker.db2>db_example_2</db.docker.db2>
-				<docker.time-to-wait>100000</docker.time-to-wait>
-
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>io.fabric8</groupId>
-						<artifactId>docker-maven-plugin</artifactId>
-						<version>0.34.1</version>
-						<configuration>
-							<showLogs>true</showLogs>
-							<verbose>build</verbose>
-							<autoCreateCustomNetworks>true</autoCreateCustomNetworks>
-							<images>
-
-								<image>
-									<alias>db1</alias>
-									<name>mysql:5.6</name>
-									<run>
-
-										<namingStrategy>alias</namingStrategy>
-										<hostname>db1</hostname>
-										<wait>
-											<tcp>
-												<host>localhost</host>
-												<ports>
-													<port>3306</port>
-												</ports>
-											</tcp>
-											<time>${docker.time-to-wait}</time>
-										</wait>
-										<env>
-											<MYSQL_ROOT_PASSWORD>${db.docker.rootpsw}
-											</MYSQL_ROOT_PASSWORD>
-											<MYSQL_DATABASE>${db.docker.db1}</MYSQL_DATABASE>
-											<MYSQL_USER>${db.docker.user}</MYSQL_USER>
-											<MYSQL_PASSWORD>${db.docker.psw}</MYSQL_PASSWORD>
-										</env>
-										<ports>
-											<port>28011:${db.docker.port}</port>
-										</ports>
-
-										<restartPolicy>
-											<name>always</name>
-										</restartPolicy>
-										<network>
-											<mode>bridge</mode>
-											<name>network</name>
-											<alias>db1</alias>
-										</network>
-									</run>
-								</image>
-								<image>
-									<alias>db2</alias>
-									<name>mysql:5.6</name>
-									<run>
-										<namingStrategy>alias</namingStrategy>
-										<hostname>db2</hostname>
-										<wait>
-											<tcp>
-												<host>localhost</host>
-												<ports>
-													<port>3306</port>
-												</ports>
-											</tcp>
-											<time>${docker.time-to-wait}</time>
-										</wait>
-										<env>
-											<MYSQL_ROOT_PASSWORD>${db.docker.rootpsw}
-											</MYSQL_ROOT_PASSWORD>
-											<MYSQL_DATABASE>${db.docker.db2}</MYSQL_DATABASE>
-											<MYSQL_USER>${db.docker.user}</MYSQL_USER>
-											<MYSQL_PASSWORD>${db.docker.psw}</MYSQL_PASSWORD>
-										</env>
-										<ports>
-											<port>28012:${db.docker.port}</port>
-										</ports>
-										<restartPolicy>
-											<name>always</name>
-										</restartPolicy>
-										<network>
-											<mode>bridge</mode>
-											<name>network</name>
-											<alias>db2</alias>
-										</network>
-									</run>
-								</image>
-								<image>
-									<alias>todomultidb</alias>
-									<name>todomultidb</name>
-									<build>
-										<contextDir>${project.basedir}</contextDir>
-									</build>
-									<run>
-										<dependsOn>
-											<container>db1</container>
-											<container>db2</container>
-										</dependsOn>
-										<restartPolicy>
-											<name>always</name>
-										</restartPolicy>
-										<ports>
-											<port>8080:8080</port>
-										</ports>
-										<network>
-											<mode>bridge</mode>
-											<name>network</name>
-											<alias>multidb</alias>
-										</network>
-
-									</run>
-								</image>
-							</images>
-						</configuration>
-						<executions>
-							<execution>
-								<id>docker-build-image</id>
-								<phase>package</phase>
-								<goals>
-									<goal>build</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>docker-verify</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>start</goal>
-									<goal>stop</goal>
-								</goals>
-							</execution>
-						</executions>
 					</plugin>
 				</plugins>
 			</build>
