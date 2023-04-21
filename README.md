@@ -62,7 +62,7 @@ POST
 
 
 ## Technology
-The following was used for development
+The following was used for development.
 - Tools
   - Spring
   - Maven
@@ -84,7 +84,12 @@ The following was used for development
     - Selenium
   - E2E test
     - Selenium 
+And other tools ...
 ## Execute it
+The application, by default, is reachable at the address:
+```
+http://localhost:8080/
+```
 Using docker-compose 
 ```
 mvn clean package -Plocal-prod
@@ -96,7 +101,7 @@ docker-compose up
 Unit e IT Test:
     mvn clean verify
 E2E Test:
-    mvn clean verify -PE2E-test
+    mvn clean verify -Pe2e-tests
 ```
 
 ## Distributed execution
@@ -104,6 +109,10 @@ E2E Test:
 - Create the JAR with information about the two databases:
 ```
 mvn clean package -Ddb.docker.dns1=DB1_DNS_NAME -Ddb.docker.dns2=DB2_DNS_NAME -Ddb.docker.port1=DB1_port -Ddb.docker.port2=DB2_port 
+```
+- Example compatible with docker-compose file:
+```
+mvn clean package -Ddb.docker.dns1=db1 -Ddb.docker.dns2=db2 -Ddb.docker.port1=3306 -Ddb.docker.port2=3306
 ```
 
 # More information
