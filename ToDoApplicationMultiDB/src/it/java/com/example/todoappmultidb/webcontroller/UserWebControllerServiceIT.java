@@ -19,6 +19,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.example.todoappmultidb.model.User;
 import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.service.UserService;
+import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
+import com.gargoylesoftware.htmlunit.WebClient;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -35,8 +37,14 @@ public class UserWebControllerServiceIT {
 	@Before
 	public void setUp() throws Exception {
 		baseUrl = "http://localhost:" + port;
-		driver = new HtmlUnitDriver();
-
+		driver = new HtmlUnitDriver() {
+			@Override
+			protected WebClient modifyWebClient(WebClient client) {
+				final WebClient webClient = super.modifyWebClient(client);
+				webClient.setCssErrorHandler(new SilentCssErrorHandler());
+				return webClient;
+			}
+		};
 		userService.setDatabase(1);
 		userRepository.deleteAll();
 		userRepository.flush();

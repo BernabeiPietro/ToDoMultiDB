@@ -2,6 +2,7 @@ package com.example.todoappmultidb.webcontroller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,11 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 public class ErrorWebControllerHtmlUnitTest {
 	@Autowired
 	private WebClient webClient;
+
+	@Before
+	public void setup() {
+		webClient.getOptions().setCssEnabled(false);
+	}
 
 	@Test
 	public void testErrorPage_emptyMessage() throws Exception {

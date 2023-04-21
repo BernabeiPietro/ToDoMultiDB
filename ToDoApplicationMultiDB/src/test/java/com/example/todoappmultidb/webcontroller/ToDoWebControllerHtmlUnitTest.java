@@ -41,6 +41,7 @@ public class ToDoWebControllerHtmlUnitTest {
 
 	@Before
 	public void setup() {
+		webClient.getOptions().setCssEnabled(false);
 		HashMap<String, Boolean> actions = new HashMap<>();
 		actions.put("prova", false);
 		actions.put("prova2", true);

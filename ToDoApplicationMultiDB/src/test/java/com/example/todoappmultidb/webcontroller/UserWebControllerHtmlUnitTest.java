@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,11 @@ public class UserWebControllerHtmlUnitTest {
 	private WebClient webClient;
 	@MockBean
 	private UserService userService;
+
+	@Before
+	public void setup() {
+		webClient.getOptions().setCssEnabled(false);
+	}
 
 	@Test
 	public void testHomePageTitle() throws Exception {

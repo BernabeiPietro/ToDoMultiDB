@@ -23,6 +23,8 @@ import com.example.todoappmultidb.model.User;
 import com.example.todoappmultidb.repository.ToDoRepository;
 import com.example.todoappmultidb.repository.UserRepository;
 import com.example.todoappmultidb.service.UserService;
+import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
+import com.gargoylesoftware.htmlunit.WebClient;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -43,8 +45,15 @@ public class ToDoWebControllerServiceIT {
 	@Before
 	public void setUp() throws Exception {
 		baseUrl = "http://localhost:" + port + "/todo";
-		driver = new HtmlUnitDriver(true);
+		driver = new HtmlUnitDriver(true) {
+			@Override
+			protected WebClient modifyWebClient(WebClient client) {
+				final WebClient webClient = super.modifyWebClient(client);
+				webClient.setCssErrorHandler(new SilentCssErrorHandler());
 
+				return webClient;
+			}
+		};
 		userService.setDatabase(1);
 		userRepository.deleteAll();
 		userRepository.flush();
