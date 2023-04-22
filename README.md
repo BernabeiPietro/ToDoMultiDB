@@ -116,4 +116,4 @@ mvn clean package -Ddb.docker.dns1=db1 -Ddb.docker.dns2=db2 -Ddb.docker.port1=33
 ```
 
 # More information
-[Report_of_ToDoMultiDB_Project.pdf_(italian_version)](https://github.com/BernabeiPietro/todomultidb/files/11276051/Report_of_ToDoMultiDB_Project.pdf)
+[Report_of_ToDoMultiDB_Project.pdf_(italian_version)](https://github.com/BernabeiPietro/ToDoMultiDB/files/11301962/Report_of_ToDoMultiDB_Project_Pietro_Bernabei.pdf)
